@@ -36,13 +36,55 @@ import { PoweredFooter, PoweredFooterSchema, PoweredFooterDescription } from "./
 import { registerComponent } from "./render";
 
 /**
- * The 31 catalog primitives, registered with @json-render/core's
- * defineCatalog. Each entry carries the Zod props schema and an
- * LLM-facing description string.
+ * The catalog primitives, in a flat keyed map. Each entry carries the
+ * Zod props schema, an LLM-facing description string, and an empty
+ * `slots` array (json-render expects it). Exported separately from the
+ * `defineCatalog` wrapper below so server-side code that needs to walk
+ * schemas directly (e.g. lib/llm/catalog-prompt.ts) does not have to
+ * reach into json-render internals.
  *
- * The schema we register against is @json-render/react's flat-element
- * schema, but our spec format (per design/CATALOG.md) is nested:
- * children live inside props (Screen.body, Stack.children, etc.).
+ * Adding a new primitive: register its component file, add its entry to
+ * this map, and (optionally) add it to a group in lib/llm/catalog-prompt.ts.
+ */
+export const catalogComponents = {
+  Screen: { props: ScreenSchema, slots: [] as const, description: ScreenDescription },
+  Stack: { props: StackSchema, slots: [] as const, description: StackDescription },
+  Group: { props: GroupSchema, slots: [] as const, description: GroupDescription },
+  Spacer: { props: SpacerSchema, slots: [] as const, description: SpacerDescription },
+  Divider: { props: DividerSchema, slots: [] as const, description: DividerDescription },
+  Heading: { props: HeadingSchema, slots: [] as const, description: HeadingDescription },
+  Body: { props: BodySchema, slots: [] as const, description: BodyDescription },
+  Eyebrow: { props: EyebrowSchema, slots: [] as const, description: EyebrowDescription },
+  Caption: { props: CaptionSchema, slots: [] as const, description: CaptionDescription },
+  ChoiceList: { props: ChoiceListSchema, slots: [] as const, description: ChoiceListDescription },
+  MultiChoice: { props: MultiChoiceSchema, slots: [] as const, description: MultiChoiceDescription },
+  ImageChoiceGrid: { props: ImageChoiceGridSchema, slots: [] as const, description: ImageChoiceGridDescription },
+  ScalePicker: { props: ScalePickerSchema, slots: [] as const, description: ScalePickerDescription },
+  ShortText: { props: ShortTextSchema, slots: [] as const, description: ShortTextDescription },
+  LongText: { props: LongTextSchema, slots: [] as const, description: LongTextDescription },
+  EmailInput: { props: EmailInputSchema, slots: [] as const, description: EmailInputDescription },
+  NumberInput: { props: NumberInputSchema, slots: [] as const, description: NumberInputDescription },
+  ToggleRow: { props: ToggleRowSchema, slots: [] as const, description: ToggleRowDescription },
+  PrimaryCTA: { props: PrimaryCTASchema, slots: [] as const, description: PrimaryCTADescription },
+  SecondaryCTA: { props: SecondaryCTASchema, slots: [] as const, description: SecondaryCTADescription },
+  ProgressBar: { props: ProgressBarSchema, slots: [] as const, description: ProgressBarDescription },
+  BackButton: { props: BackButtonSchema, slots: [] as const, description: BackButtonDescription },
+  ResultBadge: { props: ResultBadgeSchema, slots: [] as const, description: ResultBadgeDescription },
+  ResultHero: { props: ResultHeroSchema, slots: [] as const, description: ResultHeroDescription },
+  PriceCard: { props: PriceCardSchema, slots: [] as const, description: PriceCardDescription },
+  EmailGate: { props: EmailGateSchema, slots: [] as const, description: EmailGateDescription },
+  SocialProof: { props: SocialProofSchema, slots: [] as const, description: SocialProofDescription },
+  Disclosure: { props: DisclosureSchema, slots: [] as const, description: DisclosureDescription },
+  Avatar: { props: AvatarSchema, slots: [] as const, description: AvatarDescription },
+  IconBadge: { props: IconBadgeSchema, slots: [] as const, description: IconBadgeDescription },
+  PoweredFooter: { props: PoweredFooterSchema, slots: [] as const, description: PoweredFooterDescription },
+};
+
+/**
+ * The catalog primitives, registered with @json-render/core's
+ * defineCatalog. The schema we register against is @json-render/react's
+ * flat-element schema, but our spec format (per design/CATALOG.md) is
+ * nested: children live inside props (Screen.body, Stack.children, etc.).
  * The runtime renderer (lib/catalog/render.tsx) walks the nested form
  * directly.
  */

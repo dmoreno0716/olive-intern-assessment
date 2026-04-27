@@ -11,6 +11,9 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.90.0",
     "@base-ui/react": "^1.4.1",
+    "@json-render/core": "^0.18.0",
+    "@json-render/react": "^0.18.0",
+    "@json-render/shadcn": "^0.18.0",
     "@supabase/supabase-js": "^2.104.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -25,6 +28,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@anthropic-ai/claude-code": "^2.1.119",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -38,6 +42,12 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "supabase"
+    ],
+    "ignoredBuiltDependencies": [
+      "@anthropic-ai/claude-code",
+      "msw",
+      "sharp",
+      "unrs-resolver"
     ]
   }
 }

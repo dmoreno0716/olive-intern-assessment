@@ -1,128 +1,229 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
+/* ========================================================================
+   Olive Quiz Funnel Studio — design tokens
+   Source of truth: design/TOKENS.md
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
-}
+   Shape:
+     :root  — palette, type, radius, shadow, motion (§6)
+            + Studio-mode role tokens + shadcn mapping (§1.6, §5)
+     .funnel — Funnel-mode role tokens + shadcn mapping (§1.6, §5)
+     @theme inline — Tailwind v4 utility surface (§5)
+
+   Studio mode is applied at :root per AGENTS.md ("Studio mode is the
+   default"), diverging from TOKENS.md §1.6 which scopes it to .studio.
+   ======================================================================== */
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  /* Olive (brand) */
+  --olive-50:  oklch(0.96 0.018 125);
+  --olive-100: oklch(0.88 0.035 128);
+  --olive-300: oklch(0.66 0.055 130);
+  --olive-500: oklch(0.46 0.058 132);
+  --olive-700: oklch(0.32 0.045 134);
+  --olive-900: oklch(0.20 0.030 135);
+
+  /* Cream (warm neutrals — Funnel mode) */
+  --cream-50:  oklch(0.985 0.006 85);
+  --cream-100: oklch(0.965 0.012 84);
+  --cream-200: oklch(0.940 0.018 82);
+  --cream-300: oklch(0.905 0.022 80);
+  --cream-400: oklch(0.860 0.024 78);
+
+  /* Cool neutrals (Studio mode) */
+  --n-0:   #fff;
+  --n-50:  oklch(0.985 0.002 250);
+  --n-100: oklch(0.965 0.004 250);
+  --n-150: oklch(0.945 0.005 250);
+  --n-200: oklch(0.925 0.006 250);
+  --n-300: oklch(0.870 0.008 250);
+  --n-400: oklch(0.720 0.010 250);
+  --n-500: oklch(0.560 0.012 250);
+  --n-600: oklch(0.440 0.014 250);
+  --n-700: oklch(0.320 0.014 250);
+  --n-800: oklch(0.220 0.012 250);
+  --n-900: oklch(0.140 0.010 250);
+
+  /* Result accents (donut/segment colors) */
+  --r1: oklch(0.62 0.13 45);
+  --r2: oklch(0.62 0.13 95);
+  --r3: oklch(0.58 0.12 150);
+  --r4: oklch(0.62 0.13 245);
+  --r5: oklch(0.58 0.13 320);
+
+  /* Semantic */
+  --success: oklch(0.58 0.12 150);
+  --warning: oklch(0.74 0.13 75);
+  --error:   oklch(0.58 0.18 28);
+
+  /* Type — next/font sets these via className on <html>; values here are
+     fallbacks for tooling that bypasses next/font. */
+  --font-d: "Instrument Serif", Iowan Old Style, Georgia, serif;
+  --font-s: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-m: "Geist Mono", ui-monospace, "SF Mono", monospace;
+
+  /* Radius */
+  --r-sm:   6px;
+  --r-md:   10px;
+  --r-lg:   16px;
+  --r-xl:   22px;
+  --r-full: 999px;
+
+  /* Shadow (warm-tinted RGB so shadows read as olive on cream) */
+  --sh-1: 0 1px 2px rgba(38,44,30,.05), 0 1px 1px rgba(38,44,30,.04);
+  --sh-2: 0 2px 4px rgba(38,44,30,.06), 0 4px 12px rgba(38,44,30,.05);
+  --sh-3: 0 4px 8px rgba(38,44,30,.06), 0 12px 28px rgba(38,44,30,.08);
+
+  /* Motion */
+  --m-fast:  120ms;
+  --m-mid:   200ms;
+  --m-med:   320ms;
+  --ease:    cubic-bezier(0.2, 0, 0, 1);
+  --ease-em: cubic-bezier(0.3, 0, 0, 1);
+
+  /* ----- Studio-mode role tokens (default) ----- */
+  --bg:            var(--n-50);
+  --surface:       var(--n-0);
+  --surface-2:     var(--n-100);
+  --surface-3:     var(--n-150);
+  --border-c:      var(--n-200);
+  --border-strong: var(--n-300);
+  --text:          var(--n-900);
+  --text-mute:     var(--n-600);
+  --text-faint:    var(--n-500);
+  --accent-c:      var(--olive-700);
+  --accent-soft:   color-mix(in oklch, var(--olive-500) 12%, var(--n-0));
+  --accent-fg:     var(--cream-50);
+
+  /* ----- shadcn mapping (Studio) ----- */
+  --background:           var(--bg);
+  --foreground:           var(--text);
+  --card:                 var(--surface);
+  --card-foreground:      var(--text);
+  --popover:              var(--surface);
+  --popover-foreground:   var(--text);
+  --primary:              var(--accent-c);
+  --primary-foreground:   var(--accent-fg);
+  --secondary:            var(--surface-2);
+  --secondary-foreground: var(--text);
+  --muted:                var(--surface-2);
+  --muted-foreground:     var(--text-mute);
+  --accent:               var(--surface-2);
+  --accent-foreground:    var(--text);
+  --destructive:          var(--error);
+  --border:               var(--border-c);
+  --input:                var(--border-c);
+  --ring:                 var(--accent-c);
 }
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+/* ======================================================================
+   Funnel mode — scoped to a .funnel container. End-user-facing surfaces.
+   ====================================================================== */
+.funnel {
+  --fbg:       var(--cream-100);
+  --fsurf:     var(--cream-50);
+  --fsurf2:    var(--cream-200);
+  --fborder:   var(--cream-300);
+  --fborder-s: var(--cream-400);
+  --ftext:     var(--olive-900);
+  --ftext-m:   color-mix(in oklch, var(--olive-900) 50%, var(--cream-100));
+  --ftext-f:   color-mix(in oklch, var(--olive-900) 30%, var(--cream-100));
+  --faccent:   var(--olive-500);
+  --faccent-d: var(--olive-700);
+  --faccent-fg: var(--cream-50);
+
+  /* shadcn mapping (Funnel) */
+  --background:           var(--fbg);
+  --foreground:           var(--ftext);
+  --card:                 var(--fsurf);
+  --card-foreground:      var(--ftext);
+  --popover:              var(--fsurf);
+  --popover-foreground:   var(--ftext);
+  --primary:              var(--faccent);
+  --primary-foreground:   var(--faccent-fg);
+  --secondary:            var(--fsurf2);
+  --secondary-foreground: var(--ftext);
+  --muted:                var(--fsurf2);
+  --muted-foreground:     var(--ftext-m);
+  --accent:               var(--fsurf2);
+  --accent-foreground:    var(--ftext);
+  --destructive:          var(--error);
+  --border:               var(--fborder);
+  --input:                var(--fborder);
+  --ring:                 var(--faccent);
+}
+
+/* ======================================================================
+   Tailwind v4 theme bridge — exposes tokens as utilities
+   (text-olive-700, bg-cream-100, font-display, rounded-xl, shadow-2, …)
+   ====================================================================== */
+@theme inline {
+  --color-olive-50:  var(--olive-50);
+  --color-olive-100: var(--olive-100);
+  --color-olive-300: var(--olive-300);
+  --color-olive-500: var(--olive-500);
+  --color-olive-700: var(--olive-700);
+  --color-olive-900: var(--olive-900);
+
+  --color-cream-50:  var(--cream-50);
+  --color-cream-100: var(--cream-100);
+  --color-cream-200: var(--cream-200);
+  --color-cream-300: var(--cream-300);
+  --color-cream-400: var(--cream-400);
+
+  --color-r1: var(--r1);
+  --color-r2: var(--r2);
+  --color-r3: var(--r3);
+  --color-r4: var(--r4);
+  --color-r5: var(--r5);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error:   var(--error);
+
+  /* shadcn role colors as Tailwind utilities */
+  --color-background:           var(--background);
+  --color-foreground:           var(--foreground);
+  --color-card:                 var(--card);
+  --color-card-foreground:      var(--card-foreground);
+  --color-popover:              var(--popover);
+  --color-popover-foreground:   var(--popover-foreground);
+  --color-primary:              var(--primary);
+  --color-primary-foreground:   var(--primary-foreground);
+  --color-secondary:            var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted:                var(--muted);
+  --color-muted-foreground:     var(--muted-foreground);
+  --color-accent:               var(--accent);
+  --color-accent-foreground:    var(--accent-foreground);
+  --color-destructive:          var(--destructive);
+  --color-border:               var(--border);
+  --color-input:                var(--input);
+  --color-ring:                 var(--ring);
+
+  --font-display: var(--font-d);
+  --font-sans:    var(--font-s);
+  --font-mono:    var(--font-m);
+
+  --radius-sm:   var(--r-sm);
+  --radius-md:   var(--r-md);
+  --radius-lg:   var(--r-lg);
+  --radius-xl:   var(--r-xl);
+  --radius-full: var(--r-full);
+
+  --shadow-1: var(--sh-1);
+  --shadow-2: var(--sh-2);
+  --shadow-3: var(--sh-3);
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "ss01";
   }
   html {
     @apply font-sans;

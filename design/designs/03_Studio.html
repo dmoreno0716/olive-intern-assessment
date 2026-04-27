@@ -1,0 +1,2225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Quiz Funnel Studio — Creator Surface</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --olive-50: oklch(0.96 0.018 125);
+  --olive-100:oklch(0.88 0.035 128);
+  --olive-300:oklch(0.66 0.055 130);
+  --olive-500:oklch(0.46 0.058 132);
+  --olive-700:oklch(0.32 0.045 134);
+  --olive-900:oklch(0.20 0.030 135);
+  --cream-50: oklch(0.985 0.006 85);
+  --cream-100:oklch(0.965 0.012 84);
+  --cream-200:oklch(0.940 0.018 82);
+  --cream-300:oklch(0.905 0.022 80);
+  --cream-400:oklch(0.860 0.024 78);
+  --n-0:#fff;
+  --n-50: oklch(0.985 0.002 250);
+  --n-100:oklch(0.965 0.004 250);
+  --n-150:oklch(0.945 0.005 250);
+  --n-200:oklch(0.925 0.006 250);
+  --n-300:oklch(0.870 0.008 250);
+  --n-400:oklch(0.720 0.010 250);
+  --n-500:oklch(0.560 0.012 250);
+  --n-600:oklch(0.440 0.014 250);
+  --n-700:oklch(0.320 0.014 250);
+  --n-800:oklch(0.220 0.012 250);
+  --n-900:oklch(0.140 0.010 250);
+  --success:oklch(0.58 0.12 150);
+  --warning:oklch(0.74 0.13 75);
+  --error:oklch(0.58 0.18 28);
+  --font-d:"Instrument Serif",Iowan Old Style,Georgia,serif;
+  --font-s:"Geist",ui-sans-serif,system-ui,sans-serif;
+  --font-m:"Geist Mono",ui-monospace,"SF Mono",monospace;
+  --r-sm:6px;--r-md:10px;--r-lg:16px;--r-xl:22px;--r-full:999px;
+  --sh-1:0 1px 2px rgba(38,44,30,.05),0 1px 1px rgba(38,44,30,.04);
+  --sh-2:0 2px 4px rgba(38,44,30,.06),0 4px 12px rgba(38,44,30,.05);
+  --sh-3:0 4px 8px rgba(38,44,30,.06),0 12px 28px rgba(38,44,30,.08);
+  --sh-4:0 8px 16px rgba(38,44,30,.07),0 24px 56px rgba(38,44,30,.10);
+  --m-fast:120ms;--m-mid:200ms;--m-med:320ms;
+  --ease:cubic-bezier(0.2,0,0,1);
+  --ease-em:cubic-bezier(0.3,0,0,1);
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:var(--font-s);color:var(--n-900);background:var(--n-100);-webkit-font-smoothing:antialiased;font-feature-settings:"ss01"}
+
+/* ================================================
+   STUDIO MODE TOKENS (chrome)
+================================================ */
+.studio{
+  --bg:var(--n-50);
+  --surface:var(--n-0);
+  --surface-2:var(--n-100);
+  --border:var(--n-200);
+  --border-strong:var(--n-300);
+  --text:var(--n-900);
+  --text-mute:var(--n-600);
+  --text-faint:var(--n-500);
+  --accent:var(--olive-700);
+  --accent-soft:color-mix(in oklch,var(--olive-500) 12%,var(--n-0));
+  --accent-fg:var(--cream-50);
+  --ring:var(--olive-500);
+  font-family:var(--font-s);
+  color:var(--text);
+  background:var(--bg);
+}
+/* funnel mode for in-preview */
+.funnel{
+  --fbg:var(--cream-100);
+  --fsurf:var(--cream-50);
+  --fsurf2:var(--cream-200);
+  --fborder:var(--cream-300);
+  --fborder-s:var(--cream-400);
+  --ftext:var(--olive-900);
+  --ftext-m:color-mix(in oklch,var(--olive-900) 50%,var(--cream-100));
+  --ftext-f:color-mix(in oklch,var(--olive-900) 30%,var(--cream-100));
+  --faccent:var(--olive-500);
+  --faccent-d:var(--olive-700);
+  --faccent-fg:var(--cream-50);
+  font-family:var(--font-s);color:var(--ftext);
+}
+
+/* ================================================
+   ARTBOARD CHROME
+================================================ */
+.board{
+  background:var(--n-50);
+  display:flex;flex-direction:column;
+  font-family:var(--font-s);
+}
+.board-header{
+  background:var(--n-0);
+  border-bottom:1px solid var(--n-200);
+  padding:18px 24px;
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--font-m);
+  font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--n-600);
+}
+.board-header .ttl{
+  font-family:var(--font-d);font-style:italic;font-weight:400;
+  font-size:22px;letter-spacing:-0.005em;text-transform:none;color:var(--n-900);
+}
+.board-header .meta{display:flex;gap:24px;align-items:baseline}
+.board-header .meta .pill{
+  background:var(--n-100);color:var(--n-700);padding:3px 10px;border-radius:999px;letter-spacing:0.04em
+}
+
+/* annotation callout */
+.callout{
+  position:absolute;
+  display:flex;flex-direction:column;gap:4px;
+  font-family:var(--font-m);font-size:11px;color:var(--n-700);
+  letter-spacing:0.02em;
+  pointer-events:none;
+  z-index:50;
+  max-width:240px;
+}
+.callout .num{
+  display:inline-flex;width:18px;height:18px;border-radius:999px;
+  background:var(--olive-700);color:var(--cream-50);
+  align-items:center;justify-content:center;
+  font-size:10px;font-weight:600;
+}
+.callout .head{display:flex;align-items:center;gap:8px}
+.callout .head strong{color:var(--n-900);font-weight:500;font-family:var(--font-s);font-size:12px}
+.callout .body{
+  background:var(--n-0);
+  border:1px solid var(--n-200);
+  border-radius:var(--r-md);
+  padding:8px 10px;line-height:1.45;
+  box-shadow:var(--sh-1);
+  font-family:var(--font-s);font-size:11.5px;color:var(--n-700);
+}
+.callout::before{
+  content:"";position:absolute;
+  background:var(--olive-700);
+  height:1px;
+}
+
+/* ================================================
+   COMMON STUDIO CHROME
+================================================ */
+.s-topbar{
+  height:52px;background:var(--surface);border-bottom:1px solid var(--border);
+  display:grid;grid-template-columns:auto 1fr auto;align-items:center;
+  padding:0 16px;gap:24px;
+}
+.s-logo{display:flex;align-items:center;gap:10px;font-family:var(--font-s);font-size:13px;font-weight:500;color:var(--text)}
+.s-logo .mark{
+  width:22px;height:22px;border-radius:6px;
+  background:linear-gradient(135deg,var(--olive-700),var(--olive-500));
+  display:grid;place-items:center;color:var(--cream-50);
+  font-family:var(--font-d);font-size:14px;font-style:italic;line-height:1;
+}
+.s-logo .name em{font-style:italic;color:var(--olive-700);font-family:var(--font-d);font-size:15px;letter-spacing:-0.005em;margin-right:2px}
+
+.s-tabs{
+  display:flex;align-items:center;gap:4px;
+  background:var(--surface-2);
+  border:1px solid var(--border);
+  padding:3px;border-radius:var(--r-md);
+  height:32px;
+  font-size:12.5px;
+  width:fit-content;
+  margin:0 auto;
+}
+.s-tabs button{
+  background:transparent;border:none;
+  padding:5px 11px;border-radius:6px;
+  color:var(--text-mute);cursor:pointer;
+  font:inherit;font-weight:500;
+  display:flex;align-items:center;gap:6px;
+}
+.s-tabs button.is-active{background:var(--surface);color:var(--text);box-shadow:var(--sh-1)}
+.s-tabs button.add{color:var(--text-faint);font-weight:400}
+.s-tabs .dot{width:6px;height:6px;border-radius:999px;background:var(--olive-500)}
+
+.s-actions{display:flex;align-items:center;gap:10px}
+.s-btn{
+  font:inherit;font-size:12.5px;font-weight:500;
+  padding:7px 12px;border-radius:6px;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;
+  border:1px solid transparent;
+  height:30px;
+}
+.s-btn.primary{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.s-btn.primary:hover{background:var(--olive-900)}
+.s-btn.secondary{background:var(--surface);color:var(--text);border-color:var(--border)}
+.s-btn.secondary:hover{background:var(--surface-2)}
+.s-btn.ghost{background:transparent;color:var(--text-mute)}
+.s-btn.ghost:hover{background:var(--surface-2);color:var(--text)}
+.s-btn svg{width:13px;height:13px}
+
+.kbd{
+  font-family:var(--font-m);font-size:10.5px;color:var(--text-mute);
+  background:var(--surface-2);border:1px solid var(--border);
+  border-bottom-width:1.5px;
+  border-radius:4px;padding:1px 5px;
+}
+
+/* ================================================
+   STATE 1 — empty
+================================================ */
+.state1{
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;
+  padding:96px 24px 64px;
+  min-height:760px;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 30%, color-mix(in oklch, var(--olive-500) 5%, transparent), transparent 70%),
+    var(--bg);
+}
+.state1 .hero-logo{
+  display:flex;align-items:center;gap:10px;margin-bottom:32px;color:var(--text-mute);
+  font-size:12.5px;font-family:var(--font-m);letter-spacing:0.04em;text-transform:uppercase;
+}
+.state1 .hero-logo .mark{
+  width:28px;height:28px;border-radius:8px;
+  background:linear-gradient(135deg,var(--olive-700),var(--olive-500));
+  display:grid;place-items:center;color:var(--cream-50);
+  font-family:var(--font-d);font-size:18px;font-style:italic;line-height:1;
+}
+.state1 h1{
+  font-family:var(--font-d);font-weight:400;
+  font-size:54px;line-height:1.05;letter-spacing:-0.02em;
+  margin:0 0 14px;text-align:center;color:var(--text);max-width:760px;
+}
+.state1 h1 em{font-style:italic;color:var(--accent)}
+.state1 .lede{
+  font-size:15.5px;color:var(--text-mute);text-align:center;margin:0 0 36px;max-width:560px;line-height:1.55;
+}
+.s-prompt-card{
+  width:min(720px,100%);
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);
+  box-shadow:var(--sh-2);
+  padding:18px 18px 12px;
+  display:flex;flex-direction:column;gap:8px;
+}
+.s-prompt-card textarea{
+  font-family:var(--font-s);font-size:16px;line-height:1.5;
+  color:var(--text);background:transparent;
+  border:none;outline:none;resize:none;
+  width:100%;min-height:80px;padding:6px 4px;
+}
+.s-prompt-card textarea::placeholder{color:var(--text-faint)}
+.s-prompt-card .row{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding-top:10px;border-top:1px solid var(--border);
+}
+.s-prompt-card .row .left{display:flex;gap:6px;color:var(--text-mute);font-size:11.5px;font-family:var(--font-m);align-items:center}
+.s-prompt-card .row .left .chip{
+  display:inline-flex;align-items:center;gap:4px;
+  background:var(--surface-2);padding:3px 8px;border-radius:6px;color:var(--text-mute);
+}
+.s-prompt-card .row .gen{
+  background:var(--accent);color:var(--accent-fg);border:none;
+  padding:8px 14px;border-radius:8px;font:inherit;font-size:13px;font-weight:500;cursor:pointer;
+  display:inline-flex;align-items:center;gap:8px;box-shadow:var(--sh-1);
+}
+.s-prompt-card .row .gen .kbdw{font-family:var(--font-m);font-size:10.5px;background:rgba(255,255,255,.18);padding:1px 5px;border-radius:3px;color:var(--cream-50)}
+
+.example-chips{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;
+  width:min(720px,100%);
+  margin-top:20px;
+}
+.chip-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:12px 14px;
+  display:flex;align-items:flex-start;gap:10px;
+  cursor:pointer;font-size:13px;line-height:1.4;color:var(--text);
+  transition:border-color var(--m-mid) var(--ease),background var(--m-mid) var(--ease);
+}
+.chip-card:hover{border-color:var(--border-strong);background:var(--surface-2)}
+.chip-card .icon{
+  width:22px;height:22px;border-radius:6px;background:var(--accent-soft);
+  display:grid;place-items:center;color:var(--accent);
+  flex-shrink:0;
+}
+.chip-card .icon svg{width:13px;height:13px}
+.chip-card .lbl{display:flex;flex-direction:column;gap:2px}
+.chip-card .lbl .kind{font-family:var(--font-m);font-size:10.5px;letter-spacing:0.04em;text-transform:uppercase;color:var(--text-faint)}
+
+.state1 .powered{
+  margin-top:48px;display:flex;align-items:center;gap:8px;
+  font-family:var(--font-m);font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-faint);
+}
+.state1 .powered .swirl{
+  width:14px;height:14px;border-radius:999px;
+  background:conic-gradient(from 60deg,var(--olive-500),var(--olive-300),var(--olive-700),var(--olive-500));
+}
+
+/* ================================================
+   STATE 2 — generating filmstrip
+================================================ */
+.state2{
+  background:var(--bg);
+  min-height:760px;
+  display:flex;flex-direction:column;
+}
+.state2 .top{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:14px 20px;
+  display:flex;align-items:center;gap:14px;
+}
+.state2 .top .submitted{
+  flex:1;font-size:13.5px;color:var(--text);
+  background:var(--surface-2);
+  border:1px solid var(--border);
+  border-radius:8px;padding:9px 12px;display:flex;align-items:center;gap:10px;
+}
+.state2 .top .submitted .you{
+  font-family:var(--font-m);font-size:10.5px;color:var(--text-faint);
+  letter-spacing:0.04em;text-transform:uppercase;
+}
+.state2 .top .submitted .text em{font-style:italic;color:var(--text)}
+.state2 .top .cancel{font-size:12px;color:var(--text-mute);cursor:pointer;font-family:var(--font-s)}
+
+.state2 .stream-status{
+  padding:36px 24px 16px;display:flex;flex-direction:column;align-items:center;gap:10px;
+}
+.state2 .stream-status .h{
+  font-family:var(--font-d);font-style:italic;font-weight:400;font-size:32px;letter-spacing:-0.01em;color:var(--text);
+}
+.state2 .stream-status .h em{color:var(--accent)}
+.state2 .stream-status .sub{font-size:13.5px;color:var(--text-mute)}
+.state2 .stream-status .sub .num{font-variant-numeric:tabular-nums;color:var(--text);font-weight:500}
+.state2 .stream-status .pulse{
+  display:inline-block;width:8px;height:8px;border-radius:999px;
+  background:var(--accent);
+  animation:pulse 1.2s var(--ease-em) infinite;
+  margin-right:8px;vertical-align:middle;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.6)}}
+
+/* filmstrip */
+.filmstrip{
+  display:flex;gap:18px;
+  padding:24px 32px 32px;
+  overflow-x:auto;
+  align-items:stretch;
+}
+.fs-card{
+  flex:0 0 240px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);
+  overflow:hidden;
+  display:flex;flex-direction:column;
+  box-shadow:var(--sh-1);
+  transition:transform var(--m-med) var(--ease-em),opacity var(--m-med) var(--ease-em);
+}
+.fs-card.materializing{
+  animation:materialize 600ms var(--ease-em) backwards;
+}
+.fs-card.streaming{
+  border-color:var(--olive-500);
+  box-shadow:0 0 0 3px color-mix(in oklch,var(--olive-500) 18%,transparent),var(--sh-1);
+}
+.fs-card.pending{
+  background:repeating-linear-gradient(135deg,var(--n-100) 0 8px,var(--n-50) 8px 16px);
+  border-style:dashed;border-color:var(--border-strong);box-shadow:none;
+  display:grid;place-items:center;
+  color:var(--text-faint);font-family:var(--font-m);font-size:11px;letter-spacing:0.04em;text-transform:uppercase;
+}
+@keyframes materialize{
+  from{opacity:0;transform:translateY(12px) scale(0.96)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.fs-card .fs-head{
+  padding:10px 14px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);
+  font-size:11px;font-family:var(--font-m);letter-spacing:0.04em;text-transform:uppercase;color:var(--text-faint);
+}
+.fs-card .fs-head .idx{color:var(--text);font-weight:500}
+.fs-card .fs-head .kind-pill{
+  background:var(--accent-soft);color:var(--accent);
+  padding:2px 7px;border-radius:4px;letter-spacing:0.06em;
+}
+.fs-card .fs-body{
+  padding:14px 14px 16px;
+  flex:1;display:flex;flex-direction:column;gap:10px;
+  background:var(--cream-100);
+  font-family:var(--font-s);color:var(--olive-900);
+}
+.fs-card .fs-body .pb{
+  height:3px;background:var(--cream-300);border-radius:999px;overflow:hidden;
+}
+.fs-card .fs-body .pb>div{height:100%;background:var(--olive-500)}
+.fs-card .fs-body .eb{font-family:var(--font-m);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in oklch,var(--olive-900) 50%,var(--cream-100))}
+.fs-card .fs-body .h{font-family:var(--font-d);font-style:italic;font-size:18px;line-height:1.15;color:var(--olive-900)}
+.fs-card .fs-body .h em{color:var(--olive-700)}
+.fs-card .fs-body .opt{
+  background:var(--cream-50);border:1.5px solid var(--cream-300);
+  border-radius:10px;padding:7px 9px;font-size:11px;line-height:1.3;
+}
+.fs-card .fs-body .opt.sel{border-color:var(--olive-500);background:color-mix(in oklch,var(--olive-500) 6%,var(--cream-50))}
+.fs-card .fs-body .cta{
+  margin-top:auto;background:var(--olive-500);color:var(--cream-50);
+  text-align:center;padding:8px;border-radius:10px;font-size:11px;font-weight:500;
+}
+.fs-card .fs-body .skel{
+  height:9px;border-radius:3px;
+  background:linear-gradient(90deg,var(--cream-200) 0%,var(--cream-300) 50%,var(--cream-200) 100%);
+  background-size:200% 100%;
+  animation:shimmer 1.4s linear infinite;
+}
+@keyframes shimmer{from{background-position:200% 0}to{background-position:-200% 0}}
+
+/* ================================================
+   STATE 3 — main working
+================================================ */
+.state3-grid{
+  display:grid;
+  grid-template-rows:52px 1fr 64px;
+  height:880px;
+}
+
+/* spec + preview wrapper */
+.s3-main{
+  display:grid;grid-template-columns:38% 1fr;
+  border-bottom:1px solid var(--border);
+  min-height:0;
+}
+
+/* ---- left: spec editor ---- */
+.spec{
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  min-height:0;
+}
+.spec-head{
+  padding:14px 18px 12px;
+  border-bottom:1px solid var(--border);
+  display:flex;flex-direction:column;gap:8px;
+}
+.spec-head .name-row{display:flex;align-items:center;gap:8px}
+.spec-head .name-row .var-name{
+  font-family:var(--font-d);font-style:italic;font-weight:400;
+  font-size:22px;letter-spacing:-0.005em;color:var(--text);
+  background:transparent;border:none;outline:none;
+  padding:2px 6px 2px 0;
+  border-bottom:1px dashed transparent;
+  cursor:text;
+  flex:1;
+}
+.spec-head .name-row .var-name:hover{border-bottom-color:var(--border-strong)}
+.spec-head .name-row .var-name:focus{border-bottom-color:var(--accent);border-style:solid}
+.spec-head .name-row .pencil{color:var(--text-faint)}
+.spec-head .name-row .pencil svg{width:13px;height:13px}
+.spec-head .meta{display:flex;flex-wrap:wrap;gap:6px}
+.route-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--surface-2);
+  border:1px solid var(--border);
+  border-radius:var(--r-full);
+  padding:3px 10px;
+  font-size:11.5px;color:var(--text-mute);
+  font-family:var(--font-s);
+}
+.route-chip .lbl{font-family:var(--font-m);font-size:10px;color:var(--text-faint);letter-spacing:0.04em;text-transform:uppercase}
+.route-chip .v{color:var(--text)}
+.route-chip.empty{color:var(--text-faint)}
+.route-chip .src-tag{
+  background:var(--n-0);border:1px solid var(--border);border-radius:4px;
+  padding:0 4px;font-family:var(--font-m);font-size:10.5px;color:var(--text-mute);
+}
+
+.spec-section-label{
+  padding:14px 18px 8px;
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--font-m);font-size:10.5px;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-faint);
+}
+.spec-section-label .count{color:var(--text-mute)}
+
+.spec-list{padding:0 12px 12px;display:flex;flex-direction:column;gap:6px;overflow:auto;flex:1;min-height:0}
+
+.screen-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r-md);
+  cursor:pointer;
+  transition:border-color var(--m-mid) var(--ease),box-shadow var(--m-mid) var(--ease);
+  position:relative;
+}
+.screen-card:hover{border-color:var(--border-strong)}
+.screen-card.is-active{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px color-mix(in oklch,var(--olive-500) 14%,transparent);
+}
+.screen-card-head{
+  display:grid;grid-template-columns:24px 56px 1fr auto;gap:10px;
+  align-items:center;padding:10px 12px;
+}
+.screen-card .grip{
+  display:grid;grid-template-columns:1fr 1fr;gap:2px;width:8px;justify-self:center;color:var(--text-faint);opacity:0;
+  transition:opacity var(--m-mid) var(--ease);
+}
+.screen-card .grip span{width:3px;height:3px;border-radius:1px;background:currentColor}
+.screen-card:hover .grip,.screen-card.is-active .grip{opacity:1}
+.screen-card .num{font-family:var(--font-m);font-size:11px;color:var(--text-faint);font-variant-numeric:tabular-nums;text-align:right}
+.screen-card .thumb{
+  width:48px;height:64px;border-radius:6px;
+  background:var(--cream-100);
+  border:1px solid var(--cream-300);
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;padding:5px 4px;gap:3px;
+}
+.screen-card .thumb .pb{height:1.5px;background:var(--olive-500);width:60%;border-radius:1px}
+.screen-card .thumb .ln{height:2.5px;background:var(--cream-300);border-radius:1px}
+.screen-card .thumb .ln.ttl{background:var(--olive-700);width:80%;height:3.5px}
+.screen-card .thumb .ln.opt{background:var(--cream-200);height:6px;border-radius:1px}
+.screen-card .thumb .ln.opt.sel{background:color-mix(in oklch,var(--olive-500) 35%,var(--cream-200));border:0.5px solid var(--olive-500)}
+.screen-card .thumb .cta{height:5px;background:var(--olive-500);border-radius:1px;margin-top:auto}
+.screen-card .info{display:flex;flex-direction:column;gap:2px;min-width:0}
+.screen-card .info .ttl-row{display:flex;align-items:center;gap:6px}
+.screen-card .info .kind{
+  display:inline-flex;align-items:center;gap:4px;
+  font-family:var(--font-m);font-size:9.5px;letter-spacing:0.06em;text-transform:uppercase;
+  padding:1px 5px;border-radius:3px;
+}
+.screen-card .info .kind.q{background:var(--accent-soft);color:var(--accent)}
+.screen-card .info .kind.r{background:color-mix(in oklch,oklch(0.62 0.13 165) 18%,var(--surface));color:color-mix(in oklch,oklch(0.62 0.13 165) 60%,var(--text))}
+.screen-card .info .kind.p{background:color-mix(in oklch,oklch(0.62 0.13 45) 18%,var(--surface));color:color-mix(in oklch,oklch(0.62 0.13 45) 60%,var(--text))}
+.screen-card .info .kind.t{background:color-mix(in oklch,oklch(0.62 0.13 245) 16%,var(--surface));color:color-mix(in oklch,oklch(0.62 0.13 245) 60%,var(--text))}
+.screen-card .info .ttl{font-size:13px;font-weight:500;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.screen-card .info .meta-row{font-family:var(--font-m);font-size:10.5px;color:var(--text-faint);letter-spacing:0.02em}
+.screen-card .actions{
+  display:flex;gap:2px;opacity:0;transition:opacity var(--m-mid) var(--ease);
+}
+.screen-card:hover .actions,.screen-card.is-active .actions{opacity:1}
+.screen-card .actions .iconbtn{
+  width:24px;height:24px;border-radius:5px;background:transparent;border:none;
+  display:grid;place-items:center;color:var(--text-mute);cursor:pointer;
+}
+.screen-card .actions .iconbtn:hover{background:var(--surface-2);color:var(--text)}
+.screen-card .actions .iconbtn svg{width:13px;height:13px}
+
+/* expanded inline-edit body inside screen card */
+.screen-card .body{
+  padding:6px 12px 14px;
+  border-top:1px solid var(--border);
+  display:flex;flex-direction:column;gap:10px;
+  background:var(--n-50);
+  border-radius:0 0 var(--r-md) var(--r-md);
+}
+.field-group{display:flex;flex-direction:column;gap:6px}
+.field-group .lbl{
+  font-family:var(--font-m);font-size:10.5px;color:var(--text-faint);letter-spacing:0.06em;text-transform:uppercase;
+  display:flex;align-items:center;gap:6px;
+}
+.field-group .lbl .prim-key{
+  background:var(--n-0);border:1px solid var(--border);border-radius:3px;
+  padding:0 5px;color:var(--text-mute);font-size:10px;
+}
+.field-input{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:6px;padding:7px 10px;
+  font:inherit;font-size:13px;color:var(--text);
+  outline:none;width:100%;
+  transition:border-color var(--m-mid) var(--ease),box-shadow var(--m-mid) var(--ease);
+}
+.field-input:hover{border-color:var(--border-strong)}
+.field-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in oklch,var(--olive-500) 14%,transparent)}
+.field-input.ed-active{
+  border-color:var(--accent);background:color-mix(in oklch,var(--olive-500) 4%,var(--surface));
+  box-shadow:0 0 0 3px color-mix(in oklch,var(--olive-500) 14%,transparent);
+}
+.field-options{display:flex;flex-direction:column;gap:4px}
+.field-option{
+  display:grid;grid-template-columns:14px 1fr auto;gap:8px;align-items:center;
+  background:var(--surface);border:1px solid var(--border);border-radius:6px;
+  padding:6px 10px;font-size:13px;
+}
+.field-option .num{font-family:var(--font-m);font-size:10px;color:var(--text-faint)}
+.field-option input{
+  background:transparent;border:none;outline:none;font:inherit;font-size:13px;color:var(--text);width:100%;
+}
+.field-option .x{color:var(--text-faint);width:16px;height:16px;display:grid;place-items:center;border-radius:3px;cursor:pointer}
+.field-option .x:hover{background:var(--surface-2);color:var(--text)}
+.field-option.add-row{
+  background:transparent;border-style:dashed;color:var(--text-faint);justify-content:center;
+  display:flex;align-items:center;gap:6px;cursor:pointer;
+  font-family:var(--font-s);font-size:12px;
+}
+.field-option.add-row:hover{color:var(--text);border-color:var(--border-strong)}
+
+.add-screen-row{
+  margin:8px 0 6px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:10px 12px;background:transparent;border:1px dashed var(--border-strong);border-radius:var(--r-md);
+  color:var(--text-mute);font-size:12.5px;cursor:pointer;
+  font-family:var(--font-s);
+}
+.add-screen-row:hover{border-color:var(--accent);color:var(--accent);background:color-mix(in oklch,var(--olive-500) 4%,transparent)}
+
+/* picker popover above add button */
+.picker{
+  position:absolute;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r-md);
+  box-shadow:var(--sh-3);
+  width:280px;
+  padding:6px;
+  z-index:30;
+  display:flex;flex-direction:column;gap:2px;
+}
+.picker .item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 10px;border-radius:6px;cursor:pointer;
+  font-size:12.5px;color:var(--text);
+}
+.picker .item:hover{background:var(--surface-2)}
+.picker .item .icon{
+  width:24px;height:24px;border-radius:6px;background:var(--accent-soft);color:var(--accent);
+  display:grid;place-items:center;flex-shrink:0;
+}
+.picker .item .icon svg{width:13px;height:13px}
+.picker .item .txt{display:flex;flex-direction:column;gap:1px}
+.picker .item .txt .h{font-weight:500}
+.picker .item .txt .d{color:var(--text-faint);font-size:11px;font-family:var(--font-m)}
+.picker .sep{height:1px;background:var(--border);margin:4px 0}
+
+/* ---- right: preview ---- */
+.preview-zone{
+  display:flex;flex-direction:column;
+  background:
+    radial-gradient(circle at 50% 0%, color-mix(in oklch, var(--olive-500) 4%, transparent), transparent 50%),
+    var(--bg);
+  min-height:0;
+}
+.preview-toolbar{
+  padding:12px 18px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);background:var(--surface);
+}
+.viewport-toggle{
+  display:inline-flex;background:var(--surface-2);border:1px solid var(--border);
+  border-radius:6px;padding:2px;
+}
+.viewport-toggle button{
+  background:transparent;border:none;
+  padding:5px 9px;border-radius:4px;
+  font:inherit;font-size:12px;color:var(--text-mute);cursor:pointer;
+  display:inline-flex;align-items:center;gap:5px;
+}
+.viewport-toggle button.is-active{background:var(--surface);color:var(--text);box-shadow:var(--sh-1)}
+.viewport-toggle svg{width:13px;height:13px}
+
+.preview-stage{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  padding:32px 32px 28px;overflow:auto;min-height:0;
+}
+.phone{
+  width:375px;height:720px;flex-shrink:0;
+  background:var(--cream-100);
+  border-radius:38px;
+  border:1px solid var(--n-200);
+  box-shadow:var(--sh-3);
+  overflow:hidden;
+  display:flex;flex-direction:column;
+  position:relative;
+}
+.phone .notch{
+  position:absolute;top:8px;left:50%;transform:translateX(-50%);
+  width:120px;height:24px;background:var(--n-900);border-radius:999px;
+  z-index:5;
+}
+.phone .status-bar{
+  height:36px;display:flex;justify-content:space-between;align-items:center;
+  padding:8px 22px 0;
+  font-family:var(--font-s);font-size:13px;font-weight:500;color:var(--olive-900);
+}
+.phone .status-bar .icons{display:flex;gap:4px;align-items:center}
+.phone .status-bar .battery{width:22px;height:11px;border:1px solid var(--olive-900);border-radius:2px;position:relative;padding:1.5px}
+.phone .status-bar .battery::after{content:"";position:absolute;right:-2.5px;top:50%;transform:translateY(-50%);width:1.5px;height:5px;background:var(--olive-900);border-radius:0 1px 1px 0}
+.phone .status-bar .battery-fill{height:100%;background:var(--olive-900);border-radius:1px;width:80%}
+.phone .preview-content{flex:1;display:flex;flex-direction:column;padding:0 0 24px}
+
+.preview-pagination{
+  padding:14px 18px;display:flex;align-items:center;justify-content:center;gap:14px;
+  font-family:var(--font-m);font-size:11.5px;color:var(--text-mute);letter-spacing:0.04em;text-transform:uppercase;
+  border-top:1px solid var(--border);background:var(--surface);
+}
+.preview-pagination button{
+  width:28px;height:28px;border-radius:6px;background:var(--surface-2);border:1px solid var(--border);
+  display:grid;place-items:center;color:var(--text);cursor:pointer;
+}
+.preview-pagination button:hover{background:var(--surface);border-color:var(--border-strong)}
+.preview-pagination button:disabled{color:var(--text-faint);cursor:not-allowed;opacity:0.5}
+.preview-pagination button svg{width:14px;height:14px}
+.preview-pagination .dots{display:flex;gap:5px}
+.preview-pagination .dots span{width:6px;height:6px;border-radius:999px;background:var(--n-300)}
+.preview-pagination .dots span.is-active{background:var(--accent);transform:scale(1.3)}
+
+/* funnel content inside phone */
+.funnel .pf-progress{height:3px;background:var(--cream-300);border-radius:999px;margin:14px 22px 0;overflow:hidden}
+.funnel .pf-progress>div{height:100%;background:var(--olive-500);border-radius:inherit}
+.funnel .pf-back{padding:14px 16px 0;color:var(--olive-900)}
+.funnel .pf-back svg{width:22px;height:22px}
+.funnel .pf-body{padding:18px 22px 0;display:flex;flex-direction:column;gap:18px;flex:1}
+.funnel .pf-eyebrow{font-family:var(--font-m);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:color-mix(in oklch,var(--olive-900) 50%,var(--cream-100));font-weight:500}
+.funnel .pf-h1{font-family:var(--font-d);font-weight:400;font-size:30px;line-height:1.13;letter-spacing:-0.01em;color:var(--olive-900);margin:0}
+.funnel .pf-h1 em{font-style:italic;color:var(--olive-700)}
+.funnel .pf-body-text{font-size:15px;line-height:1.55;color:color-mix(in oklch,var(--olive-900) 55%,var(--cream-100));margin:0}
+.funnel .pf-options{display:flex;flex-direction:column;gap:8px}
+.funnel .pf-option{
+  display:flex;align-items:center;gap:12px;
+  padding:15px 17px;background:var(--cream-50);
+  border:1.5px solid var(--cream-300);border-radius:var(--r-lg);
+  font-size:15px;color:var(--olive-900);
+}
+.funnel .pf-option .marker{
+  width:20px;height:20px;border-radius:999px;border:1.5px solid var(--cream-400);flex-shrink:0;
+  display:grid;place-items:center;
+}
+.funnel .pf-option.sel{border-color:var(--olive-500);background:color-mix(in oklch,var(--olive-500) 6%,var(--cream-50))}
+.funnel .pf-option.sel .marker{border-color:var(--olive-500);background:var(--olive-500)}
+.funnel .pf-option.sel .marker::after{content:"";width:7px;height:7px;border-radius:999px;background:var(--cream-50)}
+.funnel .pf-footer{padding:14px 22px 16px;display:flex;flex-direction:column;gap:10px;margin-top:auto}
+.funnel .pf-cta{
+  background:var(--olive-500);color:var(--cream-50);border:none;
+  padding:16px 20px;border-radius:18px;font:inherit;font-size:16px;font-weight:500;cursor:pointer;
+  box-shadow:var(--sh-2);
+}
+.funnel .pf-link{
+  background:transparent;border:none;color:color-mix(in oklch,var(--olive-900) 50%,var(--cream-100));
+  font:inherit;font-size:13px;text-decoration:underline;text-underline-offset:3px;cursor:pointer;
+}
+
+/* ---- bottom chat bar ---- */
+.chat-bar{
+  background:var(--surface);
+  border-top:1px solid var(--border);
+  padding:12px 18px;
+  display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;
+  position:relative;
+}
+.chat-bar.scoped::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+  opacity:0.5;
+}
+.chat-scope{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--surface-2);border:1px solid var(--border);
+  border-radius:var(--r-full);padding:5px 12px 5px 8px;
+  font-family:var(--font-m);font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:var(--text-mute);
+}
+.chat-scope .lbl{color:var(--text-faint)}
+.chat-scope .v{color:var(--text);font-family:var(--font-s);text-transform:none;letter-spacing:0;font-size:12.5px}
+.chat-scope.scoped{background:var(--accent-soft);border-color:color-mix(in oklch,var(--olive-500) 35%,transparent);color:var(--accent)}
+.chat-scope.scoped .v{color:var(--accent)}
+.chat-scope .swap{margin-left:4px;color:var(--text-faint);cursor:pointer}
+.chat-input-wrap{
+  display:flex;align-items:center;gap:8px;
+  background:var(--surface-2);border:1px solid var(--border);
+  border-radius:10px;
+  padding:0 10px 0 14px;height:38px;
+  transition:border-color var(--m-mid) var(--ease),box-shadow var(--m-mid) var(--ease);
+}
+.chat-input-wrap:focus-within{border-color:var(--accent);background:var(--surface);box-shadow:0 0 0 3px color-mix(in oklch,var(--olive-500) 14%,transparent)}
+.chat-input-wrap input{
+  flex:1;background:transparent;border:none;outline:none;
+  font:inherit;font-size:13.5px;color:var(--text);
+}
+.chat-input-wrap input::placeholder{color:var(--text-faint)}
+.chat-input-wrap .send{
+  width:26px;height:26px;border-radius:6px;background:var(--accent);color:var(--accent-fg);
+  border:none;display:grid;place-items:center;cursor:pointer;
+}
+.chat-input-wrap .send svg{width:13px;height:13px}
+.chat-bar .examples{
+  display:flex;gap:6px;font-size:11px;color:var(--text-faint);font-family:var(--font-m);
+}
+
+/* diff preview overlay */
+.diff-overlay{
+  position:absolute;left:18px;right:18px;bottom:62px;
+  background:var(--surface);border:1px solid var(--accent);
+  border-radius:var(--r-md);box-shadow:var(--sh-3);
+  padding:14px 16px;display:flex;flex-direction:column;gap:10px;
+  z-index:40;
+}
+.diff-overlay .head{
+  display:flex;align-items:center;justify-content:space-between;font-size:12.5px;
+}
+.diff-overlay .head .h{display:flex;align-items:center;gap:8px;font-weight:500;color:var(--text)}
+.diff-overlay .head .h .swirl{width:14px;height:14px;border-radius:999px;background:conic-gradient(from 60deg,var(--olive-500),var(--olive-300),var(--olive-700),var(--olive-500))}
+.diff-overlay .head .actions{display:flex;gap:6px}
+.diff-overlay .lines{display:flex;flex-direction:column;gap:3px;font-family:var(--font-m);font-size:11.5px;line-height:1.5}
+.diff-overlay .ln{padding:2px 8px;border-radius:3px;display:flex;gap:8px}
+.diff-overlay .ln .sym{width:10px;color:var(--text-faint)}
+.diff-overlay .ln.add{background:color-mix(in oklch,var(--success) 10%,transparent);color:color-mix(in oklch,var(--success) 60%,var(--text))}
+.diff-overlay .ln.add .sym{color:var(--success)}
+.diff-overlay .ln.rem{background:color-mix(in oklch,var(--error) 8%,transparent);color:color-mix(in oklch,var(--error) 60%,var(--text));text-decoration:line-through;text-decoration-color:color-mix(in oklch,var(--error) 50%,transparent)}
+.diff-overlay .ln.rem .sym{color:var(--error)}
+.diff-overlay .ln.ctx{color:var(--text-mute)}
+
+/* ================================================
+   STATE 4 — published modal
+================================================ */
+.state4-shell{
+  position:relative;height:880px;
+  background:
+    linear-gradient(rgba(20,24,18,0.4),rgba(20,24,18,0.55)),
+    var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  padding:48px;
+  overflow:hidden;
+}
+.state4-shell::before{
+  content:"";position:absolute;inset:0;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><rect width='200' height='200' fill='none'/><g fill='none' stroke='%23000' stroke-opacity='0.04' stroke-width='1'><line x1='0' y1='40' x2='200' y2='40'/><line x1='0' y1='80' x2='200' y2='80'/><line x1='0' y1='120' x2='200' y2='120'/><line x1='0' y1='160' x2='200' y2='160'/></g></svg>");
+  opacity:0.4;mix-blend-mode:multiply;
+}
+.published-modal{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r-xl);
+  box-shadow:var(--sh-4);
+  width:min(720px,100%);
+  position:relative;
+  overflow:hidden;
+}
+.published-modal .top-strip{
+  height:6px;background:linear-gradient(90deg,var(--olive-700),var(--olive-500),var(--olive-300));
+}
+.published-modal .head{
+  padding:32px 32px 16px;display:flex;align-items:flex-start;gap:18px;
+}
+.published-modal .head .check{
+  width:48px;height:48px;border-radius:14px;
+  background:color-mix(in oklch,var(--olive-500) 18%,var(--surface));
+  display:grid;place-items:center;color:var(--accent);flex-shrink:0;
+}
+.published-modal .head .check svg{width:22px;height:22px}
+.published-modal .head .title-block .eyebrow{
+  font-family:var(--font-m);font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--success);
+}
+.published-modal .head .title-block h2{
+  font-family:var(--font-d);font-weight:400;font-size:34px;line-height:1.1;letter-spacing:-0.01em;
+  color:var(--text);margin:4px 0 6px;
+}
+.published-modal .head .title-block h2 em{font-style:italic;color:var(--accent)}
+.published-modal .head .title-block .sub{font-size:13.5px;color:var(--text-mute);max-width:420px;line-height:1.5}
+.published-modal .head .close{
+  margin-left:auto;background:transparent;border:none;color:var(--text-faint);cursor:pointer;
+  width:30px;height:30px;border-radius:6px;display:grid;place-items:center;
+}
+.published-modal .head .close:hover{background:var(--surface-2);color:var(--text)}
+.published-modal .head .close svg{width:16px;height:16px}
+
+.pub-grid{
+  display:grid;grid-template-columns:1fr 156px;gap:20px;
+  padding:8px 32px 24px;
+}
+.pub-url-block{display:flex;flex-direction:column;gap:8px}
+.pub-url-block .lbl{font-family:var(--font-m);font-size:10.5px;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-faint)}
+.url-input{
+  display:flex;align-items:center;gap:8px;
+  background:var(--surface-2);border:1px solid var(--border);
+  border-radius:8px;padding:0 6px 0 14px;height:40px;
+  font-family:var(--font-m);font-size:13px;color:var(--text);
+}
+.url-input .url{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.url-input .copy{
+  height:30px;padding:0 12px;border-radius:5px;
+  background:var(--surface);border:1px solid var(--border);
+  font:inherit;font-size:12px;font-family:var(--font-s);color:var(--text);cursor:pointer;
+  display:inline-flex;align-items:center;gap:5px;
+}
+.url-input .copy.copied{background:var(--accent-soft);color:var(--accent);border-color:color-mix(in oklch,var(--olive-500) 30%,transparent)}
+.url-input .copy svg{width:12px;height:12px}
+
+.qr{
+  width:140px;height:140px;background:var(--surface-2);border:1px solid var(--border);
+  border-radius:8px;padding:6px;
+}
+.qr svg{width:100%;height:100%;display:block}
+
+.per-source{padding:0 32px 8px}
+.per-source .lbl{
+  font-family:var(--font-m);font-size:10.5px;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-faint);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 0 8px;border-top:1px solid var(--border);
+}
+.per-source .lbl .help{text-transform:none;letter-spacing:0;color:var(--text-faint);font-family:var(--font-s);font-size:11.5px}
+.source-row{
+  display:grid;grid-template-columns:84px 1fr auto;gap:10px;align-items:center;
+  padding:7px 10px;border-radius:6px;
+}
+.source-row:hover{background:var(--surface-2)}
+.source-row .src-pill{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--accent-soft);color:var(--accent);
+  padding:3px 9px;border-radius:var(--r-full);
+  font-family:var(--font-m);font-size:10.5px;letter-spacing:0.06em;text-transform:uppercase;font-weight:500;
+}
+.source-row .url-text{font-family:var(--font-m);font-size:12.5px;color:var(--text-mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.source-row .url-text strong{color:var(--text);font-weight:500}
+.source-row .copy-mini{
+  width:24px;height:24px;border-radius:4px;background:transparent;border:1px solid transparent;
+  color:var(--text-faint);cursor:pointer;display:grid;place-items:center;
+}
+.source-row:hover .copy-mini{border-color:var(--border);color:var(--text-mute)}
+.source-row .copy-mini:hover{background:var(--surface);color:var(--text)}
+.source-row .copy-mini svg{width:13px;height:13px}
+
+.pub-footer{
+  padding:18px 32px 24px;display:flex;justify-content:space-between;align-items:center;
+  border-top:1px solid var(--border);background:var(--surface-2);
+}
+.pub-footer .left{display:flex;flex-direction:column;gap:2px}
+.pub-footer .left .test{
+  font-size:12.5px;color:var(--text-mute);font-family:var(--font-s);text-decoration:none;
+  display:inline-flex;align-items:center;gap:5px;
+}
+.pub-footer .left .test:hover{color:var(--text)}
+.pub-footer .left .test svg{width:13px;height:13px}
+.pub-footer .right{display:flex;gap:8px}
+
+/* ================================================
+   STATE 3 TABLET (panels stack)
+================================================ */
+.state3-tablet{
+  display:grid;
+  grid-template-rows:50px auto auto auto;
+  width:768px;
+}
+.state3-tablet .stacked-spec{max-height:340px;overflow:auto}
+.state3-tablet .stacked-preview{
+  background:
+    radial-gradient(circle at 50% 0%, color-mix(in oklch, var(--olive-500) 4%, transparent), transparent 50%),
+    var(--bg);
+  border-top:1px solid var(--border);
+  display:flex;flex-direction:column;
+}
+.state3-tablet .seg-flip{
+  display:flex;background:var(--surface-2);border:1px solid var(--border);
+  border-radius:6px;padding:2px;width:fit-content;margin:8px 18px;
+}
+.state3-tablet .seg-flip button{
+  background:transparent;border:none;padding:5px 11px;border-radius:4px;
+  font:inherit;font-size:12px;color:var(--text-mute);cursor:pointer;font-weight:500;
+}
+.state3-tablet .seg-flip button.is-active{background:var(--surface);color:var(--text);box-shadow:var(--sh-1)}
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel">
+// DesignCanvas.jsx — Figma-ish design canvas wrapper
+// Warm gray grid bg + Sections + Artboards + PostIt notes.
+// Artboards are reorderable (grip-drag), labels/titles are inline-editable,
+// and any artboard can be opened in a fullscreen focus overlay (←/→/Esc).
+// State persists to a .design-canvas.state.json sidecar via the host
+// bridge. No assets, no deps.
+//
+// Usage:
+//   <DesignCanvas>
+//     <DCSection id="onboarding" title="Onboarding" subtitle="First-run variants">
+//       <DCArtboard id="a" label="A · Dusk" width={260} height={480}>…</DCArtboard>
+//       <DCArtboard id="b" label="B · Minimal" width={260} height={480}>…</DCArtboard>
+//     </DCSection>
+//   </DesignCanvas>
+
+const DC = {
+  bg: '#f0eee9',
+  grid: 'rgba(0,0,0,0.06)',
+  label: 'rgba(60,50,40,0.7)',
+  title: 'rgba(40,30,20,0.85)',
+  subtitle: 'rgba(60,50,40,0.6)',
+  postitBg: '#fef4a8',
+  postitText: '#5a4a2a',
+  font: '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif',
+};
+
+// One-time CSS injection (classes are dc-prefixed so they don't collide with
+// the hosted design's own styles).
+if (typeof document !== 'undefined' && !document.getElementById('dc-styles')) {
+  const s = document.createElement('style');
+  s.id = 'dc-styles';
+  s.textContent = [
+    '.dc-editable{cursor:text;outline:none;white-space:nowrap;border-radius:3px;padding:0 2px;margin:0 -2px}',
+    '.dc-editable:focus{background:#fff;box-shadow:0 0 0 1.5px #c96442}',
+    '[data-dc-slot]{transition:transform .18s cubic-bezier(.2,.7,.3,1)}',
+    '[data-dc-slot].dc-dragging{transition:none;z-index:10;pointer-events:none}',
+    '[data-dc-slot].dc-dragging .dc-card{box-shadow:0 12px 40px rgba(0,0,0,.25),0 0 0 2px #c96442;transform:scale(1.02)}',
+    '.dc-card{transition:box-shadow .15s,transform .15s}',
+    '.dc-card *{scrollbar-width:none}',
+    '.dc-card *::-webkit-scrollbar{display:none}',
+    '.dc-labelrow{display:flex;align-items:center;gap:4px;height:24px}',
+    '.dc-grip{cursor:grab;display:flex;align-items:center;padding:5px 4px;border-radius:4px;transition:background .12s}',
+    '.dc-grip:hover{background:rgba(0,0,0,.08)}',
+    '.dc-grip:active{cursor:grabbing}',
+    '.dc-labeltext{cursor:pointer;border-radius:4px;padding:3px 6px;display:flex;align-items:center;transition:background .12s}',
+    '.dc-labeltext:hover{background:rgba(0,0,0,.05)}',
+    '.dc-expand{position:absolute;bottom:100%;right:0;margin-bottom:5px;z-index:2;opacity:0;transition:opacity .12s,background .12s;',
+    '  width:22px;height:22px;border-radius:5px;border:none;cursor:pointer;padding:0;',
+    '  background:transparent;color:rgba(60,50,40,.7);display:flex;align-items:center;justify-content:center}',
+    '.dc-expand:hover{background:rgba(0,0,0,.06);color:#2a251f}',
+    '[data-dc-slot]:hover .dc-expand{opacity:1}',
+  ].join('\n');
+  document.head.appendChild(s);
+}
+
+const DCCtx = React.createContext(null);
+
+// ─────────────────────────────────────────────────────────────
+// DesignCanvas — stateful wrapper around the pan/zoom viewport.
+// Owns runtime state (per-section order, renamed titles/labels, focused
+// artboard). Order/titles/labels persist to a .design-canvas.state.json
+// sidecar next to the HTML. Reads go via plain fetch() so the saved
+// arrangement is visible anywhere the HTML + sidecar are served together
+// (omelette preview, direct link, downloaded zip). Writes go through the
+// host's window.omelette bridge — editing requires the omelette runtime.
+// Focus is ephemeral.
+// ─────────────────────────────────────────────────────────────
+const DC_STATE_FILE = '.design-canvas.state.json';
+
+function DesignCanvas({ children, minScale, maxScale, style }) {
+  const [state, setState] = React.useState({ sections: {}, focus: null });
+  // Hold rendering until the sidecar read settles so the saved order/titles
+  // appear on first paint (no source-order flash). didRead gates writes until
+  // the read settles so the empty initial state can't clobber a slow read;
+  // skipNextWrite suppresses the one echo-write that would otherwise follow
+  // hydration.
+  const [ready, setReady] = React.useState(false);
+  const didRead = React.useRef(false);
+  const skipNextWrite = React.useRef(false);
+
+  React.useEffect(() => {
+    let off = false;
+    fetch('./' + DC_STATE_FILE)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((saved) => {
+        if (off || !saved || !saved.sections) return;
+        skipNextWrite.current = true;
+        setState((s) => ({ ...s, sections: saved.sections }));
+      })
+      .catch(() => {})
+      .finally(() => { didRead.current = true; if (!off) setReady(true); });
+    const t = setTimeout(() => { if (!off) setReady(true); }, 150);
+    return () => { off = true; clearTimeout(t); };
+  }, []);
+
+  React.useEffect(() => {
+    if (!didRead.current) return;
+    if (skipNextWrite.current) { skipNextWrite.current = false; return; }
+    const t = setTimeout(() => {
+      window.omelette?.writeFile(DC_STATE_FILE, JSON.stringify({ sections: state.sections })).catch(() => {});
+    }, 250);
+    return () => clearTimeout(t);
+  }, [state.sections]);
+
+  // Build registries synchronously from children so FocusOverlay can read
+  // them in the same render. Only direct DCSection > DCArtboard children are
+  // walked — wrapping them in other elements opts out of focus/reorder.
+  const registry = {};     // slotId -> { sectionId, artboard }
+  const sectionMeta = {};  // sectionId -> { title, subtitle, slotIds[] }
+  const sectionOrder = [];
+  React.Children.forEach(children, (sec) => {
+    if (!sec || sec.type !== DCSection) return;
+    const sid = sec.props.id ?? sec.props.title;
+    if (!sid) return;
+    sectionOrder.push(sid);
+    const persisted = state.sections[sid] || {};
+    const srcIds = [];
+    React.Children.forEach(sec.props.children, (ab) => {
+      if (!ab || ab.type !== DCArtboard) return;
+      const aid = ab.props.id ?? ab.props.label;
+      if (!aid) return;
+      registry[`${sid}/${aid}`] = { sectionId: sid, artboard: ab };
+      srcIds.push(aid);
+    });
+    const kept = (persisted.order || []).filter((k) => srcIds.includes(k));
+    sectionMeta[sid] = {
+      title: persisted.title ?? sec.props.title,
+      subtitle: sec.props.subtitle,
+      slotIds: [...kept, ...srcIds.filter((k) => !kept.includes(k))],
+    };
+  });
+
+  const api = React.useMemo(() => ({
+    state,
+    section: (id) => state.sections[id] || {},
+    patchSection: (id, p) => setState((s) => ({
+      ...s,
+      sections: { ...s.sections, [id]: { ...s.sections[id], ...(typeof p === 'function' ? p(s.sections[id] || {}) : p) } },
+    })),
+    setFocus: (slotId) => setState((s) => ({ ...s, focus: slotId })),
+  }), [state]);
+
+  // Esc exits focus; any outside pointerdown commits an in-progress rename.
+  React.useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') api.setFocus(null); };
+    const onPd = (e) => {
+      const ae = document.activeElement;
+      if (ae && ae.isContentEditable && !ae.contains(e.target)) ae.blur();
+    };
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('pointerdown', onPd, true);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.removeEventListener('pointerdown', onPd, true);
+    };
+  }, [api]);
+
+  return (
+    <DCCtx.Provider value={api}>
+      <DCViewport minScale={minScale} maxScale={maxScale} style={style}>{ready && children}</DCViewport>
+      {state.focus && registry[state.focus] && (
+        <DCFocusOverlay entry={registry[state.focus]} sectionMeta={sectionMeta} sectionOrder={sectionOrder} />
+      )}
+    </DCCtx.Provider>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// DCViewport — transform-based pan/zoom (internal)
+//
+// Input mapping (Figma-style):
+//   • trackpad pinch  → zoom   (ctrlKey wheel; Safari gesture* events)
+//   • trackpad scroll → pan    (two-finger)
+//   • mouse wheel     → zoom   (notched; distinguished from trackpad scroll)
+//   • middle-drag / primary-drag-on-bg → pan
+//
+// Transform state lives in a ref and is written straight to the DOM
+// (translate3d + will-change) so wheel ticks don't go through React —
+// keeps pans at 60fps on dense canvases.
+// ─────────────────────────────────────────────────────────────
+function DCViewport({ children, minScale = 0.1, maxScale = 8, style = {} }) {
+  const vpRef = React.useRef(null);
+  const worldRef = React.useRef(null);
+  const tf = React.useRef({ x: 0, y: 0, scale: 1 });
+
+  const apply = React.useCallback(() => {
+    const { x, y, scale } = tf.current;
+    const el = worldRef.current;
+    if (el) el.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scale})`;
+  }, []);
+
+  React.useEffect(() => {
+    const vp = vpRef.current;
+    if (!vp) return;
+
+    const zoomAt = (cx, cy, factor) => {
+      const r = vp.getBoundingClientRect();
+      const px = cx - r.left, py = cy - r.top;
+      const t = tf.current;
+      const next = Math.min(maxScale, Math.max(minScale, t.scale * factor));
+      const k = next / t.scale;
+      // keep the world point under the cursor fixed
+      t.x = px - (px - t.x) * k;
+      t.y = py - (py - t.y) * k;
+      t.scale = next;
+      apply();
+    };
+
+    // Mouse-wheel vs trackpad-scroll heuristic. A physical wheel sends
+    // line-mode deltas (Firefox) or large integer pixel deltas with no X
+    // component (Chrome/Safari, typically multiples of 100/120). Trackpad
+    // two-finger scroll sends small/fractional pixel deltas, often with
+    // non-zero deltaX. ctrlKey is set by the browser for trackpad pinch.
+    const isMouseWheel = (e) =>
+      e.deltaMode !== 0 ||
+      (e.deltaX === 0 && Number.isInteger(e.deltaY) && Math.abs(e.deltaY) >= 40);
+
+    const onWheel = (e) => {
+      e.preventDefault();
+      if (isGesturing) return; // Safari: gesture* owns the pinch — discard concurrent wheels
+      if (e.ctrlKey) {
+        // trackpad pinch (or explicit ctrl+wheel)
+        zoomAt(e.clientX, e.clientY, Math.exp(-e.deltaY * 0.01));
+      } else if (isMouseWheel(e)) {
+        // notched mouse wheel — fixed-ratio step per click
+        zoomAt(e.clientX, e.clientY, Math.exp(-Math.sign(e.deltaY) * 0.18));
+      } else {
+        // trackpad two-finger scroll — pan
+        tf.current.x -= e.deltaX;
+        tf.current.y -= e.deltaY;
+        apply();
+      }
+    };
+
+    // Safari sends native gesture* events for trackpad pinch with a smooth
+    // e.scale; preferring these over the ctrl+wheel fallback gives a much
+    // better feel there. No-ops on other browsers. Safari also fires
+    // ctrlKey wheel events during the same pinch — isGesturing makes
+    // onWheel drop those entirely so they neither zoom nor pan.
+    let gsBase = 1;
+    let isGesturing = false;
+    const onGestureStart = (e) => { e.preventDefault(); isGesturing = true; gsBase = tf.current.scale; };
+    const onGestureChange = (e) => {
+      e.preventDefault();
+      zoomAt(e.clientX, e.clientY, (gsBase * e.scale) / tf.current.scale);
+    };
+    const onGestureEnd = (e) => { e.preventDefault(); isGesturing = false; };
+
+    // Drag-pan: middle button anywhere, or primary button on canvas
+    // background (anything that isn't an artboard or an inline editor).
+    let drag = null;
+    const onPointerDown = (e) => {
+      const onBg = !e.target.closest('[data-dc-slot], .dc-editable');
+      if (!(e.button === 1 || (e.button === 0 && onBg))) return;
+      e.preventDefault();
+      vp.setPointerCapture(e.pointerId);
+      drag = { id: e.pointerId, lx: e.clientX, ly: e.clientY };
+      vp.style.cursor = 'grabbing';
+    };
+    const onPointerMove = (e) => {
+      if (!drag || e.pointerId !== drag.id) return;
+      tf.current.x += e.clientX - drag.lx;
+      tf.current.y += e.clientY - drag.ly;
+      drag.lx = e.clientX; drag.ly = e.clientY;
+      apply();
+    };
+    const onPointerUp = (e) => {
+      if (!drag || e.pointerId !== drag.id) return;
+      vp.releasePointerCapture(e.pointerId);
+      drag = null;
+      vp.style.cursor = '';
+    };
+
+    vp.addEventListener('wheel', onWheel, { passive: false });
+    vp.addEventListener('gesturestart', onGestureStart, { passive: false });
+    vp.addEventListener('gesturechange', onGestureChange, { passive: false });
+    vp.addEventListener('gestureend', onGestureEnd, { passive: false });
+    vp.addEventListener('pointerdown', onPointerDown);
+    vp.addEventListener('pointermove', onPointerMove);
+    vp.addEventListener('pointerup', onPointerUp);
+    vp.addEventListener('pointercancel', onPointerUp);
+    return () => {
+      vp.removeEventListener('wheel', onWheel);
+      vp.removeEventListener('gesturestart', onGestureStart);
+      vp.removeEventListener('gesturechange', onGestureChange);
+      vp.removeEventListener('gestureend', onGestureEnd);
+      vp.removeEventListener('pointerdown', onPointerDown);
+      vp.removeEventListener('pointermove', onPointerMove);
+      vp.removeEventListener('pointerup', onPointerUp);
+      vp.removeEventListener('pointercancel', onPointerUp);
+    };
+  }, [apply, minScale, maxScale]);
+
+  const gridSvg = `url("data:image/svg+xml,%3Csvg width='120' height='120' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M120 0H0v120' fill='none' stroke='${encodeURIComponent(DC.grid)}' stroke-width='1'/%3E%3C/svg%3E")`;
+  return (
+    <div
+      ref={vpRef}
+      className="design-canvas"
+      style={{
+        height: '100vh', width: '100vw',
+        background: DC.bg,
+        overflow: 'hidden',
+        overscrollBehavior: 'none',
+        touchAction: 'none',
+        position: 'relative',
+        fontFamily: DC.font,
+        boxSizing: 'border-box',
+        ...style,
+      }}
+    >
+      <div
+        ref={worldRef}
+        style={{
+          position: 'absolute', top: 0, left: 0,
+          transformOrigin: '0 0',
+          willChange: 'transform',
+          width: 'max-content', minWidth: '100%',
+          minHeight: '100%',
+          padding: '60px 0 80px',
+        }}
+      >
+        <div style={{ position: 'absolute', inset: -6000, backgroundImage: gridSvg, backgroundSize: '120px 120px', pointerEvents: 'none', zIndex: -1 }} />
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// DCSection — editable title + h-row of artboards in persisted order
+// ─────────────────────────────────────────────────────────────
+function DCSection({ id, title, subtitle, children, gap = 48 }) {
+  const ctx = React.useContext(DCCtx);
+  const sid = id ?? title;
+  const all = React.Children.toArray(children);
+  const artboards = all.filter((c) => c && c.type === DCArtboard);
+  const rest = all.filter((c) => !(c && c.type === DCArtboard));
+  const srcOrder = artboards.map((a) => a.props.id ?? a.props.label);
+  const sec = (ctx && sid && ctx.section(sid)) || {};
+
+  const order = React.useMemo(() => {
+    const kept = (sec.order || []).filter((k) => srcOrder.includes(k));
+    return [...kept, ...srcOrder.filter((k) => !kept.includes(k))];
+  }, [sec.order, srcOrder.join('|')]);
+
+  const byId = Object.fromEntries(artboards.map((a) => [a.props.id ?? a.props.label, a]));
+
+  return (
+    <div data-dc-section={sid} style={{ marginBottom: 80, position: 'relative' }}>
+      <div style={{ padding: '0 60px 56px' }}>
+        <DCEditable tag="div" value={sec.title ?? title}
+          onChange={(v) => ctx && sid && ctx.patchSection(sid, { title: v })}
+          style={{ fontSize: 28, fontWeight: 600, color: DC.title, letterSpacing: -0.4, marginBottom: 6, display: 'inline-block' }} />
+        {subtitle && <div style={{ fontSize: 16, color: DC.subtitle }}>{subtitle}</div>}
+      </div>
+      <div style={{ display: 'flex', gap, padding: '0 60px', alignItems: 'flex-start', width: 'max-content' }}>
+        {order.map((k) => (
+          <DCArtboardFrame key={k} sectionId={sid} artboard={byId[k]} order={order}
+            label={(sec.labels || {})[k] ?? byId[k].props.label}
+            onRename={(v) => ctx && ctx.patchSection(sid, (x) => ({ labels: { ...x.labels, [k]: v } }))}
+            onReorder={(next) => ctx && ctx.patchSection(sid, { order: next })}
+            onFocus={() => ctx && ctx.setFocus(`${sid}/${k}`)} />
+        ))}
+      </div>
+      {rest}
+    </div>
+  );
+}
+
+// DCArtboard — marker; rendered by DCArtboardFrame via DCSection.
+function DCArtboard() { return null; }
+
+function DCArtboardFrame({ sectionId, artboard, label, order, onRename, onReorder, onFocus }) {
+  const { id: rawId, label: rawLabel, width = 260, height = 480, children, style = {} } = artboard.props;
+  const id = rawId ?? rawLabel;
+  const ref = React.useRef(null);
+
+  // Live drag-reorder: dragged card sticks to cursor; siblings slide into
+  // their would-be slots in real time via transforms. DOM order only
+  // changes on drop.
+  const onGripDown = (e) => {
+    e.preventDefault(); e.stopPropagation();
+    const me = ref.current;
+    // translateX is applied in local (pre-scale) space but pointer deltas and
+    // getBoundingClientRect().left are screen-space — divide by the viewport's
+    // current scale so the dragged card tracks the cursor at any zoom level.
+    const scale = me.getBoundingClientRect().width / me.offsetWidth || 1;
+    const peers = Array.from(document.querySelectorAll(`[data-dc-section="${sectionId}"] [data-dc-slot]`));
+    const homes = peers.map((el) => ({ el, id: el.dataset.dcSlot, x: el.getBoundingClientRect().left }));
+    const slotXs = homes.map((h) => h.x);
+    const startIdx = order.indexOf(id);
+    const startX = e.clientX;
+    let liveOrder = order.slice();
+    me.classList.add('dc-dragging');
+
+    const layout = () => {
+      for (const h of homes) {
+        if (h.id === id) continue;
+        const slot = liveOrder.indexOf(h.id);
+        h.el.style.transform = `translateX(${(slotXs[slot] - h.x) / scale}px)`;
+      }
+    };
+
+    const move = (ev) => {
+      const dx = ev.clientX - startX;
+      me.style.transform = `translateX(${dx / scale}px)`;
+      const cur = homes[startIdx].x + dx;
+      let nearest = 0, best = Infinity;
+      for (let i = 0; i < slotXs.length; i++) {
+        const d = Math.abs(slotXs[i] - cur);
+        if (d < best) { best = d; nearest = i; }
+      }
+      if (liveOrder.indexOf(id) !== nearest) {
+        liveOrder = order.filter((k) => k !== id);
+        liveOrder.splice(nearest, 0, id);
+        layout();
+      }
+    };
+
+    const up = () => {
+      document.removeEventListener('pointermove', move);
+      document.removeEventListener('pointerup', up);
+      const finalSlot = liveOrder.indexOf(id);
+      me.classList.remove('dc-dragging');
+      me.style.transform = `translateX(${(slotXs[finalSlot] - homes[startIdx].x) / scale}px)`;
+      // After the settle transition, kill transitions + clear transforms +
+      // commit the reorder in the same frame so there's no visual snap-back.
+      setTimeout(() => {
+        for (const h of homes) { h.el.style.transition = 'none'; h.el.style.transform = ''; }
+        if (liveOrder.join('|') !== order.join('|')) onReorder(liveOrder);
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          for (const h of homes) h.el.style.transition = '';
+        }));
+      }, 180);
+    };
+    document.addEventListener('pointermove', move);
+    document.addEventListener('pointerup', up);
+  };
+
+  return (
+    <div ref={ref} data-dc-slot={id} style={{ position: 'relative', flexShrink: 0 }}>
+      <div className="dc-labelrow" style={{ position: 'absolute', bottom: '100%', left: -4, marginBottom: 4, color: DC.label }}>
+        <div className="dc-grip" onPointerDown={onGripDown} title="Drag to reorder">
+          <svg width="9" height="13" viewBox="0 0 9 13" fill="currentColor"><circle cx="2" cy="2" r="1.1"/><circle cx="7" cy="2" r="1.1"/><circle cx="2" cy="6.5" r="1.1"/><circle cx="7" cy="6.5" r="1.1"/><circle cx="2" cy="11" r="1.1"/><circle cx="7" cy="11" r="1.1"/></svg>
+        </div>
+        <div className="dc-labeltext" onClick={onFocus} title="Click to focus">
+          <DCEditable value={label} onChange={onRename} onClick={(e) => e.stopPropagation()}
+            style={{ fontSize: 15, fontWeight: 500, color: DC.label, lineHeight: 1 }} />
+        </div>
+      </div>
+      <button className="dc-expand" onClick={onFocus} onPointerDown={(e) => e.stopPropagation()} title="Focus">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"><path d="M7 1h4v4M5 11H1V7M11 1L7.5 4.5M1 11l3.5-3.5"/></svg>
+      </button>
+      <div className="dc-card"
+        style={{ borderRadius: 2, boxShadow: '0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06)', overflow: 'hidden', width, height, background: '#fff', ...style }}>
+        {children || <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#bbb', fontSize: 13, fontFamily: DC.font }}>{id}</div>}
+      </div>
+    </div>
+  );
+}
+
+// Inline rename — commits on blur or Enter.
+function DCEditable({ value, onChange, style, tag = 'span', onClick }) {
+  const T = tag;
+  return (
+    <T className="dc-editable" contentEditable suppressContentEditableWarning
+      onClick={onClick}
+      onPointerDown={(e) => e.stopPropagation()}
+      onBlur={(e) => onChange && onChange(e.currentTarget.textContent)}
+      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); e.currentTarget.blur(); } }}
+      style={style}>{value}</T>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Focus mode — overlay one artboard; ←/→ within section, ↑/↓ across
+// sections, Esc or backdrop click to exit.
+// ─────────────────────────────────────────────────────────────
+function DCFocusOverlay({ entry, sectionMeta, sectionOrder }) {
+  const ctx = React.useContext(DCCtx);
+  const { sectionId, artboard } = entry;
+  const sec = ctx.section(sectionId);
+  const meta = sectionMeta[sectionId];
+  const peers = meta.slotIds;
+  const aid = artboard.props.id ?? artboard.props.label;
+  const idx = peers.indexOf(aid);
+  const secIdx = sectionOrder.indexOf(sectionId);
+
+  const go = (d) => { const n = peers[(idx + d + peers.length) % peers.length]; if (n) ctx.setFocus(`${sectionId}/${n}`); };
+  const goSection = (d) => {
+    const ns = sectionOrder[(secIdx + d + sectionOrder.length) % sectionOrder.length];
+    const first = sectionMeta[ns] && sectionMeta[ns].slotIds[0];
+    if (first) ctx.setFocus(`${ns}/${first}`);
+  };
+
+  React.useEffect(() => {
+    const k = (e) => {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
+      if (e.key === 'ArrowUp') { e.preventDefault(); goSection(-1); }
+      if (e.key === 'ArrowDown') { e.preventDefault(); goSection(1); }
+    };
+    document.addEventListener('keydown', k);
+    return () => document.removeEventListener('keydown', k);
+  });
+
+  const { width = 260, height = 480, children } = artboard.props;
+  const [vp, setVp] = React.useState({ w: window.innerWidth, h: window.innerHeight });
+  React.useEffect(() => { const r = () => setVp({ w: window.innerWidth, h: window.innerHeight }); window.addEventListener('resize', r); return () => window.removeEventListener('resize', r); }, []);
+  const scale = Math.max(0.1, Math.min((vp.w - 200) / width, (vp.h - 260) / height, 2));
+
+  const [ddOpen, setDd] = React.useState(false);
+  const Arrow = ({ dir, onClick }) => (
+    <button onClick={(e) => { e.stopPropagation(); onClick(); }}
+      style={{ position: 'absolute', top: '50%', [dir]: 28, transform: 'translateY(-50%)',
+        border: 'none', background: 'rgba(255,255,255,.08)', color: 'rgba(255,255,255,.9)',
+        width: 44, height: 44, borderRadius: 22, fontSize: 18, cursor: 'pointer',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background .15s' }}
+      onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,.18)')}
+      onMouseLeave={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,.08)')}>
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+        <path d={dir === 'left' ? 'M11 3L5 9l6 6' : 'M7 3l6 6-6 6'} /></svg>
+    </button>
+  );
+
+  // Portal to body so position:fixed is the real viewport regardless of any
+  // transform on DesignCanvas's ancestors (including the canvas zoom itself).
+  return ReactDOM.createPortal(
+    <div onClick={() => ctx.setFocus(null)}
+      onWheel={(e) => e.preventDefault()}
+      style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(24,20,16,.6)', backdropFilter: 'blur(14px)',
+        fontFamily: DC.font, color: '#fff' }}>
+
+      {/* top bar: section dropdown (left) · close (right) */}
+      <div onClick={(e) => e.stopPropagation()}
+        style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 72, display: 'flex', alignItems: 'flex-start', padding: '16px 20px 0', gap: 16 }}>
+        <div style={{ position: 'relative' }}>
+          <button onClick={() => setDd((o) => !o)}
+            style={{ border: 'none', background: 'transparent', color: '#fff', cursor: 'pointer', padding: '6px 8px',
+              borderRadius: 6, textAlign: 'left', fontFamily: 'inherit' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 18, fontWeight: 600, letterSpacing: -0.3 }}>{meta.title}</span>
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" style={{ opacity: .7 }}><path d="M2 4l3.5 3.5L9 4"/></svg>
+            </span>
+            {meta.subtitle && <span style={{ display: 'block', fontSize: 13, opacity: .6, fontWeight: 400, marginTop: 2 }}>{meta.subtitle}</span>}
+          </button>
+          {ddOpen && (
+            <div style={{ position: 'absolute', top: '100%', left: 0, marginTop: 4, background: '#2a251f', borderRadius: 8,
+              boxShadow: '0 8px 32px rgba(0,0,0,.4)', padding: 4, minWidth: 200, zIndex: 10 }}>
+              {sectionOrder.map((sid) => (
+                <button key={sid} onClick={() => { setDd(false); const f = sectionMeta[sid].slotIds[0]; if (f) ctx.setFocus(`${sid}/${f}`); }}
+                  style={{ display: 'block', width: '100%', textAlign: 'left', border: 'none', cursor: 'pointer',
+                    background: sid === sectionId ? 'rgba(255,255,255,.1)' : 'transparent', color: '#fff',
+                    padding: '8px 12px', borderRadius: 5, fontSize: 14, fontWeight: sid === sectionId ? 600 : 400, fontFamily: 'inherit' }}>
+                  {sectionMeta[sid].title}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+        <div style={{ flex: 1 }} />
+        <button onClick={() => ctx.setFocus(null)}
+          onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,.12)')}
+          onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+          style={{ border: 'none', background: 'transparent', color: 'rgba(255,255,255,.7)', width: 32, height: 32,
+            borderRadius: 16, fontSize: 20, cursor: 'pointer', lineHeight: 1, transition: 'background .12s' }}>×</button>
+      </div>
+
+      {/* card centered, label + index below — only the card itself stops
+          propagation so any backdrop click (including the margins around
+          the card) exits focus */}
+      <div
+        style={{ position: 'absolute', top: 64, bottom: 56, left: 100, right: 100, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16 }}>
+        <div onClick={(e) => e.stopPropagation()} style={{ width: width * scale, height: height * scale, position: 'relative' }}>
+          <div style={{ width, height, transform: `scale(${scale})`, transformOrigin: 'top left', background: '#fff', borderRadius: 2, overflow: 'hidden',
+            boxShadow: '0 20px 80px rgba(0,0,0,.4)' }}>
+            {children || <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#bbb' }}>{aid}</div>}
+          </div>
+        </div>
+        <div onClick={(e) => e.stopPropagation()} style={{ fontSize: 14, fontWeight: 500, opacity: .85, textAlign: 'center' }}>
+          {(sec.labels || {})[aid] ?? artboard.props.label}
+          <span style={{ opacity: .5, marginLeft: 10, fontVariantNumeric: 'tabular-nums' }}>{idx + 1} / {peers.length}</span>
+        </div>
+      </div>
+
+      <Arrow dir="left" onClick={() => go(-1)} />
+      <Arrow dir="right" onClick={() => go(1)} />
+
+      {/* dots */}
+      <div onClick={(e) => e.stopPropagation()}
+        style={{ position: 'absolute', bottom: 20, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 8 }}>
+        {peers.map((p, i) => (
+          <button key={p} onClick={() => ctx.setFocus(`${sectionId}/${p}`)}
+            style={{ border: 'none', padding: 0, cursor: 'pointer', width: 6, height: 6, borderRadius: 3,
+              background: i === idx ? '#fff' : 'rgba(255,255,255,.3)' }} />
+        ))}
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Post-it — absolute-positioned sticky note
+// ─────────────────────────────────────────────────────────────
+function DCPostIt({ children, top, left, right, bottom, rotate = -2, width = 180 }) {
+  return (
+    <div style={{
+      position: 'absolute', top, left, right, bottom, width,
+      background: DC.postitBg, padding: '14px 16px',
+      fontFamily: '"Comic Sans MS", "Marker Felt", "Segoe Print", cursive',
+      fontSize: 14, lineHeight: 1.4, color: DC.postitText,
+      boxShadow: '0 2px 8px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08)',
+      transform: `rotate(${rotate}deg)`,
+      zIndex: 5,
+    }}>{children}</div>
+  );
+}
+
+Object.assign(window, { DesignCanvas, DCSection, DCArtboard, DCPostIt });
+
+
+//---STATES---
+// Quiz Funnel Studio — Creator surface states
+// State 1 empty • State 2 generating • State 3 main • State 4 published • State 3 tablet
+
+const Icon = {
+  Sparkle:()=> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6z"/><path d="M19 15l.7 1.9L21.6 17.6 19.7 18.3 19 20.2 18.3 18.3 16.4 17.6 18.3 16.9z"/></svg>,
+  Plus:()=> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
+  ChevL:()=> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>,
+  ChevR:()=> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>,
+  ChevDn:()=> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>,
+  Pencil:()=> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>,
+  Copy:()=> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>,
+  Trash:()=> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>,
+  More:()=> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/><circle cx="5" cy="12" r="1.4"/></svg>,
+  Phone:()=> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg>,
+  Monitor:()=> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>,
+  Restart:()=> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><polyline points="3 4 3 10 9 10"/></svg>,
+  Send:()=> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>,
+  Check:()=> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
+  X:()=> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
+  External:()=> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>,
+  Quiz:()=> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12" y2="17.01"/></svg>,
+  Money:()=> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>,
+  Survey:()=> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>,
+  Onboard:()=> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12l3 3 7-7"/><path d="M21 12a9 9 0 1 1-9-9"/></svg>
+};
+
+function Logo({size=22}){
+  return <span className="s-logo">
+    <span className="mark" style={{width:size,height:size,fontSize:size*0.65}}>Q</span>
+    <span className="name"><em>Quiz Funnel</em>Studio</span>
+  </span>;
+}
+
+// ===========================================================
+// STATE 1 — Empty
+// ===========================================================
+function State1(){
+  const examples = [
+    {kind:"QUIZ", icon:<Icon.Quiz/>, text:"5-question quiz: what kind of eater are you?"},
+    {kind:"LEAD GEN", icon:<Icon.Onboard/>, text:"Lead-gen quiz that recommends an Olive plan"},
+    {kind:"PAYWALL", icon:<Icon.Money/>, text:"Standalone paywall for the Olive Pro upsell"},
+    {kind:"ONBOARDING", icon:<Icon.Onboard/>, text:"Onboarding quiz for new Olive users"},
+    {kind:"SURVEY", icon:<Icon.Survey/>, text:"3-question feedback survey"},
+  ];
+  return (
+    <div className="board">
+      <div className="board-header">
+        <span className="ttl">State 1 · Empty / first run</span>
+        <div className="meta"><span className="pill">1280 × 800</span><span>desktop</span></div>
+      </div>
+      <div className="studio state1">
+        <div className="hero-logo">
+          <span className="mark">Q</span>
+          <span>Quiz Funnel Studio</span>
+        </div>
+        <h1>What funnel are we building <em>today</em>?</h1>
+        <p className="lede">Describe what you want — the screens, the questions, the ending. We'll generate the whole thing in seconds. You can edit anything after.</p>
+        <div className="s-prompt-card">
+          <textarea placeholder="Describe the funnel you want to build…" defaultValue=""></textarea>
+          <div className="row">
+            <div className="left">
+              <span className="chip">claude haiku 4.5</span>
+              <span className="chip">olive primitives v0.1</span>
+            </div>
+            <button className="gen"><Icon.Sparkle/> Generate <span className="kbdw">⌘ ↵</span></button>
+          </div>
+        </div>
+        <div className="example-chips">
+          {examples.map((e,i)=>(
+            <div className="chip-card" key={i}>
+              <div className="icon">{e.icon}</div>
+              <div className="lbl"><span className="kind">{e.kind}</span><span>{e.text}</span></div>
+            </div>
+          ))}
+        </div>
+        <div className="powered">
+          <span className="swirl"></span>
+          Powered by Claude
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ===========================================================
+// STATE 2 — Generating
+// ===========================================================
+function State2(){
+  return (
+    <div className="board">
+      <div className="board-header">
+        <span className="ttl">State 2 · Generating</span>
+        <div className="meta"><span className="pill">1280 × 800</span><span>streaming filmstrip</span></div>
+      </div>
+      <div className="studio state2">
+        <div className="top">
+          <Logo size={20}/>
+          <div className="submitted">
+            <span className="you">PROMPT</span>
+            <span className="text"><em>5-question quiz: what kind of eater are you?</em></span>
+          </div>
+          <span className="cancel">Cancel</span>
+        </div>
+        <div className="stream-status">
+          <div className="h"><span className="pulse"></span>Composing your <em>funnel</em>…</div>
+          <div className="sub"><span className="num">4</span> of <span className="num">7</span> screens generated · streaming primitives</div>
+        </div>
+        <div className="filmstrip">
+          {/* 1: complete */}
+          <div className="fs-card materializing" style={{animationDelay:"0ms"}}>
+            <div className="fs-head"><span className="idx">Screen 01</span><span className="kind-pill">QUESTION</span></div>
+            <div className="fs-body funnel">
+              <div className="pb"><div style={{width:"14%"}}></div></div>
+              <div className="eb">Question 1 of 5</div>
+              <div className="h">When you <em>open the fridge</em>…</div>
+              <div className="opt">You scan for inspiration</div>
+              <div className="opt sel">You already know what you want</div>
+              <div className="opt">You usually grab the same thing</div>
+              <div className="cta">Continue</div>
+            </div>
+          </div>
+          {/* 2 */}
+          <div className="fs-card materializing" style={{animationDelay:"260ms"}}>
+            <div className="fs-head"><span className="idx">Screen 02</span><span className="kind-pill">QUESTION</span></div>
+            <div className="fs-body funnel">
+              <div className="pb"><div style={{width:"28%"}}></div></div>
+              <div className="eb">Question 2 of 5</div>
+              <div className="h">How do you usually <em>plan dinner</em>?</div>
+              <div className="opt">I plan the whole week</div>
+              <div className="opt">I figure it out that day</div>
+              <div className="opt sel">I order in more than I'd like</div>
+              <div className="cta">Continue</div>
+            </div>
+          </div>
+          {/* 3 */}
+          <div className="fs-card materializing" style={{animationDelay:"520ms"}}>
+            <div className="fs-head"><span className="idx">Screen 03</span><span className="kind-pill">QUESTION</span></div>
+            <div className="fs-body funnel">
+              <div className="pb"><div style={{width:"42%"}}></div></div>
+              <div className="eb">Question 3 of 5</div>
+              <div className="h">When you <em>cook</em>, you…</div>
+              <div className="opt sel">Follow recipes carefully</div>
+              <div className="opt">Improvise from what's there</div>
+              <div className="opt">Mostly reheat or assemble</div>
+              <div className="cta">Continue</div>
+            </div>
+          </div>
+          {/* 4 */}
+          <div className="fs-card materializing" style={{animationDelay:"780ms"}}>
+            <div className="fs-head"><span className="idx">Screen 04</span><span className="kind-pill">QUESTION</span></div>
+            <div className="fs-body funnel">
+              <div className="pb"><div style={{width:"56%"}}></div></div>
+              <div className="eb">Question 4 of 5</div>
+              <div className="h">Snacks are…</div>
+              <div className="opt">Rare</div>
+              <div className="opt sel">A daily ritual</div>
+              <div className="opt">Whatever's in the cupboard</div>
+              <div className="cta">Continue</div>
+            </div>
+          </div>
+          {/* 5: streaming now */}
+          <div className="fs-card streaming materializing" style={{animationDelay:"1040ms"}}>
+            <div className="fs-head"><span className="idx">Screen 05</span><span className="kind-pill">QUESTION</span></div>
+            <div className="fs-body funnel">
+              <div className="pb"><div style={{width:"70%"}}></div></div>
+              <div className="eb">Question 5 of 5</div>
+              <div className="h">What's your <em>biggest</em> food friction?</div>
+              <div className="opt">Time</div>
+              <div className="skel" style={{width:"75%"}}></div>
+              <div className="skel" style={{width:"60%"}}></div>
+              <div className="skel" style={{width:"40%",marginTop:"auto"}}></div>
+            </div>
+          </div>
+          {/* 6 + 7 pending */}
+          <div className="fs-card pending">Screen 06 · pending</div>
+          <div className="fs-card pending">Screen 07 · pending</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ===========================================================
+// STATE 3 — Main working state
+// ===========================================================
+function PreviewPhone({heading="What does <em>breakfast</em> usually look like?", eyebrow="Question 3 of 8", options=["Eggs & toast","Oats & fruit","Smoothie","I skip it"], selectedIdx=1, progress=0.375}){
+  return (
+    <div className="phone funnel">
+      <div className="notch"></div>
+      <div className="status-bar">
+        <span>9:41</span>
+        <div className="icons">
+          <svg viewBox="0 0 16 12" width="16" height="11" fill="currentColor"><circle cx="2" cy="10" r="1.4"/><path d="M5 7a3 3 0 0 1 6 0v3" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round"/><path d="M2 5a8 8 0 0 1 12 0" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round"/></svg>
+          <span style={{fontSize:11,fontWeight:500,marginLeft:2}}>5G</span>
+          <span className="battery"><span className="battery-fill"></span></span>
+        </div>
+      </div>
+      <div className="preview-content">
+        <div className="pf-progress"><div style={{width:`${progress*100}%`}}></div></div>
+        <div className="pf-back"><Icon.ChevL/></div>
+        <div className="pf-body">
+          <div className="pf-eyebrow">{eyebrow}</div>
+          <h1 className="pf-h1" dangerouslySetInnerHTML={{__html:heading}}></h1>
+          <div className="pf-options">
+            {options.map((o,i)=>(
+              <div key={i} className={"pf-option"+(i===selectedIdx?" sel":"")}><span className="marker"></span><span>{o}</span></div>
+            ))}
+          </div>
+        </div>
+        <div className="pf-footer">
+          <button className="pf-cta">Continue</button>
+          <button className="pf-link">Skip for now</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ScreenCard({n, title, kind, prims, active, expanded, thumbStyle="q", showActions=true}){
+  return (
+    <div className={"screen-card"+(active?" is-active":"")}>
+      <div className="screen-card-head">
+        <div className="grip"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <div className="thumb">
+          {thumbStyle==="q" && <>
+            <div className="pb"></div>
+            <div className="ln ttl"></div>
+            <div className="ln opt"></div>
+            <div className="ln opt sel"></div>
+            <div className="ln opt"></div>
+            <div className="cta"></div>
+          </>}
+          {thumbStyle==="r" && <>
+            <div className="pb" style={{width:"100%"}}></div>
+            <div className="ln ttl" style={{width:"60%",margin:"4px auto 0"}}></div>
+            <div style={{height:14,borderRadius:3,background:"linear-gradient(to right,oklch(0.62 0.13 45) 0 33%,oklch(0.62 0.13 95) 33% 66%,oklch(0.62 0.13 165) 66% 100%)",margin:"4px 2px"}}></div>
+            <div className="cta"></div>
+          </>}
+          {thumbStyle==="p" && <>
+            <div className="ln ttl" style={{width:"70%",margin:"3px auto 0"}}></div>
+            <div className="ln opt" style={{height:8}}></div>
+            <div className="ln opt sel" style={{height:8}}></div>
+            <div className="ln opt" style={{height:5}}></div>
+            <div className="cta"></div>
+          </>}
+          {thumbStyle==="t" && <>
+            <div style={{width:14,height:14,borderRadius:999,background:"var(--olive-500)",margin:"6px auto 0"}}></div>
+            <div className="ln ttl" style={{width:"50%",margin:"2px auto 0"}}></div>
+            <div className="ln opt" style={{height:3,width:"70%",margin:"0 auto"}}></div>
+            <div className="cta"></div>
+          </>}
+        </div>
+        <div className="info">
+          <div className="ttl-row">
+            <span className={"kind "+kind.short}>{kind.label}</span>
+          </div>
+          <div className="ttl">{title}</div>
+          <div className="meta-row">{prims}</div>
+        </div>
+        {showActions && <div className="actions">
+          <button className="iconbtn" title="Duplicate"><Icon.Copy/></button>
+          <button className="iconbtn" title="Delete"><Icon.Trash/></button>
+          <button className="iconbtn" title="More"><Icon.More/></button>
+        </div>}
+      </div>
+      {expanded && expanded}
+    </div>
+  );
+}
+
+function ExpandedScreen3Body(){
+  return (
+    <div className="body">
+      <div className="field-group">
+        <span className="lbl">Eyebrow <span className="prim-key">Eyebrow</span></span>
+        <input className="field-input" defaultValue="Question 3 of 8"/>
+      </div>
+      <div className="field-group">
+        <span className="lbl">Heading <span className="prim-key">Heading · h1</span></span>
+        <input className="field-input ed-active" defaultValue="What does breakfast usually look like?"/>
+      </div>
+      <div className="field-group">
+        <span className="lbl">Choices <span className="prim-key">ChoiceList · 4 options</span></span>
+        <div className="field-options">
+          <div className="field-option"><span className="num">1</span><input defaultValue="Eggs & toast"/><span className="x"><Icon.X/></span></div>
+          <div className="field-option"><span className="num">2</span><input defaultValue="Oats & fruit"/><span className="x"><Icon.X/></span></div>
+          <div className="field-option"><span className="num">3</span><input defaultValue="Smoothie"/><span className="x"><Icon.X/></span></div>
+          <div className="field-option"><span className="num">4</span><input defaultValue="I skip it"/><span className="x"><Icon.X/></span></div>
+          <div className="field-option add-row"><Icon.Plus/> Add option</div>
+        </div>
+      </div>
+      <div className="field-group">
+        <span className="lbl">Primary CTA <span className="prim-key">PrimaryCTA · label</span></span>
+        <input className="field-input" defaultValue="Continue"/>
+      </div>
+    </div>
+  );
+}
+
+function State3({tablet=false, withDiff=false, withPicker=false}){
+  const screens = [
+    {n:1,title:"Welcome — what's your goal?",kind:{short:"q",label:"QUESTION"},prims:"ChoiceList · 4 opt",thumb:"q"},
+    {n:2,title:"Activity level",kind:{short:"q",label:"QUESTION"},prims:"ChoiceList · 4 opt",thumb:"q"},
+    {n:3,title:"Breakfast habits",kind:{short:"q",label:"QUESTION"},prims:"ChoiceList · 4 opt",thumb:"q",active:true,expanded:<ExpandedScreen3Body/>},
+    {n:4,title:"Cooking confidence",kind:{short:"q",label:"QUESTION"},prims:"ScaleInput · 1–5",thumb:"q"},
+    {n:5,title:"Snacking patterns",kind:{short:"q",label:"QUESTION"},prims:"MultiChoiceList · 5 opt",thumb:"q"},
+    {n:6,title:"Biggest friction",kind:{short:"q",label:"QUESTION"},prims:"ChoiceList · 3 opt",thumb:"q"},
+    {n:7,title:"You're a Steady Builder",kind:{short:"r",label:"RESULT"},prims:"PersonaReveal · ScoreReadout · Body · CTA",thumb:"r"},
+    {n:8,title:"Try Olive Pro free for 7 days",kind:{short:"p",label:"PAYWALL"},prims:"Heading · SocialProof · PriceCard×2 · CTA · Disclaimer",thumb:"p"},
+  ];
+
+  return (
+    <div className="board">
+      <div className="board-header">
+        <span className="ttl">State 3 · {tablet?"Main · tablet (panels stack)":"Main working state · preview + edit"}</span>
+        <div className="meta">
+          <span className="pill">{tablet?"768 × auto":"1280 × 880"}</span>
+          <span>{tablet?"tablet":"desktop"}</span>
+          {withDiff && <span className="pill" style={{background:"color-mix(in oklch,var(--olive-500) 14%,transparent)",color:"var(--olive-700)"}}>+ chat refinement diff</span>}
+        </div>
+      </div>
+
+      <div className={"studio "+(tablet?"state3-tablet":"state3-grid")} style={{position:"relative"}}>
+        {/* TOP BAR */}
+        <div className="s-topbar">
+          <Logo/>
+          <div className="s-tabs">
+            <button className="is-active"><span className="dot"></span>Variant A</button>
+            <button>Variant B</button>
+            <button className="add"><Icon.Plus/> Add variant</button>
+          </div>
+          <div className="s-actions">
+            <button className="s-btn ghost">View dashboard</button>
+            <button className="s-btn primary">Publish <span className="kbd" style={{background:"rgba(255,255,255,0.18)",borderColor:"rgba(255,255,255,0.2)",color:"var(--cream-50)"}}>⌘P</span></button>
+          </div>
+        </div>
+
+        {/* MAIN — desktop: side-by-side · tablet: stacked */}
+        {!tablet ? (
+          <div className="s3-main">
+            {/* Spec */}
+            <div className="spec">
+              <div className="spec-head">
+                <div className="name-row">
+                  <input className="var-name" defaultValue="Eater Persona Quiz"/>
+                  <span className="pencil"><Icon.Pencil/></span>
+                </div>
+                <div className="meta">
+                  <span className="route-chip"><span className="lbl">Serves</span><span className="src-tag">tiktok</span><span className="src-tag">ig</span></span>
+                  <span className="route-chip empty"><span className="lbl">Default</span><span>—</span></span>
+                  <span className="route-chip"><span className="lbl">Traffic</span><span className="v">62%</span></span>
+                </div>
+              </div>
+              <div className="spec-section-label">
+                <span>Funnel structure</span>
+                <span className="count">8 screens</span>
+              </div>
+              <div className="spec-list">
+                {screens.map(s=>(
+                  <ScreenCard key={s.n} n={s.n} title={s.title} kind={s.kind} prims={s.prims} active={s.active} expanded={s.expanded} thumbStyle={s.thumb}/>
+                ))}
+                <div style={{position:"relative"}}>
+                  <div className="add-screen-row"><Icon.Plus/> Add screen</div>
+                  {withPicker && (
+                    <div className="picker" style={{top:42,left:20}}>
+                      <div className="item"><div className="icon"><Icon.Sparkle/></div><div className="txt"><span className="h">Generate from prompt</span><span className="d">⌘ G</span></div></div>
+                      <div className="sep"></div>
+                      <div className="item"><div className="icon"><Icon.Quiz/></div><div className="txt"><span className="h">Quiz question</span><span className="d">ChoiceList template</span></div></div>
+                      <div className="item"><div className="icon"><Icon.Survey/></div><div className="txt"><span className="h">Result / score readout</span><span className="d">PersonaReveal · Score</span></div></div>
+                      <div className="item"><div className="icon"><Icon.Money/></div><div className="txt"><span className="h">Paywall</span><span className="d">PriceCard · CTA · Disclaimer</span></div></div>
+                      <div className="item"><div className="icon"><Icon.Onboard/></div><div className="txt"><span className="h">Thank-you</span><span className="d">Heading · Body · CTA</span></div></div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Preview */}
+            <div className="preview-zone">
+              <div className="preview-toolbar">
+                <div className="viewport-toggle">
+                  <button className="is-active"><Icon.Phone/> Mobile</button>
+                  <button><Icon.Monitor/> Desktop</button>
+                </div>
+                <button className="s-btn ghost"><Icon.Restart/> Restart from screen 1</button>
+              </div>
+              <div className="preview-stage">
+                <PreviewPhone/>
+              </div>
+              <div className="preview-pagination">
+                <button><Icon.ChevL/></button>
+                <span>Screen <strong style={{color:"var(--text)",fontWeight:500}}>3</strong> of 8</span>
+                <div className="dots">
+                  {[0,1,2,3,4,5,6,7].map(i=><span key={i} className={i===2?"is-active":""}></span>)}
+                </div>
+                <button><Icon.ChevR/></button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="spec stacked-spec" style={{borderRight:"none",borderBottom:"1px solid var(--border)"}}>
+              <div className="spec-head">
+                <div className="name-row">
+                  <input className="var-name" defaultValue="Eater Persona Quiz"/>
+                  <span className="pencil"><Icon.Pencil/></span>
+                </div>
+                <div className="meta">
+                  <span className="route-chip"><span className="lbl">Serves</span><span className="src-tag">tiktok</span><span className="src-tag">ig</span></span>
+                  <span className="route-chip empty"><span className="lbl">Default</span><span>—</span></span>
+                </div>
+              </div>
+              <div className="spec-section-label"><span>Funnel structure</span><span className="count">8 screens</span></div>
+              <div className="spec-list">
+                {screens.slice(0,4).map(s=>(
+                  <ScreenCard key={s.n} n={s.n} title={s.title} kind={s.kind} prims={s.prims} active={s.active} expanded={s.expanded} thumbStyle={s.thumb}/>
+                ))}
+                <div style={{textAlign:"center",fontFamily:"var(--font-m)",fontSize:11,color:"var(--text-faint)",padding:"8px 0"}}>· 4 more screens ·</div>
+              </div>
+            </div>
+            <div className="preview-zone stacked-preview">
+              <div className="preview-toolbar">
+                <div className="seg-flip"><button className="is-active">Spec</button><button>Preview</button></div>
+                <div style={{display:"flex",gap:8}}>
+                  <div className="viewport-toggle"><button className="is-active"><Icon.Phone/></button><button><Icon.Monitor/></button></div>
+                </div>
+              </div>
+              <div className="preview-stage" style={{padding:"24px"}}>
+                <PreviewPhone/>
+              </div>
+              <div className="preview-pagination">
+                <button><Icon.ChevL/></button>
+                <span>Screen <strong style={{color:"var(--text)",fontWeight:500}}>3</strong> of 8</span>
+                <button><Icon.ChevR/></button>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Chat bar */}
+        <div className={"chat-bar"+(withDiff?" scoped":"")}>
+          <div className={"chat-scope"+(withDiff?" scoped":"")}>
+            <span className="lbl">Scope</span>
+            <span className="v">{withDiff?"Screen 3 · Breakfast habits":"Whole funnel"}</span>
+            <Icon.ChevDn/>
+          </div>
+          <div className="chat-input-wrap">
+            <input placeholder={withDiff?"Refine this screen…":"Refine your funnel… (e.g. 'add a snacking question', 'make the result tone funnier')"} defaultValue={withDiff?"add a follow-up about coffee":""}/>
+            <button className="send"><Icon.Send/></button>
+          </div>
+          <div className="examples"><span className="kbd">⌘ K</span></div>
+
+          {withDiff && (
+            <div className="diff-overlay">
+              <div className="head">
+                <div className="h"><span className="swirl"></span>Proposed changes · 1 screen modified</div>
+                <div className="actions">
+                  <button className="s-btn ghost">Reject</button>
+                  <button className="s-btn primary">Accept changes</button>
+                </div>
+              </div>
+              <div className="lines">
+                <div className="ln ctx"><span className="sym"> </span><span>Screen 3 › ChoiceList</span></div>
+                <div className="ln rem"><span className="sym">−</span><span>options[3] = "I skip it"</span></div>
+                <div className="ln add"><span className="sym">+</span><span>options[3] = "Coffee &amp; nothing else"</span></div>
+                <div className="ln add"><span className="sym">+</span><span>options[4] = "I skip breakfast entirely"</span></div>
+                <div className="ln ctx"><span className="sym"> </span><span>Screen 3 › Heading.text unchanged</span></div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* annotations (only on full state 3) */}
+        {!tablet && !withDiff && !withPicker && <>
+          <div className="callout" style={{top:14,left:480}}>
+            <div className="head"><span className="num">1</span><strong>Variant tabs</strong></div>
+            <div className="body">A funnel has multiple variants. Click + to duplicate the current variant and switch to it. Routing rules below decide who sees which.</div>
+          </div>
+          <div className="callout" style={{top:108,left:24,maxWidth:200}}>
+            <div className="head"><span className="num">2</span><strong>Inline editing</strong></div>
+            <div className="body">Direct text editing of the spec fields. Click any value, type, autosave. The active field shows the olive ring.</div>
+          </div>
+          <div className="callout" style={{top:280,right:24,maxWidth:220}}>
+            <div className="head"><span className="num">3</span><strong>Live preview</strong></div>
+            <div className="body">Renders in funnel mode — exactly what end users see. Fully interactive: tap through to test logic.</div>
+          </div>
+          <div className="callout" style={{bottom:14,left:24,maxWidth:240}}>
+            <div className="head"><span className="num">4</span><strong>Chat refinement</strong></div>
+            <div className="body">Natural-language changes for things too big to type by hand. Auto-scopes to the expanded screen, otherwise targets the whole funnel.</div>
+          </div>
+        </>}
+      </div>
+    </div>
+  );
+}
+
+// ===========================================================
+// STATE 4 — Published
+// ===========================================================
+function QRBlock(){
+  // simple decorative QR placeholder pattern
+  const cells = Array.from({length:21*21},(_,i)=>Math.random()>0.55?1:0);
+  // corner finder patterns
+  const inFinder = (x,y)=> (x<7 && y<7) || (x>13 && y<7) || (x<7 && y>13);
+  return (
+    <svg viewBox="0 0 21 21">
+      {cells.map((c,i)=>{
+        const x=i%21, y=Math.floor(i/21);
+        if(inFinder(x,y)) return null;
+        return c?<rect key={i} x={x} y={y} width="1" height="1" fill="var(--olive-900)"/>:null;
+      })}
+      {[[0,0],[14,0],[0,14]].map(([fx,fy],i)=>(
+        <g key={i}>
+          <rect x={fx} y={fy} width="7" height="7" fill="var(--olive-900)"/>
+          <rect x={fx+1} y={fy+1} width="5" height="5" fill="var(--cream-100)"/>
+          <rect x={fx+2} y={fy+2} width="3" height="3" fill="var(--olive-900)"/>
+        </g>
+      ))}
+    </svg>
+  );
+}
+
+function State4(){
+  return (
+    <div className="board">
+      <div className="board-header">
+        <span className="ttl">State 4 · Published</span>
+        <div className="meta"><span className="pill">1280 × 880</span><span>modal over Studio</span></div>
+      </div>
+      <div className="studio state4-shell">
+        <div className="published-modal">
+          <div className="top-strip"></div>
+          <div className="head">
+            <div className="check"><Icon.Check/></div>
+            <div className="title-block">
+              <div className="eyebrow">● Live · Variant A</div>
+              <h2>Your funnel is <em>live</em></h2>
+              <div className="sub">Eater Persona Quiz · 8 screens · published 2 seconds ago. Share the URL or QR — analytics are already tracking.</div>
+            </div>
+            <button className="close"><Icon.X/></button>
+          </div>
+
+          <div className="pub-grid">
+            <div className="pub-url-block">
+              <span className="lbl">Shareable URL</span>
+              <div className="url-input">
+                <span className="url">olive-funnels.app/f/abc123</span>
+                <button className="copy copied"><Icon.Check/> Copied</button>
+              </div>
+            </div>
+            <div className="qr"><QRBlock/></div>
+          </div>
+
+          <div className="per-source">
+            <div className="lbl">
+              <span>Per-source URLs</span>
+              <span className="help">Pre-tag traffic so routing knows which variant to serve</span>
+            </div>
+            <div className="source-row">
+              <span className="src-pill">tiktok</span>
+              <span className="url-text"><strong>olive-funnels.app/f/abc123</strong>?source=tiktok</span>
+              <button className="copy-mini"><Icon.Copy/></button>
+            </div>
+            <div className="source-row">
+              <span className="src-pill" style={{background:"color-mix(in oklch,oklch(0.62 0.13 320) 18%,transparent)",color:"oklch(0.55 0.13 320)"}}>ig</span>
+              <span className="url-text"><strong>olive-funnels.app/f/abc123</strong>?source=ig</span>
+              <button className="copy-mini"><Icon.Copy/></button>
+            </div>
+            <div className="source-row">
+              <span className="src-pill" style={{background:"color-mix(in oklch,oklch(0.62 0.13 245) 18%,transparent)",color:"oklch(0.50 0.13 245)"}}>fb</span>
+              <span className="url-text"><strong>olive-funnels.app/f/abc123</strong>?source=fb</span>
+              <button className="copy-mini"><Icon.Copy/></button>
+            </div>
+          </div>
+
+          <div className="pub-footer">
+            <div className="left">
+              <a className="test" href="#"><Icon.External/> Open in webview test harness</a>
+            </div>
+            <div className="right">
+              <button className="s-btn secondary">Continue editing</button>
+              <button className="s-btn primary">View dashboard</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window,{State1,State2,State3,State4});
+
+//---APP---
+function App(){
+  const { DesignCanvas, DCSection, DCArtboard } = window;
+  return (
+    <DesignCanvas title="Quiz Funnel Studio · Creator Surface v0.1">
+      <DCSection id="empty" title="01 · First run">
+        <DCArtboard id="state1" label="State 1 — Empty / first run" width={1280} height={800}>
+          <State1/>
+        </DCArtboard>
+      </DCSection>
+      <DCSection id="generate" title="02 · Generating">
+        <DCArtboard id="state2" label="State 2 — Streaming filmstrip" width={1280} height={800}>
+          <State2/>
+        </DCArtboard>
+      </DCSection>
+      <DCSection id="main" title="03 · Main working state">
+        <DCArtboard id="state3" label="State 3 — Preview + edit (annotated)" width={1280} height={950}>
+          <State3/>
+        </DCArtboard>
+        <DCArtboard id="state3-diff" label="State 3 — chat refinement w/ diff overlay" width={1280} height={950}>
+          <State3 withDiff/>
+        </DCArtboard>
+        <DCArtboard id="state3-picker" label="State 3 — Add screen picker open" width={1280} height={950}>
+          <State3 withPicker/>
+        </DCArtboard>
+        <DCArtboard id="state3-tablet" label="State 3 — tablet (768, panels stack)" width={768} height={1180}>
+          <State3 tablet/>
+        </DCArtboard>
+      </DCSection>
+      <DCSection id="published" title="04 · Published">
+        <DCArtboard id="state4" label="State 4 — Published modal" width={1280} height={950}>
+          <State4/>
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>

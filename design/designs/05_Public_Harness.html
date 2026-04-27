@@ -1,0 +1,1960 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Quiz Funnel Studio — Public Funnel & Webview Harness</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --olive-50: oklch(0.96 0.018 125);
+  --olive-100:oklch(0.88 0.035 128);
+  --olive-300:oklch(0.66 0.055 130);
+  --olive-500:oklch(0.46 0.058 132);
+  --olive-700:oklch(0.32 0.045 134);
+  --olive-900:oklch(0.20 0.030 135);
+  --cream-50: oklch(0.985 0.006 85);
+  --cream-100:oklch(0.965 0.012 84);
+  --cream-200:oklch(0.940 0.018 82);
+  --cream-300:oklch(0.905 0.022 80);
+  --cream-400:oklch(0.860 0.024 78);
+
+  --r1:oklch(0.62 0.13 45);
+  --r2:oklch(0.62 0.13 95);
+  --r3:oklch(0.58 0.12 150);
+  --r4:oklch(0.62 0.13 245);
+  --r5:oklch(0.58 0.13 320);
+
+  --n-0:#fff;
+  --n-50: oklch(0.985 0.002 250);
+  --n-100:oklch(0.965 0.004 250);
+  --n-150:oklch(0.945 0.005 250);
+  --n-200:oklch(0.925 0.006 250);
+  --n-300:oklch(0.870 0.008 250);
+  --n-400:oklch(0.720 0.010 250);
+  --n-500:oklch(0.560 0.012 250);
+  --n-600:oklch(0.440 0.014 250);
+  --n-700:oklch(0.320 0.014 250);
+  --n-800:oklch(0.220 0.012 250);
+  --n-900:oklch(0.140 0.010 250);
+
+  --success:oklch(0.58 0.12 150);
+  --warning:oklch(0.74 0.13 75);
+  --error:oklch(0.58 0.18 28);
+
+  --font-d:"Instrument Serif",Iowan Old Style,Georgia,serif;
+  --font-s:"Geist",ui-sans-serif,system-ui,sans-serif;
+  --font-m:"Geist Mono",ui-monospace,"SF Mono",monospace;
+
+  --r-sm:6px;--r-md:10px;--r-lg:16px;--r-xl:22px;--r-full:999px;
+  --sh-1:0 1px 2px rgba(38,44,30,.05),0 1px 1px rgba(38,44,30,.04);
+  --sh-2:0 2px 4px rgba(38,44,30,.06),0 4px 12px rgba(38,44,30,.05);
+  --sh-3:0 4px 8px rgba(38,44,30,.06),0 12px 28px rgba(38,44,30,.08);
+
+  --m-fast:120ms;--m-mid:200ms;--m-med:320ms;
+  --ease:cubic-bezier(0.2,0,0,1);
+  --ease-em:cubic-bezier(0.3,0,0,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:var(--font-s);color:var(--n-900);background:var(--n-100);-webkit-font-smoothing:antialiased;font-feature-settings:"ss01"}
+
+.studio{
+  --bg:var(--n-50);--surface:var(--n-0);--surface-2:var(--n-100);--surface-3:var(--n-150);
+  --border:var(--n-200);--border-strong:var(--n-300);
+  --text:var(--n-900);--text-mute:var(--n-600);--text-faint:var(--n-500);
+  --accent:var(--olive-700);--accent-soft:color-mix(in oklch,var(--olive-500) 12%,var(--n-0));
+  --accent-fg:var(--cream-50);
+}
+.funnel{
+  --fbg:var(--cream-100);--fsurf:var(--cream-50);--fsurf2:var(--cream-200);
+  --fborder:var(--cream-300);--fborder-s:var(--cream-400);
+  --ftext:var(--olive-900);
+  --ftext-m:color-mix(in oklch,var(--olive-900) 50%,var(--cream-100));
+  --ftext-f:color-mix(in oklch,var(--olive-900) 30%,var(--cream-100));
+  --faccent:var(--olive-500);--faccent-d:var(--olive-700);--faccent-fg:var(--cream-50);
+  font-family:var(--font-s);color:var(--ftext);
+}
+
+/* Board chrome */
+.board{background:var(--n-50);display:flex;flex-direction:column;font-family:var(--font-s)}
+.board-header{
+  background:var(--n-0);border-bottom:1px solid var(--n-200);
+  padding:18px 24px;display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--font-m);font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--n-600);
+}
+.board-header .ttl{
+  font-family:var(--font-d);font-style:italic;font-weight:400;
+  font-size:22px;letter-spacing:-0.005em;text-transform:none;color:var(--n-900);
+}
+.board-header .meta{display:flex;gap:24px;align-items:baseline}
+.board-header .meta .pill{background:var(--n-100);color:var(--n-700);padding:3px 10px;border-radius:999px;letter-spacing:0.04em}
+
+/* ================================================
+   PUBLIC FUNNEL PAGE
+================================================ */
+.fpage{
+  min-height:100%;background:var(--cream-100);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  position:relative;
+  padding:0;
+  overflow:hidden;
+}
+.fpage.desktop-frame{
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 0%, color-mix(in oklch, var(--olive-500) 5%, transparent), transparent 60%),
+    radial-gradient(ellipse 70% 60% at 50% 100%, color-mix(in oklch, var(--r1) 4%, transparent), transparent 60%),
+    var(--cream-100);
+  padding:32px;
+}
+.fpage.desktop-frame::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 50%, transparent 40%, rgba(0,0,0,0.03) 100%);
+  pointer-events:none;
+}
+
+/* canvas (mobile = full bleed; desktop = card) */
+.fpage-canvas{
+  position:relative;
+  width:100%;max-width:480px;
+  background:var(--cream-100);
+  display:flex;flex-direction:column;
+  flex:1;
+}
+.fpage.desktop-frame .fpage-canvas{
+  max-width:480px;height:780px;flex:0 0 auto;
+  border-radius:var(--r-xl);
+  box-shadow:0 4px 12px rgba(38,44,30,.06),0 24px 64px rgba(38,44,30,.10),0 1px 0 rgba(255,255,255,0.5) inset;
+  overflow:hidden;
+  border:1px solid var(--cream-300);
+}
+
+/* status bar shown when in mobile-fullscreen variant */
+.fpage-statusbar{
+  height:36px;display:flex;justify-content:space-between;align-items:center;
+  padding:8px 22px 0;
+  font-family:var(--font-s);font-size:13px;font-weight:500;color:var(--olive-900);
+  background:var(--cream-100);
+}
+.fpage-statusbar .icons{display:flex;gap:4px;align-items:center;font-size:11px;font-weight:500}
+.fpage-statusbar .battery{width:22px;height:11px;border:1px solid var(--olive-900);border-radius:2px;position:relative;padding:1.5px}
+.fpage-statusbar .battery::after{content:"";position:absolute;right:-2.5px;top:50%;transform:translateY(-50%);width:1.5px;height:5px;background:var(--olive-900);border-radius:0 1px 1px 0}
+.fpage-statusbar .battery-fill{height:100%;background:var(--olive-900);border-radius:1px;width:78%}
+
+.fpage-content{flex:1;display:flex;flex-direction:column;padding:0 0 0;position:relative;overflow:hidden}
+
+/* funnel content */
+.fpage .pf-progress{height:3px;background:var(--cream-300);border-radius:999px;margin:14px 22px 0;overflow:hidden}
+.fpage .pf-progress > div{height:100%;background:var(--olive-500);border-radius:inherit;transition:width var(--m-med) var(--ease-em)}
+.fpage .pf-back{padding:14px 16px 0;color:var(--olive-900)}
+.fpage .pf-back svg{width:22px;height:22px}
+.fpage .pf-body{padding:16px 24px 0;display:flex;flex-direction:column;gap:18px;flex:1}
+.fpage .pf-eyebrow{font-family:var(--font-m);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:color-mix(in oklch,var(--olive-900) 50%,var(--cream-100));font-weight:500}
+.fpage .pf-h1{font-family:var(--font-d);font-weight:400;font-size:32px;line-height:1.1;letter-spacing:-0.01em;color:var(--olive-900);margin:0}
+.fpage .pf-h1 em{font-style:italic;color:var(--olive-700)}
+.fpage .pf-body-text{font-size:15px;line-height:1.55;color:color-mix(in oklch,var(--olive-900) 55%,var(--cream-100));margin:0}
+.fpage .pf-options{display:flex;flex-direction:column;gap:8px}
+.fpage .pf-option{
+  display:flex;align-items:center;gap:12px;
+  padding:15px 17px;background:var(--cream-50);
+  border:1.5px solid var(--cream-300);border-radius:var(--r-lg);
+  font-size:15px;color:var(--olive-900);
+  cursor:pointer;
+}
+.fpage .pf-option .marker{
+  width:20px;height:20px;border-radius:999px;border:1.5px solid var(--cream-400);flex-shrink:0;
+  display:grid;place-items:center;
+}
+.fpage .pf-option.sel{border-color:var(--olive-500);background:color-mix(in oklch,var(--olive-500) 6%,var(--cream-50))}
+.fpage .pf-option.sel .marker{border-color:var(--olive-500);background:var(--olive-500)}
+.fpage .pf-option.sel .marker::after{content:"";width:7px;height:7px;border-radius:999px;background:var(--cream-50)}
+
+.fpage .pf-footer{padding:14px 24px 18px;display:flex;flex-direction:column;gap:8px;margin-top:auto}
+.fpage .pf-cta{
+  background:var(--olive-500);color:var(--cream-50);border:none;
+  padding:16px 20px;border-radius:18px;font:inherit;font-size:16px;font-weight:500;cursor:pointer;
+  box-shadow:var(--sh-2);
+  transition:transform var(--m-fast) var(--ease-em);
+}
+.fpage .pf-cta:hover{transform:translateY(-1px)}
+.fpage .pf-cta:active{transform:translateY(0)}
+.fpage .pf-link{
+  background:transparent;border:none;color:color-mix(in oklch,var(--olive-900) 55%,var(--cream-100));
+  font:inherit;font-size:13px;text-decoration:underline;text-underline-offset:3px;cursor:pointer;
+}
+
+/* powered footer */
+.powered-footer{
+  padding:6px 0 14px;display:flex;align-items:center;justify-content:center;gap:6px;
+  font-family:var(--font-m);font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;
+  color:color-mix(in oklch,var(--olive-900) 35%,var(--cream-100));
+}
+.powered-footer .swirl{
+  width:10px;height:10px;border-radius:999px;
+  background:conic-gradient(from 60deg,var(--olive-500),var(--olive-300),var(--olive-700),var(--olive-500));
+}
+
+/* ----- LOADING ----- */
+.fpage-loading{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
+  padding:48px 24px;
+}
+.fpage-loading .skel-stack{
+  width:100%;display:flex;flex-direction:column;gap:14px;
+  padding:0 24px;
+}
+.fpage-loading .skel{
+  background:linear-gradient(90deg, var(--cream-200) 0%, var(--cream-300) 50%, var(--cream-200) 100%);
+  background-size:200% 100%;
+  animation:fp-shimmer 1.4s linear infinite;
+  border-radius:6px;
+}
+@keyframes fp-shimmer{from{background-position:200% 0}to{background-position:-200% 0}}
+.fpage-loading .pulse-mark{
+  width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,var(--olive-700),var(--olive-500));
+  display:grid;place-items:center;color:var(--cream-50);
+  font-family:var(--font-d);font-style:italic;font-size:30px;
+  box-shadow:0 0 0 0 color-mix(in oklch,var(--olive-500) 40%,transparent);
+  animation:fp-mark 1.6s var(--ease-em) infinite;
+}
+@keyframes fp-mark{
+  0%,100%{box-shadow:0 0 0 0 color-mix(in oklch,var(--olive-500) 40%,transparent)}
+  50%{box-shadow:0 0 0 14px color-mix(in oklch,var(--olive-500) 0%,transparent)}
+}
+.fpage-loading .label{font-family:var(--font-m);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:color-mix(in oklch,var(--olive-900) 45%,var(--cream-100))}
+
+/* ----- ERROR STATES ----- */
+.fpage-error{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:36px 28px;text-align:center;gap:16px;
+}
+.fpage-error .icon-wrap{
+  width:64px;height:64px;border-radius:18px;
+  background:var(--cream-50);border:1.5px solid var(--cream-300);
+  display:grid;place-items:center;color:var(--olive-700);
+  margin-bottom:6px;
+}
+.fpage-error .icon-wrap.warn{border-color:color-mix(in oklch,var(--warning) 40%,var(--cream-300));color:var(--warning);background:color-mix(in oklch,var(--warning) 8%,var(--cream-50))}
+.fpage-error .icon-wrap.err{border-color:color-mix(in oklch,var(--error) 40%,var(--cream-300));color:var(--error);background:color-mix(in oklch,var(--error) 8%,var(--cream-50))}
+.fpage-error .icon-wrap svg{width:30px;height:30px}
+.fpage-error h2{
+  font-family:var(--font-d);font-weight:400;font-style:italic;
+  font-size:30px;letter-spacing:-0.005em;line-height:1.1;color:var(--olive-900);margin:0;max-width:320px;
+}
+.fpage-error h2 em{color:var(--olive-700);font-style:italic}
+.fpage-error p{
+  font-size:14.5px;line-height:1.5;color:color-mix(in oklch,var(--olive-900) 60%,var(--cream-100));margin:0;max-width:320px;
+}
+.fpage-error .err-id{
+  font-family:var(--font-m);font-size:10.5px;color:color-mix(in oklch,var(--olive-900) 40%,var(--cream-100));
+  letter-spacing:0.06em;text-transform:uppercase;
+  background:var(--cream-50);border:1px solid var(--cream-300);
+  border-radius:5px;padding:3px 8px;margin-top:4px;
+}
+.fpage-error .actions{display:flex;flex-direction:column;gap:8px;margin-top:14px;width:100%;max-width:280px}
+.fpage-error .btn{
+  padding:14px 20px;border-radius:14px;font:inherit;font-size:15px;font-weight:500;cursor:pointer;
+  border:1.5px solid var(--olive-500);background:var(--olive-500);color:var(--cream-50);
+  box-shadow:var(--sh-2);
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+}
+.fpage-error .btn.secondary{background:transparent;color:var(--olive-700);box-shadow:none}
+.fpage-error .btn svg{width:14px;height:14px}
+
+/* ----- COMPLETION (final screen with CTA still active) ----- */
+.fpage .completion-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  background:color-mix(in oklch,var(--olive-500) 14%,var(--cream-50));
+  border:1px solid color-mix(in oklch,var(--olive-500) 35%,transparent);
+  border-radius:var(--r-full);padding:5px 11px 5px 9px;
+  font-family:var(--font-m);font-size:10.5px;letter-spacing:0.06em;text-transform:uppercase;color:var(--olive-700);
+  align-self:flex-start;
+}
+.fpage .completion-pill .dot{width:6px;height:6px;border-radius:999px;background:var(--olive-500);box-shadow:0 0 0 3px color-mix(in oklch,var(--olive-500) 22%,transparent)}
+
+/* checkout transition overlay */
+.fpage-checkout-overlay{
+  position:absolute;inset:0;
+  background:color-mix(in oklch,var(--olive-900) 92%,transparent);
+  backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:20px;
+  z-index:10;color:var(--cream-50);
+  padding:40px 32px;
+}
+.fpage-checkout-overlay .ring-spinner{
+  width:54px;height:54px;border-radius:999px;
+  border:3px solid color-mix(in oklch,var(--cream-50) 22%,transparent);
+  border-top-color:var(--cream-50);
+  animation:fp-spin 0.9s linear infinite;
+}
+@keyframes fp-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.fpage-checkout-overlay .h{
+  font-family:var(--font-d);font-style:italic;font-weight:400;font-size:24px;letter-spacing:-0.005em;text-align:center;
+}
+.fpage-checkout-overlay .sub{
+  font-family:var(--font-m);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;
+  color:color-mix(in oklch,var(--cream-50) 65%,transparent);text-align:center;
+}
+.fpage-checkout-overlay .events{
+  font-family:var(--font-m);font-size:11px;color:color-mix(in oklch,var(--cream-50) 80%,transparent);
+  display:flex;flex-direction:column;gap:4px;align-items:flex-start;
+  background:rgba(255,255,255,0.06);
+  border-radius:8px;padding:10px 14px;border:1px solid rgba(255,255,255,0.08);
+}
+.fpage-checkout-overlay .events .ev{display:flex;gap:8px;align-items:center}
+.fpage-checkout-overlay .events .ev .check{width:12px;height:12px;color:var(--olive-300)}
+.fpage-checkout-overlay .events .ev.pending{color:color-mix(in oklch,var(--cream-50) 50%,transparent)}
+.fpage-checkout-overlay .events .ev.pending .check{color:color-mix(in oklch,var(--cream-50) 30%,transparent)}
+
+/* state pillrow under desktop card showing what's depicted */
+.demo-pill-row{
+  position:absolute;top:18px;left:18px;
+  display:flex;flex-direction:column;gap:4px;
+  font-family:var(--font-m);font-size:10.5px;letter-spacing:0.04em;color:color-mix(in oklch,var(--olive-900) 50%,var(--cream-100));
+  pointer-events:none;text-transform:uppercase;
+}
+.demo-pill-row .lbl{color:color-mix(in oklch,var(--olive-900) 35%,var(--cream-100))}
+.demo-pill-row .nm{
+  background:var(--cream-50);border:1px solid var(--cream-300);border-radius:5px;
+  padding:3px 8px;color:var(--olive-900);
+}
+
+.url-bar{
+  position:absolute;top:16px;left:50%;transform:translateX(-50%);
+  background:var(--cream-50);border:1px solid var(--cream-300);
+  padding:6px 14px 6px 12px;border-radius:var(--r-full);
+  display:flex;align-items:center;gap:6px;
+  font-family:var(--font-m);font-size:11px;color:color-mix(in oklch,var(--olive-900) 60%,var(--cream-100));
+  box-shadow:var(--sh-1);
+  letter-spacing:0;
+}
+.url-bar svg{width:11px;height:11px;color:var(--olive-700)}
+
+/* ================================================
+   WEBVIEW TEST HARNESS
+================================================ */
+.harness{
+  display:flex;flex-direction:column;
+  background:var(--n-50);min-height:100%;
+  font-family:var(--font-s);color:var(--n-900);
+}
+.harness-topbar{
+  background:var(--n-0);border-bottom:1px solid var(--n-200);
+  padding:14px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+}
+.harness-topbar .title-block{display:flex;flex-direction:column;gap:1px;margin-right:auto}
+.harness-topbar .title-block h1{
+  font-family:var(--font-d);font-style:italic;font-weight:400;
+  font-size:24px;letter-spacing:-0.005em;line-height:1;color:var(--n-900);margin:0;
+}
+.harness-topbar .title-block .crumb{
+  font-family:var(--font-m);font-size:10.5px;color:var(--n-500);letter-spacing:0.06em;text-transform:uppercase;
+}
+.harness-topbar .title-block .crumb a{color:var(--n-500);text-decoration:none}
+.harness-topbar .title-block .crumb a:hover{color:var(--n-700)}
+.harness-topbar .url-loader{
+  display:flex;align-items:center;gap:0;
+  flex:1;max-width:560px;
+}
+.harness-topbar .url-input{
+  flex:1;background:var(--n-100);border:1px solid var(--n-200);
+  border-right:none;border-radius:6px 0 0 6px;
+  padding:0 12px;height:34px;
+  font-family:var(--font-m);font-size:12.5px;color:var(--n-900);
+  display:flex;align-items:center;gap:6px;
+}
+.harness-topbar .url-input input{flex:1;background:transparent;border:none;outline:none;font:inherit;color:var(--n-900);font-size:12.5px}
+.harness-topbar .url-input .scheme{color:var(--n-500)}
+.harness-topbar .load-btn{
+  background:var(--olive-700);color:var(--cream-50);
+  border:1px solid var(--olive-700);
+  padding:0 18px;height:34px;border-radius:0 6px 6px 0;
+  font:inherit;font-size:12.5px;font-weight:500;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.harness-topbar .load-btn svg{width:13px;height:13px}
+.harness-topbar .reload-btn{
+  width:34px;height:34px;border:1px solid var(--n-200);background:var(--n-0);
+  border-radius:6px;cursor:pointer;color:var(--n-600);
+  display:grid;place-items:center;margin-left:8px;
+}
+.harness-topbar .reload-btn:hover{background:var(--n-100);color:var(--n-900)}
+.harness-topbar .reload-btn svg{width:13px;height:13px}
+.harness-topbar .indicator{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--font-m);font-size:10.5px;letter-spacing:0.06em;text-transform:uppercase;color:var(--success);
+  padding:4px 10px;border-radius:var(--r-full);
+  background:color-mix(in oklch,var(--success) 12%,transparent);
+}
+.harness-topbar .indicator .dot{width:6px;height:6px;border-radius:999px;background:var(--success);box-shadow:0 0 0 3px color-mix(in oklch,var(--success) 22%,transparent)}
+
+/* harness body */
+.harness-body{
+  display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:20px 24px;
+}
+
+/* LEFT phone panel */
+.phone-panel{
+  background:var(--n-0);border:1px solid var(--n-200);border-radius:var(--r-lg);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.phone-panel .panel-head{
+  padding:12px 16px;border-bottom:1px solid var(--n-200);
+  display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap;
+}
+.phone-panel .panel-head .lbl{
+  font-family:var(--font-m);font-size:10.5px;letter-spacing:0.06em;text-transform:uppercase;color:var(--n-500);font-weight:500;
+}
+.h-toggle{
+  display:inline-flex;background:var(--n-100);border:1px solid var(--n-200);border-radius:6px;padding:2px;
+}
+.h-toggle button{
+  background:transparent;border:none;padding:5px 10px;border-radius:4px;
+  font:inherit;font-size:12px;color:var(--n-600);cursor:pointer;
+  display:inline-flex;align-items:center;gap:5px;font-weight:500;
+}
+.h-toggle button.is-active{background:var(--n-0);color:var(--n-900);box-shadow:var(--sh-1)}
+.h-toggle button svg{width:12px;height:12px}
+
+.phone-stage{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  padding:32px 20px 28px;
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 50%, color-mix(in oklch, var(--olive-500) 5%, transparent), transparent 70%),
+    var(--n-100);
+  position:relative;
+  min-height:780px;
+}
+.phone-stage::before{
+  content:"";position:absolute;inset:0;
+  background-image:
+    linear-gradient(var(--n-200) 1px, transparent 1px),
+    linear-gradient(90deg, var(--n-200) 1px, transparent 1px);
+  background-size:20px 20px;
+  opacity:0.4;mask-image:radial-gradient(circle at 50% 50%, black 30%, transparent 80%);
+  pointer-events:none;
+}
+.phone-stage .iphone{
+  width:375px;height:740px;
+  background:#0a0a0a;border-radius:42px;padding:6px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.08),0 24px 64px rgba(0,0,0,0.18);
+  position:relative;flex-shrink:0;
+}
+.phone-stage .iphone-screen{
+  width:100%;height:100%;border-radius:36px;overflow:hidden;
+  background:var(--cream-100);position:relative;
+  display:flex;flex-direction:column;
+}
+.phone-stage .iphone-notch{
+  position:absolute;top:8px;left:50%;transform:translateX(-50%);
+  width:118px;height:30px;background:#0a0a0a;border-radius:999px;z-index:5;
+}
+.phone-stage .device-meta{
+  position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
+  display:flex;gap:6px;font-family:var(--font-m);font-size:10px;color:var(--n-500);letter-spacing:0.06em;text-transform:uppercase;
+  background:var(--n-0);border:1px solid var(--n-200);border-radius:var(--r-full);padding:4px 11px;box-shadow:var(--sh-1);
+}
+.phone-stage .device-meta .sw{width:6px;height:6px;border-radius:999px;background:var(--success);box-shadow:0 0 0 2px color-mix(in oklch,var(--success) 25%,transparent)}
+
+/* RIGHT panel - stack of console + sender */
+.console-stack{display:flex;flex-direction:column;gap:20px;min-height:0}
+
+.console-panel{
+  background:var(--n-0);border:1px solid var(--n-200);border-radius:var(--r-lg);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.console-panel .panel-head{
+  padding:12px 16px;border-bottom:1px solid var(--n-200);
+  display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap;
+}
+.console-panel .panel-head h3{
+  font-family:var(--font-d);font-style:italic;font-weight:400;font-size:18px;color:var(--n-900);margin:0;letter-spacing:-0.005em;
+}
+.console-panel .panel-head .right{display:flex;align-items:center;gap:6px}
+.console-panel .panel-head .count-pill{
+  font-family:var(--font-m);font-size:10.5px;color:var(--n-600);letter-spacing:0.04em;text-transform:uppercase;
+  background:var(--n-100);padding:2px 8px;border-radius:4px;
+}
+
+.h-filter-row{
+  display:flex;flex-wrap:wrap;gap:5px;
+  padding:10px 14px;border-bottom:1px solid var(--n-200);background:var(--n-50);
+}
+.h-event-chip{
+  font-family:var(--font-m);font-size:10.5px;letter-spacing:0.04em;
+  padding:3px 9px;border-radius:var(--r-full);cursor:pointer;
+  background:var(--n-0);border:1px solid var(--n-200);color:var(--n-600);
+  display:inline-flex;align-items:center;gap:5px;
+}
+.h-event-chip .ct{
+  background:var(--n-100);color:var(--n-600);font-size:10px;padding:0 5px;border-radius:3px;
+}
+.h-event-chip:hover{border-color:var(--n-300);color:var(--n-900)}
+.h-event-chip.is-on{background:var(--accent-soft);border-color:color-mix(in oklch,var(--olive-500) 30%,transparent);color:var(--olive-700)}
+.h-event-chip.is-on .ct{background:color-mix(in oklch,var(--olive-500) 22%,transparent);color:var(--olive-700)}
+
+.event-log{
+  flex:1;overflow:auto;background:var(--n-900);
+  font-family:var(--font-m);font-size:12px;color:var(--n-200);
+  padding:0;
+  min-height:340px;max-height:560px;
+}
+.event-log .ev-row{
+  display:grid;grid-template-columns:74px 1fr;
+  gap:12px;
+  padding:8px 14px;
+  border-bottom:1px solid color-mix(in oklch, var(--n-700) 60%, transparent);
+  align-items:flex-start;
+  cursor:pointer;
+  transition:background var(--m-fast) var(--ease);
+}
+.event-log .ev-row:hover{background:color-mix(in oklch, var(--n-700) 35%, transparent)}
+.event-log .ev-row.is-new{
+  background:color-mix(in oklch, var(--olive-500) 18%, transparent);
+  animation:ev-pulse 1.5s var(--ease-em) backwards;
+}
+@keyframes ev-pulse{from{background:color-mix(in oklch, var(--olive-500) 60%, transparent);transform:translateX(-3px)}to{background:color-mix(in oklch, var(--olive-500) 18%, transparent);transform:translateX(0)}}
+.event-log .ev-row .ts{
+  font-size:11px;color:color-mix(in oklch, var(--cream-50) 50%, transparent);font-variant-numeric:tabular-nums;
+}
+.event-log .ev-row .body{display:flex;flex-direction:column;gap:6px;min-width:0}
+.event-log .ev-row .head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.event-log .ev-row .ev-name{
+  display:inline-flex;align-items:center;gap:5px;
+  background:color-mix(in oklch, var(--olive-500) 22%, transparent);color:var(--olive-300);
+  border-radius:4px;padding:1px 7px;font-size:11.5px;letter-spacing:0.02em;
+}
+.event-log .ev-row .ev-name.completed{background:color-mix(in oklch, var(--success) 22%, transparent);color:color-mix(in oklch, var(--success) 65%, var(--cream-50))}
+.event-log .ev-row .ev-name.cta{background:color-mix(in oklch, var(--r1) 26%, transparent);color:var(--r1)}
+.event-log .ev-row .ev-name.abandoned{background:color-mix(in oklch, var(--error) 22%, transparent);color:color-mix(in oklch, var(--error) 65%, var(--cream-50))}
+.event-log .ev-row .summary{color:color-mix(in oklch, var(--cream-50) 70%, transparent);font-size:11.5px}
+.event-log .ev-row .json{
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
+  border-radius:5px;padding:6px 10px;
+  white-space:pre;
+  font-size:11px;line-height:1.5;color:var(--cream-50);
+  overflow:auto;max-width:100%;
+}
+.event-log .ev-row .json .k{color:var(--olive-300)}
+.event-log .ev-row .json .s{color:color-mix(in oklch, var(--r1) 70%, var(--cream-50))}
+.event-log .ev-row .json .n{color:color-mix(in oklch, var(--r4) 70%, var(--cream-50))}
+.event-log .ev-row .json .b{color:var(--r5)}
+.event-log .ev-row .ex{color:color-mix(in oklch, var(--cream-50) 50%, transparent);width:14px;height:14px;flex-shrink:0;margin-top:2px}
+.event-log .ev-row.collapsed .json{display:none}
+
+/* Send-to-funnel panel */
+.send-panel{
+  background:var(--n-0);border:1px solid var(--n-200);border-radius:var(--r-lg);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.send-panel .panel-head{padding:12px 16px;border-bottom:1px solid var(--n-200);display:flex;justify-content:space-between;align-items:center}
+.send-panel .panel-head h3{
+  font-family:var(--font-d);font-style:italic;font-weight:400;font-size:16px;color:var(--n-900);margin:0;letter-spacing:-0.005em;
+}
+.send-panel .panel-head .desc{font-family:var(--font-m);font-size:10.5px;color:var(--n-500);letter-spacing:0.04em}
+.send-panel .body{padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.send-panel .row{display:grid;grid-template-columns:130px 1fr auto;gap:8px;align-items:center}
+.send-panel .row .lbl{font-family:var(--font-m);font-size:10.5px;color:var(--n-500);letter-spacing:0.04em;text-transform:uppercase}
+.send-panel .row select,.send-panel .row input,.send-panel .row textarea{
+  background:var(--n-50);border:1px solid var(--n-200);border-radius:5px;
+  padding:7px 10px;font-family:var(--font-m);font-size:12px;color:var(--n-900);outline:none;width:100%;resize:vertical;
+}
+.send-panel .row select:focus,.send-panel .row input:focus,.send-panel .row textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.send-panel .payload-row{grid-template-columns:130px 1fr;align-items:flex-start}
+.send-panel .payload-row textarea{min-height:90px;font-size:11.5px;line-height:1.5;background:var(--n-900);color:var(--cream-50);border-color:var(--n-800)}
+.send-panel .payload-row textarea::selection{background:color-mix(in oklch,var(--olive-500) 40%,transparent)}
+.send-panel .send-foot{
+  display:flex;align-items:center;gap:10px;justify-content:space-between;
+  padding:10px 16px;border-top:1px solid var(--n-200);background:var(--n-50);
+}
+.send-panel .send-foot .info{font-family:var(--font-m);font-size:10.5px;color:var(--n-500);letter-spacing:0.04em}
+.send-panel .send-btn{
+  background:var(--olive-700);color:var(--cream-50);
+  border:1px solid var(--olive-700);
+  padding:7px 14px;border-radius:5px;
+  font:inherit;font-size:12.5px;font-weight:500;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.send-panel .send-btn svg{width:13px;height:13px}
+
+/* SIMULATORS */
+.sim-section{
+  margin:0 24px 32px;
+  background:var(--n-0);border:1px solid var(--n-200);border-radius:var(--r-lg);
+  overflow:hidden;
+}
+.sim-section .panel-head{
+  padding:14px 18px;border-bottom:1px solid var(--n-200);display:flex;align-items:center;gap:14px;justify-content:space-between;flex-wrap:wrap;
+}
+.sim-section .panel-head h3{
+  font-family:var(--font-d);font-style:italic;font-weight:400;font-size:20px;color:var(--n-900);margin:0;letter-spacing:-0.005em;
+}
+.sim-section .panel-head .desc{font-size:12px;color:var(--n-600);max-width:520px;line-height:1.4}
+.sim-section .panel-head .platform-toggle{display:inline-flex;background:var(--n-100);border:1px solid var(--n-200);border-radius:6px;padding:2px}
+.sim-section .panel-head .platform-toggle button{
+  background:transparent;border:none;padding:5px 11px;border-radius:4px;
+  font:inherit;font-size:12px;color:var(--n-600);cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-weight:500;
+}
+.sim-section .panel-head .platform-toggle button.is-active{background:var(--n-0);color:var(--n-900);box-shadow:var(--sh-1)}
+.sim-section .panel-head .platform-toggle svg{width:12px;height:12px}
+
+.sim-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:0;
+}
+.sim-card{
+  border-right:1px solid var(--n-200);border-bottom:1px solid var(--n-200);
+  display:flex;flex-direction:column;
+}
+.sim-card:last-child{border-right:none}
+.sim-card .h{
+  padding:12px 16px 4px;display:flex;align-items:center;gap:8px;
+}
+.sim-card .ev-tag{
+  font-family:var(--font-m);font-size:10.5px;letter-spacing:0.02em;
+  background:var(--accent-soft);color:var(--olive-700);border-radius:4px;padding:1px 7px;
+}
+.sim-card .ev-tag.cta{background:color-mix(in oklch,var(--r1) 14%,var(--n-0));color:var(--r1)}
+.sim-card .ev-tag.completed{background:color-mix(in oklch,var(--success) 14%,var(--n-0));color:var(--success)}
+.sim-card .body{padding:6px 16px 14px;flex:1;display:flex;flex-direction:column;gap:8px}
+.sim-card .body .desc{font-size:12px;color:var(--n-600);line-height:1.45}
+.sim-card .sim-btn{
+  background:var(--n-0);color:var(--n-900);border:1px solid var(--n-300);
+  padding:8px 12px;border-radius:6px;font:inherit;font-size:12.5px;font-weight:500;cursor:pointer;
+  display:inline-flex;align-items:center;gap:8px;align-self:flex-start;
+  text-align:left;
+}
+.sim-card .sim-btn:hover{background:var(--n-100);border-color:var(--n-400)}
+.sim-card .sim-btn svg{width:13px;height:13px;color:var(--n-700);flex-shrink:0}
+.sim-card .response{
+  background:var(--n-900);color:var(--cream-50);
+  border-radius:6px;padding:10px 12px;
+  font-family:var(--font-m);font-size:11px;line-height:1.5;
+  display:flex;flex-direction:column;gap:6px;
+}
+.sim-card .response .title{
+  font-size:10px;color:color-mix(in oklch,var(--cream-50) 55%,transparent);
+  letter-spacing:0.06em;text-transform:uppercase;font-weight:500;
+  display:flex;align-items:center;gap:5px;
+}
+.sim-card .response .title .dot{
+  width:6px;height:6px;border-radius:999px;background:var(--success);
+  box-shadow:0 0 0 3px color-mix(in oklch,var(--success) 25%,transparent);
+}
+.sim-card .response code{
+  background:rgba(255,255,255,0.06);
+  padding:2px 6px;border-radius:3px;font-size:11px;color:var(--olive-300);
+}
+.sim-card .response .arrow{color:color-mix(in oklch,var(--cream-50) 60%,transparent)}
+
+/* funnel mini-renders inside iphones, simplified */
+.fp-q{
+  display:flex;flex-direction:column;gap:14px;padding:0 0 18px;flex:1;
+}
+
+.kbd{
+  font-family:var(--font-m);font-size:10.5px;color:var(--n-600);
+  background:var(--n-100);border:1px solid var(--n-200);
+  border-bottom-width:1.5px;border-radius:4px;padding:1px 5px;
+}
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel">
+/* design-canvas */
+
+// DesignCanvas.jsx — Figma-ish design canvas wrapper
+// Warm gray grid bg + Sections + Artboards + PostIt notes.
+// Artboards are reorderable (grip-drag), labels/titles are inline-editable,
+// and any artboard can be opened in a fullscreen focus overlay (←/→/Esc).
+// State persists to a .design-canvas.state.json sidecar via the host
+// bridge. No assets, no deps.
+//
+// Usage:
+//   <DesignCanvas>
+//     <DCSection id="onboarding" title="Onboarding" subtitle="First-run variants">
+//       <DCArtboard id="a" label="A · Dusk" width={260} height={480}>…</DCArtboard>
+//       <DCArtboard id="b" label="B · Minimal" width={260} height={480}>…</DCArtboard>
+//     </DCSection>
+//   </DesignCanvas>
+
+const DC = {
+  bg: '#f0eee9',
+  grid: 'rgba(0,0,0,0.06)',
+  label: 'rgba(60,50,40,0.7)',
+  title: 'rgba(40,30,20,0.85)',
+  subtitle: 'rgba(60,50,40,0.6)',
+  postitBg: '#fef4a8',
+  postitText: '#5a4a2a',
+  font: '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif',
+};
+
+// One-time CSS injection (classes are dc-prefixed so they don't collide with
+// the hosted design's own styles).
+if (typeof document !== 'undefined' && !document.getElementById('dc-styles')) {
+  const s = document.createElement('style');
+  s.id = 'dc-styles';
+  s.textContent = [
+    '.dc-editable{cursor:text;outline:none;white-space:nowrap;border-radius:3px;padding:0 2px;margin:0 -2px}',
+    '.dc-editable:focus{background:#fff;box-shadow:0 0 0 1.5px #c96442}',
+    '[data-dc-slot]{transition:transform .18s cubic-bezier(.2,.7,.3,1)}',
+    '[data-dc-slot].dc-dragging{transition:none;z-index:10;pointer-events:none}',
+    '[data-dc-slot].dc-dragging .dc-card{box-shadow:0 12px 40px rgba(0,0,0,.25),0 0 0 2px #c96442;transform:scale(1.02)}',
+    '.dc-card{transition:box-shadow .15s,transform .15s}',
+    '.dc-card *{scrollbar-width:none}',
+    '.dc-card *::-webkit-scrollbar{display:none}',
+    '.dc-labelrow{display:flex;align-items:center;gap:4px;height:24px}',
+    '.dc-grip{cursor:grab;display:flex;align-items:center;padding:5px 4px;border-radius:4px;transition:background .12s}',
+    '.dc-grip:hover{background:rgba(0,0,0,.08)}',
+    '.dc-grip:active{cursor:grabbing}',
+    '.dc-labeltext{cursor:pointer;border-radius:4px;padding:3px 6px;display:flex;align-items:center;transition:background .12s}',
+    '.dc-labeltext:hover{background:rgba(0,0,0,.05)}',
+    '.dc-expand{position:absolute;bottom:100%;right:0;margin-bottom:5px;z-index:2;opacity:0;transition:opacity .12s,background .12s;',
+    '  width:22px;height:22px;border-radius:5px;border:none;cursor:pointer;padding:0;',
+    '  background:transparent;color:rgba(60,50,40,.7);display:flex;align-items:center;justify-content:center}',
+    '.dc-expand:hover{background:rgba(0,0,0,.06);color:#2a251f}',
+    '[data-dc-slot]:hover .dc-expand{opacity:1}',
+  ].join('\n');
+  document.head.appendChild(s);
+}
+
+const DCCtx = React.createContext(null);
+
+// ─────────────────────────────────────────────────────────────
+// DesignCanvas — stateful wrapper around the pan/zoom viewport.
+// Owns runtime state (per-section order, renamed titles/labels, focused
+// artboard). Order/titles/labels persist to a .design-canvas.state.json
+// sidecar next to the HTML. Reads go via plain fetch() so the saved
+// arrangement is visible anywhere the HTML + sidecar are served together
+// (omelette preview, direct link, downloaded zip). Writes go through the
+// host's window.omelette bridge — editing requires the omelette runtime.
+// Focus is ephemeral.
+// ─────────────────────────────────────────────────────────────
+const DC_STATE_FILE = '.design-canvas.state.json';
+
+function DesignCanvas({ children, minScale, maxScale, style }) {
+  const [state, setState] = React.useState({ sections: {}, focus: null });
+  // Hold rendering until the sidecar read settles so the saved order/titles
+  // appear on first paint (no source-order flash). didRead gates writes until
+  // the read settles so the empty initial state can't clobber a slow read;
+  // skipNextWrite suppresses the one echo-write that would otherwise follow
+  // hydration.
+  const [ready, setReady] = React.useState(false);
+  const didRead = React.useRef(false);
+  const skipNextWrite = React.useRef(false);
+
+  React.useEffect(() => {
+    let off = false;
+    fetch('./' + DC_STATE_FILE)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((saved) => {
+        if (off || !saved || !saved.sections) return;
+        skipNextWrite.current = true;
+        setState((s) => ({ ...s, sections: saved.sections }));
+      })
+      .catch(() => {})
+      .finally(() => { didRead.current = true; if (!off) setReady(true); });
+    const t = setTimeout(() => { if (!off) setReady(true); }, 150);
+    return () => { off = true; clearTimeout(t); };
+  }, []);
+
+  React.useEffect(() => {
+    if (!didRead.current) return;
+    if (skipNextWrite.current) { skipNextWrite.current = false; return; }
+    const t = setTimeout(() => {
+      window.omelette?.writeFile(DC_STATE_FILE, JSON.stringify({ sections: state.sections })).catch(() => {});
+    }, 250);
+    return () => clearTimeout(t);
+  }, [state.sections]);
+
+  // Build registries synchronously from children so FocusOverlay can read
+  // them in the same render. Only direct DCSection > DCArtboard children are
+  // walked — wrapping them in other elements opts out of focus/reorder.
+  const registry = {};     // slotId -> { sectionId, artboard }
+  const sectionMeta = {};  // sectionId -> { title, subtitle, slotIds[] }
+  const sectionOrder = [];
+  React.Children.forEach(children, (sec) => {
+    if (!sec || sec.type !== DCSection) return;
+    const sid = sec.props.id ?? sec.props.title;
+    if (!sid) return;
+    sectionOrder.push(sid);
+    const persisted = state.sections[sid] || {};
+    const srcIds = [];
+    React.Children.forEach(sec.props.children, (ab) => {
+      if (!ab || ab.type !== DCArtboard) return;
+      const aid = ab.props.id ?? ab.props.label;
+      if (!aid) return;
+      registry[`${sid}/${aid}`] = { sectionId: sid, artboard: ab };
+      srcIds.push(aid);
+    });
+    const kept = (persisted.order || []).filter((k) => srcIds.includes(k));
+    sectionMeta[sid] = {
+      title: persisted.title ?? sec.props.title,
+      subtitle: sec.props.subtitle,
+      slotIds: [...kept, ...srcIds.filter((k) => !kept.includes(k))],
+    };
+  });
+
+  const api = React.useMemo(() => ({
+    state,
+    section: (id) => state.sections[id] || {},
+    patchSection: (id, p) => setState((s) => ({
+      ...s,
+      sections: { ...s.sections, [id]: { ...s.sections[id], ...(typeof p === 'function' ? p(s.sections[id] || {}) : p) } },
+    })),
+    setFocus: (slotId) => setState((s) => ({ ...s, focus: slotId })),
+  }), [state]);
+
+  // Esc exits focus; any outside pointerdown commits an in-progress rename.
+  React.useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') api.setFocus(null); };
+    const onPd = (e) => {
+      const ae = document.activeElement;
+      if (ae && ae.isContentEditable && !ae.contains(e.target)) ae.blur();
+    };
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('pointerdown', onPd, true);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.removeEventListener('pointerdown', onPd, true);
+    };
+  }, [api]);
+
+  return (
+    <DCCtx.Provider value={api}>
+      <DCViewport minScale={minScale} maxScale={maxScale} style={style}>{ready && children}</DCViewport>
+      {state.focus && registry[state.focus] && (
+        <DCFocusOverlay entry={registry[state.focus]} sectionMeta={sectionMeta} sectionOrder={sectionOrder} />
+      )}
+    </DCCtx.Provider>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// DCViewport — transform-based pan/zoom (internal)
+//
+// Input mapping (Figma-style):
+//   • trackpad pinch  → zoom   (ctrlKey wheel; Safari gesture* events)
+//   • trackpad scroll → pan    (two-finger)
+//   • mouse wheel     → zoom   (notched; distinguished from trackpad scroll)
+//   • middle-drag / primary-drag-on-bg → pan
+//
+// Transform state lives in a ref and is written straight to the DOM
+// (translate3d + will-change) so wheel ticks don't go through React —
+// keeps pans at 60fps on dense canvases.
+// ─────────────────────────────────────────────────────────────
+function DCViewport({ children, minScale = 0.1, maxScale = 8, style = {} }) {
+  const vpRef = React.useRef(null);
+  const worldRef = React.useRef(null);
+  const tf = React.useRef({ x: 0, y: 0, scale: 1 });
+
+  const apply = React.useCallback(() => {
+    const { x, y, scale } = tf.current;
+    const el = worldRef.current;
+    if (el) el.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scale})`;
+  }, []);
+
+  React.useEffect(() => {
+    const vp = vpRef.current;
+    if (!vp) return;
+
+    const zoomAt = (cx, cy, factor) => {
+      const r = vp.getBoundingClientRect();
+      const px = cx - r.left, py = cy - r.top;
+      const t = tf.current;
+      const next = Math.min(maxScale, Math.max(minScale, t.scale * factor));
+      const k = next / t.scale;
+      // keep the world point under the cursor fixed
+      t.x = px - (px - t.x) * k;
+      t.y = py - (py - t.y) * k;
+      t.scale = next;
+      apply();
+    };
+
+    // Mouse-wheel vs trackpad-scroll heuristic. A physical wheel sends
+    // line-mode deltas (Firefox) or large integer pixel deltas with no X
+    // component (Chrome/Safari, typically multiples of 100/120). Trackpad
+    // two-finger scroll sends small/fractional pixel deltas, often with
+    // non-zero deltaX. ctrlKey is set by the browser for trackpad pinch.
+    const isMouseWheel = (e) =>
+      e.deltaMode !== 0 ||
+      (e.deltaX === 0 && Number.isInteger(e.deltaY) && Math.abs(e.deltaY) >= 40);
+
+    const onWheel = (e) => {
+      e.preventDefault();
+      if (isGesturing) return; // Safari: gesture* owns the pinch — discard concurrent wheels
+      if (e.ctrlKey) {
+        // trackpad pinch (or explicit ctrl+wheel)
+        zoomAt(e.clientX, e.clientY, Math.exp(-e.deltaY * 0.01));
+      } else if (isMouseWheel(e)) {
+        // notched mouse wheel — fixed-ratio step per click
+        zoomAt(e.clientX, e.clientY, Math.exp(-Math.sign(e.deltaY) * 0.18));
+      } else {
+        // trackpad two-finger scroll — pan
+        tf.current.x -= e.deltaX;
+        tf.current.y -= e.deltaY;
+        apply();
+      }
+    };
+
+    // Safari sends native gesture* events for trackpad pinch with a smooth
+    // e.scale; preferring these over the ctrl+wheel fallback gives a much
+    // better feel there. No-ops on other browsers. Safari also fires
+    // ctrlKey wheel events during the same pinch — isGesturing makes
+    // onWheel drop those entirely so they neither zoom nor pan.
+    let gsBase = 1;
+    let isGesturing = false;
+    const onGestureStart = (e) => { e.preventDefault(); isGesturing = true; gsBase = tf.current.scale; };
+    const onGestureChange = (e) => {
+      e.preventDefault();
+      zoomAt(e.clientX, e.clientY, (gsBase * e.scale) / tf.current.scale);
+    };
+    const onGestureEnd = (e) => { e.preventDefault(); isGesturing = false; };
+
+    // Drag-pan: middle button anywhere, or primary button on canvas
+    // background (anything that isn't an artboard or an inline editor).
+    let drag = null;
+    const onPointerDown = (e) => {
+      const onBg = !e.target.closest('[data-dc-slot], .dc-editable');
+      if (!(e.button === 1 || (e.button === 0 && onBg))) return;
+      e.preventDefault();
+      vp.setPointerCapture(e.pointerId);
+      drag = { id: e.pointerId, lx: e.clientX, ly: e.clientY };
+      vp.style.cursor = 'grabbing';
+    };
+    const onPointerMove = (e) => {
+      if (!drag || e.pointerId !== drag.id) return;
+      tf.current.x += e.clientX - drag.lx;
+      tf.current.y += e.clientY - drag.ly;
+      drag.lx = e.clientX; drag.ly = e.clientY;
+      apply();
+    };
+    const onPointerUp = (e) => {
+      if (!drag || e.pointerId !== drag.id) return;
+      vp.releasePointerCapture(e.pointerId);
+      drag = null;
+      vp.style.cursor = '';
+    };
+
+    vp.addEventListener('wheel', onWheel, { passive: false });
+    vp.addEventListener('gesturestart', onGestureStart, { passive: false });
+    vp.addEventListener('gesturechange', onGestureChange, { passive: false });
+    vp.addEventListener('gestureend', onGestureEnd, { passive: false });
+    vp.addEventListener('pointerdown', onPointerDown);
+    vp.addEventListener('pointermove', onPointerMove);
+    vp.addEventListener('pointerup', onPointerUp);
+    vp.addEventListener('pointercancel', onPointerUp);
+    return () => {
+      vp.removeEventListener('wheel', onWheel);
+      vp.removeEventListener('gesturestart', onGestureStart);
+      vp.removeEventListener('gesturechange', onGestureChange);
+      vp.removeEventListener('gestureend', onGestureEnd);
+      vp.removeEventListener('pointerdown', onPointerDown);
+      vp.removeEventListener('pointermove', onPointerMove);
+      vp.removeEventListener('pointerup', onPointerUp);
+      vp.removeEventListener('pointercancel', onPointerUp);
+    };
+  }, [apply, minScale, maxScale]);
+
+  const gridSvg = `url("data:image/svg+xml,%3Csvg width='120' height='120' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M120 0H0v120' fill='none' stroke='${encodeURIComponent(DC.grid)}' stroke-width='1'/%3E%3C/svg%3E")`;
+  return (
+    <div
+      ref={vpRef}
+      className="design-canvas"
+      style={{
+        height: '100vh', width: '100vw',
+        background: DC.bg,
+        overflow: 'hidden',
+        overscrollBehavior: 'none',
+        touchAction: 'none',
+        position: 'relative',
+        fontFamily: DC.font,
+        boxSizing: 'border-box',
+        ...style,
+      }}
+    >
+      <div
+        ref={worldRef}
+        style={{
+          position: 'absolute', top: 0, left: 0,
+          transformOrigin: '0 0',
+          willChange: 'transform',
+          width: 'max-content', minWidth: '100%',
+          minHeight: '100%',
+          padding: '60px 0 80px',
+        }}
+      >
+        <div style={{ position: 'absolute', inset: -6000, backgroundImage: gridSvg, backgroundSize: '120px 120px', pointerEvents: 'none', zIndex: -1 }} />
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// DCSection — editable title + h-row of artboards in persisted order
+// ─────────────────────────────────────────────────────────────
+function DCSection({ id, title, subtitle, children, gap = 48 }) {
+  const ctx = React.useContext(DCCtx);
+  const sid = id ?? title;
+  const all = React.Children.toArray(children);
+  const artboards = all.filter((c) => c && c.type === DCArtboard);
+  const rest = all.filter((c) => !(c && c.type === DCArtboard));
+  const srcOrder = artboards.map((a) => a.props.id ?? a.props.label);
+  const sec = (ctx && sid && ctx.section(sid)) || {};
+
+  const order = React.useMemo(() => {
+    const kept = (sec.order || []).filter((k) => srcOrder.includes(k));
+    return [...kept, ...srcOrder.filter((k) => !kept.includes(k))];
+  }, [sec.order, srcOrder.join('|')]);
+
+  const byId = Object.fromEntries(artboards.map((a) => [a.props.id ?? a.props.label, a]));
+
+  return (
+    <div data-dc-section={sid} style={{ marginBottom: 80, position: 'relative' }}>
+      <div style={{ padding: '0 60px 56px' }}>
+        <DCEditable tag="div" value={sec.title ?? title}
+          onChange={(v) => ctx && sid && ctx.patchSection(sid, { title: v })}
+          style={{ fontSize: 28, fontWeight: 600, color: DC.title, letterSpacing: -0.4, marginBottom: 6, display: 'inline-block' }} />
+        {subtitle && <div style={{ fontSize: 16, color: DC.subtitle }}>{subtitle}</div>}
+      </div>
+      <div style={{ display: 'flex', gap, padding: '0 60px', alignItems: 'flex-start', width: 'max-content' }}>
+        {order.map((k) => (
+          <DCArtboardFrame key={k} sectionId={sid} artboard={byId[k]} order={order}
+            label={(sec.labels || {})[k] ?? byId[k].props.label}
+            onRename={(v) => ctx && ctx.patchSection(sid, (x) => ({ labels: { ...x.labels, [k]: v } }))}
+            onReorder={(next) => ctx && ctx.patchSection(sid, { order: next })}
+            onFocus={() => ctx && ctx.setFocus(`${sid}/${k}`)} />
+        ))}
+      </div>
+      {rest}
+    </div>
+  );
+}
+
+// DCArtboard — marker; rendered by DCArtboardFrame via DCSection.
+function DCArtboard() { return null; }
+
+function DCArtboardFrame({ sectionId, artboard, label, order, onRename, onReorder, onFocus }) {
+  const { id: rawId, label: rawLabel, width = 260, height = 480, children, style = {} } = artboard.props;
+  const id = rawId ?? rawLabel;
+  const ref = React.useRef(null);
+
+  // Live drag-reorder: dragged card sticks to cursor; siblings slide into
+  // their would-be slots in real time via transforms. DOM order only
+  // changes on drop.
+  const onGripDown = (e) => {
+    e.preventDefault(); e.stopPropagation();
+    const me = ref.current;
+    // translateX is applied in local (pre-scale) space but pointer deltas and
+    // getBoundingClientRect().left are screen-space — divide by the viewport's
+    // current scale so the dragged card tracks the cursor at any zoom level.
+    const scale = me.getBoundingClientRect().width / me.offsetWidth || 1;
+    const peers = Array.from(document.querySelectorAll(`[data-dc-section="${sectionId}"] [data-dc-slot]`));
+    const homes = peers.map((el) => ({ el, id: el.dataset.dcSlot, x: el.getBoundingClientRect().left }));
+    const slotXs = homes.map((h) => h.x);
+    const startIdx = order.indexOf(id);
+    const startX = e.clientX;
+    let liveOrder = order.slice();
+    me.classList.add('dc-dragging');
+
+    const layout = () => {
+      for (const h of homes) {
+        if (h.id === id) continue;
+        const slot = liveOrder.indexOf(h.id);
+        h.el.style.transform = `translateX(${(slotXs[slot] - h.x) / scale}px)`;
+      }
+    };
+
+    const move = (ev) => {
+      const dx = ev.clientX - startX;
+      me.style.transform = `translateX(${dx / scale}px)`;
+      const cur = homes[startIdx].x + dx;
+      let nearest = 0, best = Infinity;
+      for (let i = 0; i < slotXs.length; i++) {
+        const d = Math.abs(slotXs[i] - cur);
+        if (d < best) { best = d; nearest = i; }
+      }
+      if (liveOrder.indexOf(id) !== nearest) {
+        liveOrder = order.filter((k) => k !== id);
+        liveOrder.splice(nearest, 0, id);
+        layout();
+      }
+    };
+
+    const up = () => {
+      document.removeEventListener('pointermove', move);
+      document.removeEventListener('pointerup', up);
+      const finalSlot = liveOrder.indexOf(id);
+      me.classList.remove('dc-dragging');
+      me.style.transform = `translateX(${(slotXs[finalSlot] - homes[startIdx].x) / scale}px)`;
+      // After the settle transition, kill transitions + clear transforms +
+      // commit the reorder in the same frame so there's no visual snap-back.
+      setTimeout(() => {
+        for (const h of homes) { h.el.style.transition = 'none'; h.el.style.transform = ''; }
+        if (liveOrder.join('|') !== order.join('|')) onReorder(liveOrder);
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          for (const h of homes) h.el.style.transition = '';
+        }));
+      }, 180);
+    };
+    document.addEventListener('pointermove', move);
+    document.addEventListener('pointerup', up);
+  };
+
+  return (
+    <div ref={ref} data-dc-slot={id} style={{ position: 'relative', flexShrink: 0 }}>
+      <div className="dc-labelrow" style={{ position: 'absolute', bottom: '100%', left: -4, marginBottom: 4, color: DC.label }}>
+        <div className="dc-grip" onPointerDown={onGripDown} title="Drag to reorder">
+          <svg width="9" height="13" viewBox="0 0 9 13" fill="currentColor"><circle cx="2" cy="2" r="1.1"/><circle cx="7" cy="2" r="1.1"/><circle cx="2" cy="6.5" r="1.1"/><circle cx="7" cy="6.5" r="1.1"/><circle cx="2" cy="11" r="1.1"/><circle cx="7" cy="11" r="1.1"/></svg>
+        </div>
+        <div className="dc-labeltext" onClick={onFocus} title="Click to focus">
+          <DCEditable value={label} onChange={onRename} onClick={(e) => e.stopPropagation()}
+            style={{ fontSize: 15, fontWeight: 500, color: DC.label, lineHeight: 1 }} />
+        </div>
+      </div>
+      <button className="dc-expand" onClick={onFocus} onPointerDown={(e) => e.stopPropagation()} title="Focus">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"><path d="M7 1h4v4M5 11H1V7M11 1L7.5 4.5M1 11l3.5-3.5"/></svg>
+      </button>
+      <div className="dc-card"
+        style={{ borderRadius: 2, boxShadow: '0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06)', overflow: 'hidden', width, height, background: '#fff', ...style }}>
+        {children || <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#bbb', fontSize: 13, fontFamily: DC.font }}>{id}</div>}
+      </div>
+    </div>
+  );
+}
+
+// Inline rename — commits on blur or Enter.
+function DCEditable({ value, onChange, style, tag = 'span', onClick }) {
+  const T = tag;
+  return (
+    <T className="dc-editable" contentEditable suppressContentEditableWarning
+      onClick={onClick}
+      onPointerDown={(e) => e.stopPropagation()}
+      onBlur={(e) => onChange && onChange(e.currentTarget.textContent)}
+      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); e.currentTarget.blur(); } }}
+      style={style}>{value}</T>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Focus mode — overlay one artboard; ←/→ within section, ↑/↓ across
+// sections, Esc or backdrop click to exit.
+// ─────────────────────────────────────────────────────────────
+function DCFocusOverlay({ entry, sectionMeta, sectionOrder }) {
+  const ctx = React.useContext(DCCtx);
+  const { sectionId, artboard } = entry;
+  const sec = ctx.section(sectionId);
+  const meta = sectionMeta[sectionId];
+  const peers = meta.slotIds;
+  const aid = artboard.props.id ?? artboard.props.label;
+  const idx = peers.indexOf(aid);
+  const secIdx = sectionOrder.indexOf(sectionId);
+
+  const go = (d) => { const n = peers[(idx + d + peers.length) % peers.length]; if (n) ctx.setFocus(`${sectionId}/${n}`); };
+  const goSection = (d) => {
+    const ns = sectionOrder[(secIdx + d + sectionOrder.length) % sectionOrder.length];
+    const first = sectionMeta[ns] && sectionMeta[ns].slotIds[0];
+    if (first) ctx.setFocus(`${ns}/${first}`);
+  };
+
+  React.useEffect(() => {
+    const k = (e) => {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
+      if (e.key === 'ArrowUp') { e.preventDefault(); goSection(-1); }
+      if (e.key === 'ArrowDown') { e.preventDefault(); goSection(1); }
+    };
+    document.addEventListener('keydown', k);
+    return () => document.removeEventListener('keydown', k);
+  });
+
+  const { width = 260, height = 480, children } = artboard.props;
+  const [vp, setVp] = React.useState({ w: window.innerWidth, h: window.innerHeight });
+  React.useEffect(() => { const r = () => setVp({ w: window.innerWidth, h: window.innerHeight }); window.addEventListener('resize', r); return () => window.removeEventListener('resize', r); }, []);
+  const scale = Math.max(0.1, Math.min((vp.w - 200) / width, (vp.h - 260) / height, 2));
+
+  const [ddOpen, setDd] = React.useState(false);
+  const Arrow = ({ dir, onClick }) => (
+    <button onClick={(e) => { e.stopPropagation(); onClick(); }}
+      style={{ position: 'absolute', top: '50%', [dir]: 28, transform: 'translateY(-50%)',
+        border: 'none', background: 'rgba(255,255,255,.08)', color: 'rgba(255,255,255,.9)',
+        width: 44, height: 44, borderRadius: 22, fontSize: 18, cursor: 'pointer',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background .15s' }}
+      onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,.18)')}
+      onMouseLeave={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,.08)')}>
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+        <path d={dir === 'left' ? 'M11 3L5 9l6 6' : 'M7 3l6 6-6 6'} /></svg>
+    </button>
+  );
+
+  // Portal to body so position:fixed is the real viewport regardless of any
+  // transform on DesignCanvas's ancestors (including the canvas zoom itself).
+  return ReactDOM.createPortal(
+    <div onClick={() => ctx.setFocus(null)}
+      onWheel={(e) => e.preventDefault()}
+      style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(24,20,16,.6)', backdropFilter: 'blur(14px)',
+        fontFamily: DC.font, color: '#fff' }}>
+
+      {/* top bar: section dropdown (left) · close (right) */}
+      <div onClick={(e) => e.stopPropagation()}
+        style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 72, display: 'flex', alignItems: 'flex-start', padding: '16px 20px 0', gap: 16 }}>
+        <div style={{ position: 'relative' }}>
+          <button onClick={() => setDd((o) => !o)}
+            style={{ border: 'none', background: 'transparent', color: '#fff', cursor: 'pointer', padding: '6px 8px',
+              borderRadius: 6, textAlign: 'left', fontFamily: 'inherit' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 18, fontWeight: 600, letterSpacing: -0.3 }}>{meta.title}</span>
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" style={{ opacity: .7 }}><path d="M2 4l3.5 3.5L9 4"/></svg>
+            </span>
+            {meta.subtitle && <span style={{ display: 'block', fontSize: 13, opacity: .6, fontWeight: 400, marginTop: 2 }}>{meta.subtitle}</span>}
+          </button>
+          {ddOpen && (
+            <div style={{ position: 'absolute', top: '100%', left: 0, marginTop: 4, background: '#2a251f', borderRadius: 8,
+              boxShadow: '0 8px 32px rgba(0,0,0,.4)', padding: 4, minWidth: 200, zIndex: 10 }}>
+              {sectionOrder.map((sid) => (
+                <button key={sid} onClick={() => { setDd(false); const f = sectionMeta[sid].slotIds[0]; if (f) ctx.setFocus(`${sid}/${f}`); }}
+                  style={{ display: 'block', width: '100%', textAlign: 'left', border: 'none', cursor: 'pointer',
+                    background: sid === sectionId ? 'rgba(255,255,255,.1)' : 'transparent', color: '#fff',
+                    padding: '8px 12px', borderRadius: 5, fontSize: 14, fontWeight: sid === sectionId ? 600 : 400, fontFamily: 'inherit' }}>
+                  {sectionMeta[sid].title}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+        <div style={{ flex: 1 }} />
+        <button onClick={() => ctx.setFocus(null)}
+          onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,.12)')}
+          onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+          style={{ border: 'none', background: 'transparent', color: 'rgba(255,255,255,.7)', width: 32, height: 32,
+            borderRadius: 16, fontSize: 20, cursor: 'pointer', lineHeight: 1, transition: 'background .12s' }}>×</button>
+      </div>
+
+      {/* card centered, label + index below — only the card itself stops
+          propagation so any backdrop click (including the margins around
+          the card) exits focus */}
+      <div
+        style={{ position: 'absolute', top: 64, bottom: 56, left: 100, right: 100, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16 }}>
+        <div onClick={(e) => e.stopPropagation()} style={{ width: width * scale, height: height * scale, position: 'relative' }}>
+          <div style={{ width, height, transform: `scale(${scale})`, transformOrigin: 'top left', background: '#fff', borderRadius: 2, overflow: 'hidden',
+            boxShadow: '0 20px 80px rgba(0,0,0,.4)' }}>
+            {children || <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#bbb' }}>{aid}</div>}
+          </div>
+        </div>
+        <div onClick={(e) => e.stopPropagation()} style={{ fontSize: 14, fontWeight: 500, opacity: .85, textAlign: 'center' }}>
+          {(sec.labels || {})[aid] ?? artboard.props.label}
+          <span style={{ opacity: .5, marginLeft: 10, fontVariantNumeric: 'tabular-nums' }}>{idx + 1} / {peers.length}</span>
+        </div>
+      </div>
+
+      <Arrow dir="left" onClick={() => go(-1)} />
+      <Arrow dir="right" onClick={() => go(1)} />
+
+      {/* dots */}
+      <div onClick={(e) => e.stopPropagation()}
+        style={{ position: 'absolute', bottom: 20, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 8 }}>
+        {peers.map((p, i) => (
+          <button key={p} onClick={() => ctx.setFocus(`${sectionId}/${p}`)}
+            style={{ border: 'none', padding: 0, cursor: 'pointer', width: 6, height: 6, borderRadius: 3,
+              background: i === idx ? '#fff' : 'rgba(255,255,255,.3)' }} />
+        ))}
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Post-it — absolute-positioned sticky note
+// ─────────────────────────────────────────────────────────────
+function DCPostIt({ children, top, left, right, bottom, rotate = -2, width = 180 }) {
+  return (
+    <div style={{
+      position: 'absolute', top, left, right, bottom, width,
+      background: DC.postitBg, padding: '14px 16px',
+      fontFamily: '"Comic Sans MS", "Marker Felt", "Segoe Print", cursive',
+      fontSize: 14, lineHeight: 1.4, color: DC.postitText,
+      boxShadow: '0 2px 8px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08)',
+      transform: `rotate(${rotate}deg)`,
+      zIndex: 5,
+    }}>{children}</div>
+  );
+}
+
+Object.assign(window, { DesignCanvas, DCSection, DCArtboard, DCPostIt });
+
+
+/* bundle */
+
+
+// ===== ph-icons.jsx =====
+// Tiny inline icon set
+const Icon = {
+  arrow: () => <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>,
+  arrowL: () => <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M13 8H3M7 4 3 8l4 4"/></svg>,
+  back: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M15 6l-6 6 6 6"/></svg>,
+  check: () => <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5l3 3L13 5"/></svg>,
+  warn: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.7 3.86a2 2 0 0 0-3.4 0z"/></svg>,
+  err: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg>,
+  unpub: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>,
+  net: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.55a11 11 0 0 1 14 0"/><path d="M2 8.82a16 16 0 0 1 20 0"/><path d="M8.5 16.42a6 6 0 0 1 7 0"/><circle cx="12" cy="20" r="0.6" fill="currentColor"/></svg>,
+  notfound: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>,
+  reload: () => <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M13 4v3h-3"/><path d="M13 7A5 5 0 1 0 11 12.6"/></svg>,
+  load: () => <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>,
+  send: () => <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2 7 9M14 2l-4 12-3-5-5-3 12-4z"/></svg>,
+  caret: () => <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M4 6l4 4 4-4"/></svg>,
+  caretR: () => <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M6 4l4 4-4 4"/></svg>,
+  iphone: () => <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="1.5" width="8" height="13" rx="1.6"/><path d="M7 3.5h2"/></svg>,
+  pixel: () => <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3.5" y="2" width="9" height="12" rx="1.4"/><circle cx="8" cy="12.4" r="0.5" fill="currentColor"/></svg>,
+  rotate: () => <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 9a6 6 0 0 0 11 3"/><path d="M14 7a6 6 0 0 0-11-3"/><path d="M13 1v3h-3"/><path d="M3 15v-3h3"/></svg>,
+  apple: () => <svg viewBox="0 0 16 16" fill="currentColor"><path d="M11.5 8.4c0-1.7 1.4-2.5 1.5-2.6-.8-1.2-2-1.4-2.5-1.4-1-.1-2 .6-2.6.6-.6 0-1.4-.6-2.3-.6-1.2 0-2.3.7-2.9 1.8-1.2 2.1-.3 5.3.9 7 .6.8 1.3 1.8 2.2 1.7.9 0 1.2-.6 2.3-.6 1.1 0 1.4.6 2.3.5.9 0 1.5-.8 2.1-1.7.4-.6.7-1.2 1-1.9-1.5-.6-2-2.3-2-2.8zM10 3.4c.5-.6.8-1.4.7-2.2-.7 0-1.5.5-2 1.1-.5.5-.9 1.4-.7 2.1.7.1 1.5-.4 2-1z"/></svg>,
+  android: () => <svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 6.5c-.6 0-1 .4-1 1V11c0 .6.4 1 1 1s1-.4 1-1V7.5c0-.6-.4-1-1-1zm10 0c-.6 0-1 .4-1 1V11c0 .6.4 1 1 1s1-.4 1-1V7.5c0-.6-.4-1-1-1zM5 5v7c0 .3.2.5.5.5H6V14c0 .6.4 1 1 1s1-.4 1-1v-1.5h.5V14c0 .6.4 1 1 1s1-.4 1-1v-1.5h.5c.3 0 .5-.2.5-.5V5H5zm6.4-3.4.7-.7c.1-.1.1-.3 0-.4-.1-.1-.3-.1-.4 0l-.8.8C10.4 1 9.3.8 8 .8s-2.4.2-3 .5l-.8-.8c-.1-.1-.3-.1-.4 0-.1.1-.1.3 0 .4l.7.7C3.5 2.4 3 3.4 3 4.5h10c0-1.1-.5-2.1-1.6-2.9zM6.5 3.5a.4.4 0 1 1 0-.8.4.4 0 0 1 0 .8zm3 0a.4.4 0 1 1 0-.8.4.4 0 0 1 0 .8z"/></svg>,
+  copy: () => <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M3 11V3a1 1 0 0 1 1-1h7"/></svg>,
+  filter: () => <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h12l-4.5 6V14l-3-1.5V9z"/></svg>,
+  pulse: () => <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M2 8h2.5l1.5-4 3 8 1.5-4H14"/></svg>,
+  external: () => <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M7 3H3v10h10V9"/><path d="M9 3h4v4M13 3 8 8"/></svg>,
+  lock: () => <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg>,
+};
+window.Icon = Icon;
+
+
+// ===== ph-funnel-screens.jsx =====
+// Mini renderings of funnel screens used inside iphones.
+// Lightweight versions of the catalog primitives — no logic, just static markup.
+
+function StatusBar({ time = "9:41" }) {
+  return (
+    <div className="fpage-statusbar">
+      <span>{time}</span>
+      <span className="icons">
+        <svg width="14" height="10" viewBox="0 0 14 10" fill="currentColor"><rect x="0" y="6" width="2" height="4" rx="0.5"/><rect x="3" y="4" width="2" height="6" rx="0.5"/><rect x="6" y="2" width="2" height="8" rx="0.5"/><rect x="9" y="0" width="2" height="10" rx="0.5"/></svg>
+        <svg width="14" height="10" viewBox="0 0 14 10" fill="none" stroke="currentColor" strokeWidth="1"><path d="M1 4a8 8 0 0 1 12 0M3 6a5 5 0 0 1 8 0M5 8a2.5 2.5 0 0 1 4 0"/></svg>
+        <span className="battery"><span className="battery-fill"/></span>
+      </span>
+    </div>
+  );
+}
+
+// A representative mid-funnel "question" screen
+function PFQuestionScreen({ progress = 0.5, sel = 1 }) {
+  const opts = [
+    "First thing in the morning",
+    "Mid-afternoon slump",
+    "Right before bed",
+    "It varies day to day",
+  ];
+  return (
+    <>
+      <div className="pf-progress"><div style={{ width: `${progress * 100}%` }}/></div>
+      <div className="pf-back"><Icon.back/></div>
+      <div className="pf-body">
+        <div className="pf-eyebrow">3 of 6</div>
+        <h1 className="pf-h1">When do you feel <em>most stuck</em>?</h1>
+        <p className="pf-body-text">Pick the moment when your energy dips the hardest. We'll tune the protocol around it.</p>
+        <div className="pf-options">
+          {opts.map((o, i) => (
+            <div key={i} className={"pf-option" + (i === sel ? " sel" : "")}>
+              <span className="marker"/>
+              <span>{o}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="pf-footer">
+        <button className="pf-cta">Continue<Icon.arrow/></button>
+      </div>
+    </>
+  );
+}
+
+// Final/result screen with the conversion CTA still tappable
+function PFFinalScreen({ overlay }) {
+  return (
+    <>
+      <div className="pf-progress"><div style={{ width: "100%" }}/></div>
+      <div className="pf-back" style={{ visibility: "hidden" }}><Icon.back/></div>
+      <div className="pf-body">
+        <span className="completion-pill"><span className="dot"/>Your match</span>
+        <h1 className="pf-h1">The <em>Slow Burn</em> protocol fits you best.</h1>
+        <p className="pf-body-text">Built for people whose afternoons fall apart. 14 days, 8 minutes a day, no caffeine reset. We'll send your first session tonight.</p>
+        <div style={{
+          background: "var(--cream-50)", border: "1.5px solid var(--cream-300)",
+          borderRadius: "var(--r-lg)", padding: "14px 16px", marginTop: 4,
+          display: "flex", flexDirection: "column", gap: 8,
+        }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+            <span style={{ fontFamily: "var(--font-d)", fontStyle: "italic", fontSize: 22, color: "var(--olive-900)" }}>14 days · $24</span>
+            <span style={{ fontFamily: "var(--font-m)", fontSize: 11, color: "color-mix(in oklch,var(--olive-900) 50%,var(--cream-100))", letterSpacing: "0.06em", textTransform: "uppercase" }}>$1.71/day</span>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6, fontSize: 13, color: "color-mix(in oklch,var(--olive-900) 65%,var(--cream-100))" }}>
+            {["8-minute morning practice", "Afternoon micro-resets", "Cancel any time"].map((l, i) => (
+              <span key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ width: 14, height: 14, color: "var(--olive-500)" }}><Icon.check/></span>
+                {l}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="pf-footer">
+        <button className="pf-cta">Start my 14 days<Icon.arrow/></button>
+        <button className="pf-link">Maybe later</button>
+      </div>
+      {overlay}
+    </>
+  );
+}
+
+window.StatusBar = StatusBar;
+window.PFQuestionScreen = PFQuestionScreen;
+window.PFFinalScreen = PFFinalScreen;
+
+
+// ===== ph-public-funnel.jsx =====
+// Public funnel page — full-bleed mobile, with all states.
+// Each variant is wrapped in either a desktop frame or pure mobile container.
+
+function PoweredFooter() {
+  return (
+    <div className="powered-footer"><span className="swirl"/>Powered by Olive</div>
+  );
+}
+
+function URLBar({ url = "olive-funnels.app/f/slow-burn" }) {
+  return (
+    <div className="url-bar">
+      <Icon.lock/>
+      <span>{url}</span>
+    </div>
+  );
+}
+
+function PFLabelStack({ kind, name }) {
+  return (
+    <div className="demo-pill-row">
+      <span className="lbl">{kind}</span>
+      <span className="nm">{name}</span>
+    </div>
+  );
+}
+
+// ───── Mobile (full bleed, 390 wide) ─────
+function PFMobile({ children, label }) {
+  return (
+    <div className="funnel" style={{ width: 390, background: "var(--cream-100)" }}>
+      <div className="fpage" style={{ minHeight: 780 }}>
+        <div className="fpage-canvas" style={{ width: "100%", maxWidth: "100%", flex: 1 }}>
+          <StatusBar/>
+          <div className="fpage-content">
+            {children}
+          </div>
+          <PoweredFooter/>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ───── Desktop framed card ─────
+function PFDesktop({ children, kind, name, withUrl = true }) {
+  return (
+    <div className="funnel" style={{ width: 980, height: 780, position: "relative" }}>
+      <div className="fpage desktop-frame" style={{ width: "100%", height: "100%", padding: "32px" }}>
+        {withUrl && <URLBar/>}
+        {kind && <PFLabelStack kind={kind} name={name}/>}
+        <div className="fpage-canvas" style={{ position: "relative" }}>
+          <div className="fpage-content">
+            {children}
+          </div>
+          <PoweredFooter/>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── State: Loading ──
+function PFLoadingBody() {
+  return (
+    <div className="fpage-loading">
+      <div className="pulse-mark">o</div>
+      <div className="skel-stack">
+        <div className="skel" style={{ height: 10, width: "30%" }}/>
+        <div className="skel" style={{ height: 28, width: "92%" }}/>
+        <div className="skel" style={{ height: 28, width: "60%" }}/>
+        <div className="skel" style={{ height: 14, width: "85%", marginTop: 4 }}/>
+        <div className="skel" style={{ height: 14, width: "70%" }}/>
+      </div>
+      <div className="label">Loading funnel</div>
+    </div>
+  );
+}
+
+// ── State: Error – not found ──
+function PFNotFoundBody() {
+  return (
+    <div className="fpage-error">
+      <div className="icon-wrap"><Icon.notfound/></div>
+      <h2>This funnel <em>doesn't exist</em>.</h2>
+      <p>It may have been moved, the link mistyped, or never published. Check the URL and try again.</p>
+      <span className="err-id">funnel_id · slow-bur</span>
+      <div className="actions">
+        <button className="btn secondary">Go to Olive →</button>
+      </div>
+    </div>
+  );
+}
+
+// ── State: Error – unpublished ──
+function PFUnpublishedBody() {
+  return (
+    <div className="fpage-error">
+      <div className="icon-wrap warn"><Icon.unpub/></div>
+      <h2>This funnel is <em>not live yet</em>.</h2>
+      <p>The creator hasn't published it. If you're the creator, hit "Publish" in the Studio to make it visible.</p>
+      <span className="err-id">status · draft</span>
+      <div className="actions">
+        <button className="btn secondary">Open in Studio</button>
+      </div>
+    </div>
+  );
+}
+
+// ── State: Error – network ──
+function PFNetworkBody() {
+  return (
+    <div className="fpage-error">
+      <div className="icon-wrap err"><Icon.net/></div>
+      <h2>Couldn't reach Olive.</h2>
+      <p>Check your connection and try again. Your progress so far is saved on this device.</p>
+      <span className="err-id">err · ECONNRESET · req 38c91a</span>
+      <div className="actions">
+        <button className="btn">Retry</button>
+        <button className="btn secondary">Continue offline (cached)</button>
+      </div>
+    </div>
+  );
+}
+
+// ── Checkout transition overlay ──
+function PFCheckoutOverlay() {
+  return (
+    <div className="fpage-checkout-overlay">
+      <div className="ring-spinner"/>
+      <div>
+        <div className="h">Opening checkout…</div>
+        <div className="sub" style={{ marginTop: 8 }}>cta:clicked → handoff</div>
+      </div>
+      <div className="events">
+        <div className="ev"><span className="check"><Icon.check/></span><span>cta:clicked emitted</span></div>
+        <div className="ev"><span className="check"><Icon.check/></span><span>funnel:completed emitted</span></div>
+        <div className="ev pending"><span className="check"><Icon.check/></span><span>checkout handler invoked</span></div>
+      </div>
+    </div>
+  );
+}
+
+window.PFMobile = PFMobile;
+window.PFDesktop = PFDesktop;
+window.PFLoadingBody = PFLoadingBody;
+window.PFNotFoundBody = PFNotFoundBody;
+window.PFUnpublishedBody = PFUnpublishedBody;
+window.PFNetworkBody = PFNetworkBody;
+window.PFCheckoutOverlay = PFCheckoutOverlay;
+
+
+// ===== ph-harness.jsx =====
+// Webview Test Harness — Studio chrome page used to QA funnels in iframe.
+
+function HarnessTopbar({ url, setUrl, onLoad, loaded }) {
+  return (
+    <div className="harness-topbar">
+      <div className="title-block">
+        <span className="crumb"><a href="#">Studio</a> · <a href="#">Tools</a> · Webview Test Harness</span>
+        <h1>Webview Test Harness</h1>
+      </div>
+      <div className="url-loader">
+        <div className="url-input">
+          <span className="scheme">https://</span>
+          <input value={url} onChange={(e) => setUrl(e.target.value)}/>
+        </div>
+        <button className="load-btn" onClick={onLoad}>Load<Icon.load/></button>
+        <button className="reload-btn" title="Reload"><Icon.reload/></button>
+      </div>
+      {loaded && (
+        <span className="indicator"><span className="dot"/>Iframe live</span>
+      )}
+    </div>
+  );
+}
+
+function PhonePanel() {
+  const [device, setDevice] = React.useState("iphone14");
+  const [orient, setOrient] = React.useState("portrait");
+  return (
+    <div className="phone-panel">
+      <div className="panel-head">
+        <span className="lbl">Funnel iframe · slow-burn</span>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <div className="h-toggle">
+            <button className={device === "iphone14" ? "is-active" : ""} onClick={() => setDevice("iphone14")}><Icon.iphone/>iPhone 14</button>
+            <button className={device === "pixel7" ? "is-active" : ""} onClick={() => setDevice("pixel7")}><Icon.pixel/>Pixel 7</button>
+          </div>
+          <div className="h-toggle">
+            <button className={orient === "portrait" ? "is-active" : ""} onClick={() => setOrient("portrait")}><Icon.rotate/>Portrait</button>
+            <button className={orient === "landscape" ? "is-active" : ""} onClick={() => setOrient("landscape")}>Landscape</button>
+          </div>
+        </div>
+      </div>
+      <div className="phone-stage">
+        <div className="iphone">
+          <div className="iphone-notch"/>
+          <div className="iphone-screen funnel">
+            <StatusBar/>
+            <div className="fpage-content">
+              <PFQuestionScreen progress={0.5} sel={1}/>
+            </div>
+            <PoweredFooter/>
+          </div>
+        </div>
+        <div className="device-meta"><span className="sw"/>iPhone 14 · 390×844 · Portrait · iOS WKWebView</div>
+      </div>
+    </div>
+  );
+}
+
+const EVENTS = [
+  { type: "funnel:loaded", color: "" },
+  { type: "screen:shown", color: "" },
+  { type: "screen:completed", color: "completed" },
+  { type: "answer:submitted", color: "" },
+  { type: "cta:clicked", color: "cta" },
+  { type: "funnel:completed", color: "completed" },
+  { type: "funnel:abandoned", color: "abandoned" },
+];
+
+const SAMPLE_LOG = [
+  { ts: "10:42:08.117", type: "funnel:loaded",     color: "",          summary: "spec v3 · 6 screens", json: { funnelId: "slow-burn", specVersion: 3, screenCount: 6, locale: "en-US" }, isNew: false, collapsed: false },
+  { ts: "10:42:08.342", type: "screen:shown",      color: "",          summary: "0 · welcome",        json: { index: 0, screenId: "welcome", kind: "intro" }, collapsed: true },
+  { ts: "10:42:14.880", type: "screen:completed",  color: "completed", summary: "0 · welcome → 1",    json: { index: 0, screenId: "welcome", dwellMs: 6538 }, collapsed: true },
+  { ts: "10:42:15.001", type: "screen:shown",      color: "",          summary: "1 · age-band",       json: { index: 1, screenId: "age-band" }, collapsed: true },
+  { ts: "10:42:19.422", type: "answer:submitted",  color: "",          summary: "age-band = 30-39",   json: { screenId: "age-band", answer: { value: "30-39", label: "30 to 39" } }, collapsed: false },
+  { ts: "10:42:19.510", type: "screen:completed",  color: "completed", summary: "1 · age-band → 2",   json: { index: 1, screenId: "age-band", dwellMs: 4509 }, collapsed: true },
+  { ts: "10:42:19.611", type: "screen:shown",      color: "",          summary: "2 · stuck-when",     json: { index: 2, screenId: "stuck-when" }, isNew: true, collapsed: false },
+];
+
+function jsonHL(obj, indent = 0) {
+  // small JSON formatter with span classes
+  const pad = (n) => "  ".repeat(n);
+  const lines = [];
+  const walk = (v, depth, key, last) => {
+    const prefix = pad(depth) + (key !== undefined ? `<span class="k">"${key}"</span>: ` : "");
+    if (v === null) { lines.push(prefix + `<span class="b">null</span>` + (last ? "" : ",")); return; }
+    if (typeof v === "string") { lines.push(prefix + `<span class="s">"${v}"</span>` + (last ? "" : ",")); return; }
+    if (typeof v === "number") { lines.push(prefix + `<span class="n">${v}</span>` + (last ? "" : ",")); return; }
+    if (typeof v === "boolean") { lines.push(prefix + `<span class="b">${v}</span>` + (last ? "" : ",")); return; }
+    if (Array.isArray(v)) {
+      lines.push(prefix + "[");
+      v.forEach((x, i) => walk(x, depth + 1, undefined, i === v.length - 1));
+      lines.push(pad(depth) + "]" + (last ? "" : ","));
+      return;
+    }
+    if (typeof v === "object") {
+      lines.push(prefix + "{");
+      const keys = Object.keys(v);
+      keys.forEach((k, i) => walk(v[k], depth + 1, k, i === keys.length - 1));
+      lines.push(pad(depth) + "}" + (last ? "" : ","));
+      return;
+    }
+  };
+  walk(obj, indent, undefined, true);
+  return lines.join("\n");
+}
+
+function ConsolePanel() {
+  return (
+    <div className="console-panel">
+      <div className="panel-head">
+        <h3>postMessage console</h3>
+        <div className="right">
+          <span className="count-pill">7 events · 3 screens</span>
+        </div>
+      </div>
+      <div className="h-filter-row">
+        <span className="h-event-chip is-on"><Icon.filter/>All<span className="ct">7</span></span>
+        {EVENTS.map((e) => {
+          const ct = SAMPLE_LOG.filter((l) => l.type === e.type).length;
+          return <span key={e.type} className="h-event-chip">{e.type}<span className="ct">{ct}</span></span>;
+        })}
+      </div>
+      <div className="event-log">
+        {SAMPLE_LOG.map((row, i) => (
+          <div key={i} className={"ev-row" + (row.collapsed ? " collapsed" : "") + (row.isNew ? " is-new" : "")}>
+            <span className="ts">{row.ts}</span>
+            <div className="body">
+              <div className="head">
+                <span className={"ev-name " + row.color}>{row.type}</span>
+                <span className="summary">{row.summary}</span>
+              </div>
+              {!row.collapsed && (
+                <pre className="json" dangerouslySetInnerHTML={{ __html: jsonHL(row.json) }}/>
+              )}
+            </div>
+            <span className="ex">{row.collapsed ? <Icon.caretR/> : <Icon.caret/>}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SendPanel() {
+  return (
+    <div className="send-panel">
+      <div className="panel-head">
+        <h3>Send to funnel</h3>
+        <span className="desc">Simulates native → webview postMessage</span>
+      </div>
+      <div className="body">
+        <div className="row">
+          <span className="lbl">Event type</span>
+          <select defaultValue="user:auth">
+            <option>user:auth</option>
+            <option>user:info</option>
+            <option>locale:set</option>
+            <option>theme:set</option>
+            <option>navigation:back</option>
+            <option>__custom__</option>
+          </select>
+          <span/>
+        </div>
+        <div className="row payload-row">
+          <span className="lbl">Payload (JSON)</span>
+          <textarea defaultValue={`{
+  "userId": "u_4f8a921",
+  "token": "eyJhbGciOi…",
+  "email": "qa@olive.app",
+  "tier": "premium"
+}`}/>
+        </div>
+      </div>
+      <div className="send-foot">
+        <span className="info"><span className="kbd">⌘</span> <span className="kbd">↵</span> to send · last sent 14s ago</span>
+        <button className="send-btn"><Icon.send/>Post to iframe</button>
+      </div>
+    </div>
+  );
+}
+
+function SimulatorSection() {
+  const [platform, setPlatform] = React.useState("ios");
+  const cards = [
+    {
+      ev: "cta:clicked", evColor: "cta",
+      title: platform === "ios" ? "Trigger StoreKit purchase" : "Trigger Play Billing flow",
+      desc: platform === "ios"
+        ? "Native opens SKPaymentQueue with productId from payload. Simulates the iOS handler your app would mount."
+        : "Native opens BillingClient.launchBillingFlow with the SKU from payload. Simulates the Android handler your app would mount.",
+      btn: platform === "ios" ? "[Simulate iOS] handle CTA → StoreKit" : "[Simulate Android] handle CTA → Play Billing",
+      response: platform === "ios"
+        ? [["StoreKit", "→ presented"], ["productId", "olive.slow_burn.14d"], ["txn", "1000000938291" ]]
+        : [["BillingClient", "→ launched"], ["sku", "olive_slow_burn_14d"], ["purchaseToken", "abc123…xyz"]],
+    },
+    {
+      ev: "funnel:completed", evColor: "completed",
+      title: "Mark conversion in analytics",
+      desc: "Native dispatches the conversion to your analytics SDK with funnelId + variant + answer set.",
+      btn: platform === "ios" ? "[Simulate iOS] log conversion" : "[Simulate Android] log conversion",
+      response: [
+        ["Analytics", "→ event=funnel_complete"],
+        ["funnelId", "slow-burn"],
+        ["variant", "B"],
+        ["answers", "{ age-band: 30-39, … }"],
+      ],
+    },
+    {
+      ev: "funnel:abandoned", evColor: "abandoned",
+      title: "Persist partial state",
+      desc: "Native saves the partial answer set so the user can resume next session. Show toast confirming save.",
+      btn: platform === "ios" ? "[Simulate iOS] save partial" : "[Simulate Android] save partial",
+      response: [
+        ["UserDefaults / SharedPrefs", "→ written"],
+        ["key", "olive.partial.slow-burn"],
+        ["screensCompleted", "3 of 6"],
+      ],
+    },
+    {
+      ev: "answer:submitted", evColor: "",
+      title: "Forward answer to backend",
+      desc: "Native posts the captured answer to /v1/answers — verifies signature + token, returns ack.",
+      btn: platform === "ios" ? "[Simulate iOS] POST /v1/answers" : "[Simulate Android] POST /v1/answers",
+      response: [
+        ["POST", "/v1/answers → 201"],
+        ["acked", "true"],
+        ["latency", "184ms"],
+      ],
+    },
+  ];
+  return (
+    <div className="sim-section studio">
+      <div className="panel-head">
+        <div>
+          <h3>Native handler simulators</h3>
+          <p className="desc" style={{ margin: "4px 0 0" }}>What the native iOS/Android app does when receiving each postMessage event. Each simulator runs the mock handler and shows its response.</p>
+        </div>
+        <div className="platform-toggle">
+          <button className={platform === "ios" ? "is-active" : ""} onClick={() => setPlatform("ios")}><Icon.apple/>iOS</button>
+          <button className={platform === "android" ? "is-active" : ""} onClick={() => setPlatform("android")}><Icon.android/>Android</button>
+        </div>
+      </div>
+      <div className="sim-grid">
+        {cards.map((c, i) => (
+          <div className="sim-card" key={i}>
+            <div className="h">
+              <span className={"ev-tag " + c.evColor}>{c.ev}</span>
+              <span style={{ fontWeight: 500, fontSize: 13.5, color: "var(--n-900)" }}>{c.title}</span>
+            </div>
+            <div className="body">
+              <p className="desc">{c.desc}</p>
+              <button className="sim-btn">{platform === "ios" ? <Icon.apple/> : <Icon.android/>}{c.btn}</button>
+              <div className="response">
+                <span className="title"><span className="dot"/>Mock response</span>
+                {c.response.map(([k, v], j) => (
+                  <div key={j}><span className="arrow">→</span> <code>{k}</code> {v}</div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function HarnessBoard() {
+  const [url, setUrl] = React.useState("olive-funnels.app/f/slow-burn");
+  return (
+    <div className="board harness studio" style={{ width: 1320, minHeight: 1480 }}>
+      <HarnessTopbar url={url} setUrl={setUrl} loaded={true}/>
+      <div className="harness-body">
+        <PhonePanel/>
+        <div className="console-stack">
+          <ConsolePanel/>
+          <SendPanel/>
+        </div>
+      </div>
+      <SimulatorSection/>
+    </div>
+  );
+}
+
+window.HarnessBoard = HarnessBoard;
+
+
+// ===== ph-app.jsx =====
+// Wire all the boards into a single DesignCanvas with sections.
+
+function PublicFunnelBoard() {
+  return (
+    <div className="board" style={{ width: 1320, minHeight: 900, paddingBottom: 8 }}>
+      <div className="board-header">
+        <div className="ttl">A · Public funnel page</div>
+        <div className="meta">
+          <span className="pill">olive-funnels.app/f/:funnelId</span>
+          <span>Funnel mode · No studio chrome · Mobile-first</span>
+        </div>
+      </div>
+      <div style={{ padding: "32px 40px", display: "flex", flexDirection: "column", gap: 40 }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 32, alignItems: "flex-start" }}>
+          <PFDesktop kind="State 1 · Live (mid-funnel)" name="screen 3 of 6">
+            <div className="fp-q">
+              <PFQuestionScreen progress={0.5} sel={1}/>
+            </div>
+          </PFDesktop>
+          <PFMobile>
+            <div className="fp-q">
+              <PFQuestionScreen progress={0.5} sel={1}/>
+            </div>
+          </PFMobile>
+        </div>
+
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 32, alignItems: "flex-start" }}>
+          <PFDesktop kind="State 2 · Completion" name="final screen, CTA still tappable">
+            <div className="fp-q">
+              <PFFinalScreen/>
+            </div>
+          </PFDesktop>
+          <PFDesktop kind="State 3 · Checkout handoff" name="cta:clicked → mock checkout">
+            <div className="fp-q">
+              <PFFinalScreen overlay={<PFCheckoutOverlay/>}/>
+            </div>
+          </PFDesktop>
+        </div>
+
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 24, alignItems: "flex-start" }}>
+          <PFDesktop kind="State 4 · Loading" name="spec fetching from API" withUrl={false}>
+            <PFLoadingBody/>
+          </PFDesktop>
+          <PFDesktop kind="Error · Not found" name="GET /spec → 404" withUrl={false}>
+            <PFNotFoundBody/>
+          </PFDesktop>
+          <PFDesktop kind="Error · Unpublished" name="GET /spec → 403 draft" withUrl={false}>
+            <PFUnpublishedBody/>
+          </PFDesktop>
+          <PFDesktop kind="Error · Network" name="ECONNRESET / offline" withUrl={false}>
+            <PFNetworkBody/>
+          </PFDesktop>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <DesignCanvas>
+      <DCSection id="public" title="Public funnel page" subtitle="What end users see at olive-funnels.app/f/:funnelId — funnel mode, no studio chrome">
+        <DCArtboard id="public-page" label="Public funnel · all states" width={1320} height={1500}>
+          <PublicFunnelBoard/>
+        </DCArtboard>
+        <DCPostIt>
+          Page bg = warm off-white token (cream-100). Mobile = full bleed. Desktop = letterboxed in radial cream wash, max 480px card with subtle bezel + shadow. Powered-by footer is a tiny tracker — togglable via funnel spec prop.
+        </DCPostIt>
+        <DCPostIt>
+          Completion: when user advances past the final screen, we DON'T inject a thank-you. We stay on the final screen with the CTA still tappable — that CTA tap is the conversion event. If the creator wrote a thank-you, theirs renders.
+        </DCPostIt>
+      </DCSection>
+
+      <DCSection id="harness" title="Webview test harness" subtitle="/webview-test in Studio · used by Olive QA to verify funnels render correctly inside the mobile app's webview">
+        <DCArtboard id="harness-page" label="Harness · default loaded state" width={1320} height={1480}>
+          <HarnessBoard/>
+        </DCArtboard>
+        <DCPostIt>
+          Phone is the focal point. Iframe loads the funnel URL — same surface as the public page, just rendered at 390px inside a device shell. Device + orientation togglable.
+        </DCPostIt>
+        <DCPostIt>
+          Console: each row is a postMessage from the iframe. Click to expand JSON. Newest at bottom, animated highlight as it lands. Filter chips toggle event types. Send-to-funnel panel below mirrors the protocol in reverse — host posts INTO the iframe (auth token, user info, etc).
+        </DCPostIt>
+        <DCPostIt>
+          Native simulators show what the real iOS/Android app would do for each event. Toggle iOS/Android at the top right — labels and mock responses swap (StoreKit ↔ Play Billing, UserDefaults ↔ SharedPrefs).
+        </DCPostIt>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2840 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Quiz Funnel Studio — Funnel Mode Catalog</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+/* ============================================================
+   TOKENS (carried forward from Foundations 01)
+   ============================================================ */
+:root {
+  --olive-50:  oklch(0.96 0.018 125);
+  --olive-100: oklch(0.88 0.035 128);
+  --olive-300: oklch(0.66 0.055 130);
+  --olive-500: oklch(0.46 0.058 132);
+  --olive-700: oklch(0.32 0.045 134);
+  --olive-900: oklch(0.20 0.030 135);
+
+  --cream-50:  oklch(0.985 0.006 85);
+  --cream-100: oklch(0.965 0.012 84);
+  --cream-200: oklch(0.940 0.018 82);
+  --cream-300: oklch(0.905 0.022 80);
+  --cream-400: oklch(0.860 0.024 78);
+
+  --neutral-0:   #fff;
+  --neutral-50:  oklch(0.985 0.002 250);
+  --neutral-100: oklch(0.965 0.004 250);
+  --neutral-200: oklch(0.925 0.006 250);
+  --neutral-300: oklch(0.870 0.008 250);
+  --neutral-400: oklch(0.720 0.010 250);
+  --neutral-500: oklch(0.560 0.012 250);
+  --neutral-700: oklch(0.320 0.014 250);
+  --neutral-900: oklch(0.140 0.010 250);
+
+  --success: oklch(0.58 0.12 150);
+  --warning: oklch(0.74 0.13 75);
+  --error:   oklch(0.58 0.18 28);
+
+  --result-1: oklch(0.62 0.13 45);
+  --result-2: oklch(0.62 0.13 95);
+  --result-3: oklch(0.62 0.13 165);
+  --result-4: oklch(0.62 0.13 245);
+  --result-5: oklch(0.62 0.13 320);
+
+  --font-display: "Instrument Serif", Iowan Old Style, Georgia, serif;
+  --font-sans:    "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    "Geist Mono", ui-monospace, "SF Mono", monospace;
+
+  --radius-sm:   6px;
+  --radius-md:   12px;
+  --radius-lg:   20px;
+  --radius-xl:   28px;
+  --radius-full: 999px;
+
+  --shadow-1: 0 1px 2px rgba(38,44,30,.05), 0 1px 1px rgba(38,44,30,.04);
+  --shadow-2: 0 2px 4px rgba(38,44,30,.06), 0 4px 12px rgba(38,44,30,.05);
+  --shadow-3: 0 4px 8px rgba(38,44,30,.06), 0 12px 28px rgba(38,44,30,.08);
+  --shadow-4: 0 8px 16px rgba(38,44,30,.07), 0 24px 56px rgba(38,44,30,.10);
+
+  --motion-micro:  120ms;
+  --motion-small:  200ms;
+  --motion-medium: 320ms;
+  --motion-large:  500ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasis: cubic-bezier(0.3, 0, 0, 1);
+}
+
+/* ============================================================
+   FUNNEL MODE — applied scope-wide for this canvas
+   Every primitive renders in funnel mode here; that's the brief.
+   ============================================================ */
+.funnel {
+  --bg:           var(--cream-100);
+  --surface:      var(--cream-50);
+  --surface-alt:  var(--cream-200);
+  --border:       var(--cream-300);
+  --border-strong:var(--cream-400);
+  --text:         var(--olive-900);
+  --text-muted:   color-mix(in oklch, var(--olive-900) 50%, var(--cream-100));
+  --text-faint:   color-mix(in oklch, var(--olive-900) 30%, var(--cream-100));
+  --accent:       var(--olive-500);
+  --accent-deep:  var(--olive-700);
+  --accent-fg:    var(--cream-50);
+  font-family: var(--font-sans);
+  color: var(--text);
+}
+
+/* ---------- Page chrome ---------- */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  color: var(--neutral-900);
+  background: var(--neutral-100);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "ss01";
+}
+
+/* ============================================================
+   SHEET CHROME
+   ============================================================ */
+.sheet {
+  background: var(--cream-50);
+  color: var(--neutral-900);
+  font-family: var(--font-sans);
+  padding: 56px 64px;
+}
+.sheet-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 32px;
+  border-bottom: 1px solid var(--neutral-300);
+  padding-bottom: 28px;
+  margin-bottom: 40px;
+}
+.sheet-head h1 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 56px;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 12px 0 0;
+}
+.sheet-head h1 em { font-style: italic; color: var(--olive-700); }
+.sheet-head .meta {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--neutral-500);
+  line-height: 1.7;
+}
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--neutral-500);
+}
+
+.cat-section {
+  margin-bottom: 64px;
+}
+.cat-section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--neutral-200);
+}
+.cat-section-head h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-style: italic;
+  font-size: 30px;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+.cat-section-head .num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--neutral-400);
+}
+.cat-section-head .desc {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--neutral-600);
+  max-width: 540px;
+  text-align: right;
+}
+
+/* ---------- Primitive card ---------- */
+.prim {
+  margin-bottom: 32px;
+  padding: 32px;
+  background: var(--neutral-0);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-md);
+}
+.prim-head {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 16px;
+  align-items: baseline;
+  margin-bottom: 24px;
+}
+.prim-head .name {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 26px;
+  letter-spacing: -0.01em;
+}
+.prim-head .key {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--neutral-500);
+  background: var(--neutral-100);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  align-self: center;
+}
+.prim-head .props {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--neutral-500);
+  text-align: right;
+  line-height: 1.6;
+  max-width: 380px;
+}
+.prim-desc {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--neutral-700);
+  max-width: 720px;
+  margin: -12px 0 24px;
+}
+
+/* ---------- States grid ---------- */
+.states {
+  display: grid;
+  gap: 20px;
+}
+.states.cols-2 { grid-template-columns: repeat(2, 1fr); }
+.states.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.states.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.states.cols-5 { grid-template-columns: repeat(5, 1fr); }
+
+.state {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.state-frame {
+  background: var(--cream-100);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.state-frame.tight { padding: 16px; min-height: 80px; }
+.state-frame.tall { min-height: 220px; align-items: stretch; }
+.state-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--neutral-500);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.state-label .tag {
+  background: var(--neutral-100);
+  color: var(--neutral-600);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+}
+
+/* ---------- Mobile/desktop frame ---------- */
+.viewports {
+  display: grid;
+  grid-template-columns: 375px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+.vp-mobile {
+  width: 375px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--cream-100);
+  border: 1px solid var(--neutral-200);
+}
+.vp-mobile-head {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--neutral-500);
+  padding: 8px 12px;
+  background: var(--neutral-50);
+  border-bottom: 1px solid var(--neutral-200);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  display: flex; justify-content: space-between;
+}
+.vp-mobile-body { padding: 24px; }
+
+.vp-desktop {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--cream-100);
+  border: 1px solid var(--neutral-200);
+}
+.vp-desktop-head {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--neutral-500);
+  padding: 8px 12px;
+  background: var(--neutral-50);
+  border-bottom: 1px solid var(--neutral-200);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  display: flex; justify-content: space-between;
+}
+.vp-desktop-body {
+  padding: 40px;
+  display: flex;
+  justify-content: center;
+}
+.vp-desktop-body > .desktop-content {
+  width: 100%;
+  max-width: 520px;
+}
+
+/* ============================================================
+   FUNNEL PRIMITIVES — the actual UI
+   These are the components that ship.
+   ============================================================ */
+
+/* Heading */
+.fn-h1 { font-family: var(--font-display); font-weight: 400; font-size: 36px; line-height: 1.15; letter-spacing: -0.01em; color: var(--text); margin: 0; }
+.fn-h2 { font-family: var(--font-display); font-weight: 400; font-size: 28px; line-height: 1.2;  letter-spacing: -0.01em; color: var(--text); margin: 0; }
+.fn-h3 { font-family: var(--font-display); font-weight: 400; font-size: 22px; line-height: 1.25; color: var(--text); margin: 0; }
+.fn-h1 em, .fn-h2 em, .fn-h3 em { font-style: italic; color: var(--accent-deep); }
+.fn-h-muted   { color: var(--text-muted); }
+.fn-h-primary { color: var(--accent-deep); }
+
+/* Body */
+.fn-body { font-family: var(--font-sans); color: var(--text-muted); margin: 0; }
+.fn-body-sm { font-size: 14px; line-height: 1.55; }
+.fn-body-md { font-size: 16px; line-height: 1.6; }
+.fn-body-lg { font-size: 18px; line-height: 1.55; }
+
+/* Caption */
+.fn-caption { font-family: var(--font-sans); font-size: 12px; line-height: 1.5; color: var(--text-faint); margin: 0; }
+
+/* Eyebrow */
+.fn-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin: 0;
+}
+
+/* ProgressBar */
+.fn-progress {
+  height: 4px;
+  width: 100%;
+  background: var(--surface-alt);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.fn-progress > .fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: inherit;
+  transition: width var(--motion-medium) var(--ease-emphasis);
+}
+
+/* Stack / Group / Spacer (visual demos) */
+.fn-stack { display: flex; flex-direction: column; }
+.fn-stack-sm { gap: 8px; }
+.fn-stack-md { gap: 16px; }
+.fn-stack-lg { gap: 24px; }
+.fn-stack-xl { gap: 36px; }
+
+.fn-group { display: flex; align-items: center; }
+.fn-group-start   { justify-content: flex-start; gap: 12px; }
+.fn-group-center  { justify-content: center; gap: 12px; }
+.fn-group-between { justify-content: space-between; gap: 12px; }
+
+/* PrimaryCTA */
+.fn-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: var(--font-sans);
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  width: 100%;
+  padding: 18px 22px;
+  background: var(--accent);
+  color: var(--accent-fg);
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  box-shadow: var(--shadow-2);
+  transition: transform var(--motion-micro) var(--ease-standard),
+              background var(--motion-small) var(--ease-standard),
+              box-shadow var(--motion-small) var(--ease-standard);
+}
+.fn-cta:hover { background: var(--accent-deep); }
+.fn-cta:active { transform: translateY(1px); box-shadow: var(--shadow-1); }
+.fn-cta:disabled, .fn-cta.is-disabled {
+  background: var(--surface-alt);
+  color: var(--text-faint);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+.fn-cta.is-loading { color: transparent; position: relative; pointer-events: none; }
+.fn-cta.is-loading::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='9' fill='none' stroke='white' stroke-opacity='0.25' stroke-width='3'/><path d='M21 12a9 9 0 0 0-9-9' fill='none' stroke='white' stroke-width='3' stroke-linecap='round'/></svg>") center / 22px no-repeat;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(1turn); } }
+
+/* SecondaryLink */
+.fn-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 8px 16px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.fn-link:hover { color: var(--text); }
+
+/* BackButton */
+.fn-back {
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-full);
+  color: var(--text);
+  cursor: pointer;
+  transition: background var(--motion-small) var(--ease-standard);
+}
+.fn-back:hover { background: var(--surface-alt); }
+.fn-back svg { width: 20px; height: 20px; }
+
+/* ChoiceList option */
+.fn-choice {
+  display: flex; align-items: center; gap: 14px;
+  padding: 18px 20px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: border-color var(--motion-small) var(--ease-standard),
+              background var(--motion-small) var(--ease-standard),
+              transform var(--motion-micro) var(--ease-standard);
+  font-size: 16px;
+  color: var(--text);
+}
+.fn-choice:hover { border-color: var(--border-strong); }
+.fn-choice .marker {
+  width: 22px; height: 22px; border-radius: 999px;
+  border: 1.5px solid var(--border-strong);
+  flex-shrink: 0;
+  display: grid; place-items: center;
+}
+.fn-choice .icon { width: 24px; height: 24px; color: var(--text-muted); flex-shrink: 0; }
+.fn-choice .label { flex: 1; }
+.fn-choice.is-focused {
+  outline: 3px solid color-mix(in oklch, var(--accent) 30%, transparent);
+  outline-offset: 2px;
+  border-color: var(--border-strong);
+}
+.fn-choice.is-selected {
+  border-color: var(--accent);
+  background: color-mix(in oklch, var(--accent) 6%, var(--surface));
+}
+.fn-choice.is-selected .marker {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+.fn-choice.is-selected .marker::after {
+  content: ""; width: 8px; height: 8px; border-radius: 999px; background: var(--accent-fg);
+}
+.fn-choice.is-error { border-color: var(--error); background: color-mix(in oklch, var(--error) 4%, var(--surface)); }
+
+/* Multi-choice marker = square */
+.fn-choice .marker.box { border-radius: 6px; }
+.fn-choice.is-selected .marker.box { background: var(--accent); }
+.fn-choice.is-selected .marker.box::after {
+  content: "";
+  width: 12px; height: 12px;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>") center / contain no-repeat;
+  border-radius: 0;
+}
+
+/* BinaryChoice */
+.fn-binary { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.fn-binary > button {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 36px 16px 28px;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  color: var(--text);
+  transition: border-color var(--motion-small) var(--ease-standard),
+              background var(--motion-small) var(--ease-standard),
+              transform var(--motion-micro) var(--ease-standard);
+}
+.fn-binary > button:hover { border-color: var(--border-strong); }
+.fn-binary > button.is-selected {
+  border-color: var(--accent);
+  background: color-mix(in oklch, var(--accent) 6%, var(--surface));
+}
+.fn-binary .glyph {
+  width: 56px; height: 56px;
+  border-radius: 999px;
+  background: var(--surface-alt);
+  display: grid; place-items: center;
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--text);
+}
+.fn-binary .glyph.yes { background: color-mix(in oklch, var(--accent) 18%, var(--surface)); color: var(--accent-deep); }
+.fn-binary > button.is-selected .glyph { background: var(--accent); color: var(--accent-fg); }
+.fn-binary .lbl { font-size: 18px; font-family: var(--font-display); }
+
+/* ScaleInput */
+.fn-scale { display: flex; flex-direction: column; gap: 10px; }
+.fn-scale-track {
+  display: grid;
+  gap: 6px;
+}
+.fn-scale-track.cols-5 { grid-template-columns: repeat(5, 1fr); }
+.fn-scale-track.cols-10 { grid-template-columns: repeat(10, 1fr); }
+.fn-scale-step {
+  height: 48px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  display: grid; place-items: center;
+  font-size: 14px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--motion-small) var(--ease-standard);
+}
+.fn-scale-step:hover { border-color: var(--border-strong); color: var(--text); }
+.fn-scale-step.is-selected {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-fg);
+  font-weight: 500;
+}
+.fn-scale-ends {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+/* SliderInput */
+.fn-slider { display: flex; flex-direction: column; gap: 14px; }
+.fn-slider-rail {
+  position: relative;
+  height: 6px;
+  background: var(--surface-alt);
+  border-radius: 999px;
+}
+.fn-slider-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--accent);
+  border-radius: inherit;
+}
+.fn-slider-thumb {
+  position: absolute;
+  top: 50%;
+  width: 24px; height: 24px;
+  border-radius: 999px;
+  background: var(--accent-fg);
+  border: 3px solid var(--accent);
+  transform: translate(-50%, -50%);
+  box-shadow: var(--shadow-2);
+}
+.fn-slider-bubble {
+  position: absolute;
+  bottom: 22px;
+  transform: translateX(-50%);
+  background: var(--text);
+  color: var(--accent-fg);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+.fn-slider-bubble::after {
+  content: "";
+  position: absolute;
+  top: 100%; left: 50%; transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--text);
+}
+.fn-slider-ends {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* TextInput */
+.fn-input {
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.4;
+  width: 100%;
+  padding: 18px 20px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  transition: border-color var(--motion-small) var(--ease-standard);
+}
+.fn-input:hover { border-color: var(--border-strong); }
+.fn-input::placeholder { color: var(--text-faint); }
+.fn-input.is-focused {
+  border-color: var(--accent);
+  outline: 3px solid color-mix(in oklch, var(--accent) 25%, transparent);
+  outline-offset: 0;
+}
+.fn-input.is-error { border-color: var(--error); }
+.fn-input-error {
+  font-size: 13px;
+  color: var(--error);
+  margin: 6px 4px 0;
+}
+
+.fn-textarea {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.55;
+  width: 100%;
+  padding: 18px 20px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  min-height: 120px;
+  resize: vertical;
+}
+.fn-textarea-meta {
+  display: flex; justify-content: flex-end;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  margin: 6px 4px 0;
+}
+
+/* ImageChoiceGrid */
+.fn-imgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.fn-imgcard {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color var(--motion-small) var(--ease-standard);
+  display: flex; flex-direction: column;
+}
+.fn-imgcard:hover { border-color: var(--border-strong); }
+.fn-imgcard.is-selected { border-color: var(--accent); }
+.fn-imgcard .placeholder {
+  aspect-ratio: 1;
+  background:
+    repeating-linear-gradient(135deg,
+      var(--surface-alt) 0 8px,
+      color-mix(in oklch, var(--surface-alt) 60%, var(--cream-50)) 8px 16px);
+  position: relative;
+  display: grid; place-items: center;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.fn-imgcard.is-selected .placeholder::after {
+  content: "";
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 22px; height: 22px;
+  border-radius: 999px;
+  background: var(--accent) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>") center / 14px no-repeat;
+}
+.fn-imgcard .lbl {
+  padding: 12px 14px;
+  font-size: 15px;
+  color: var(--text);
+}
+
+/* RankList */
+.fn-rank { display: flex; flex-direction: column; gap: 10px; }
+.fn-rank-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 18px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  cursor: grab;
+}
+.fn-rank-row .num {
+  width: 28px; height: 28px;
+  border-radius: 999px;
+  background: var(--surface-alt);
+  color: var(--text);
+  display: grid; place-items: center;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+}
+.fn-rank-row .lbl { flex: 1; font-size: 15px; }
+.fn-rank-row .grip {
+  display: grid; gap: 3px;
+  color: var(--text-faint);
+}
+.fn-rank-row .grip span {
+  width: 14px; height: 2px;
+  background: currentColor;
+  border-radius: 1px;
+}
+.fn-rank-row.is-dragging {
+  background: var(--accent-fg);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-3);
+  transform: rotate(-1deg);
+  cursor: grabbing;
+}
+
+/* PriceCard */
+.fn-price {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  display: flex; align-items: center; gap: 16px;
+  cursor: pointer;
+  transition: border-color var(--motion-small) var(--ease-standard),
+              background var(--motion-small) var(--ease-standard);
+  position: relative;
+}
+.fn-price:hover { border-color: var(--border-strong); }
+.fn-price.is-selected {
+  border-color: var(--accent);
+  background: color-mix(in oklch, var(--accent) 5%, var(--surface));
+}
+.fn-price .marker {
+  width: 22px; height: 22px; border-radius: 999px;
+  border: 1.5px solid var(--border-strong);
+  flex-shrink: 0;
+}
+.fn-price.is-selected .marker {
+  border-color: var(--accent);
+  background: var(--accent);
+  display: grid; place-items: center;
+}
+.fn-price.is-selected .marker::after {
+  content: ""; width: 8px; height: 8px; border-radius: 999px; background: var(--accent-fg);
+}
+.fn-price .body { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.fn-price .title { font-size: 15px; font-weight: 500; color: var(--text); }
+.fn-price .perunit { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
+.fn-price .price-stack { text-align: right; }
+.fn-price .big {
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 1;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.fn-price .term { font-size: 11px; font-family: var(--font-mono); color: var(--text-muted); margin-top: 4px; letter-spacing: 0.04em; text-transform: uppercase; }
+.fn-price .save-pill {
+  position: absolute;
+  top: -10px; right: 16px;
+  background: var(--accent-deep);
+  color: var(--accent-fg);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+/* PlanToggle */
+.fn-plan {
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--surface-alt);
+  padding: 4px;
+  border-radius: 999px;
+  position: relative;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  width: 100%;
+}
+.fn-plan button {
+  background: transparent;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 999px;
+  color: var(--text-muted);
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+  font-family: inherit;
+  font-size: inherit;
+  transition: color var(--motion-small) var(--ease-standard);
+}
+.fn-plan button.is-selected { color: var(--text); font-weight: 500; }
+.fn-plan-pill {
+  position: absolute;
+  top: 4px; bottom: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  background: var(--surface);
+  border-radius: 999px;
+  box-shadow: var(--shadow-1);
+  transition: transform var(--motion-medium) var(--ease-emphasis);
+}
+.fn-plan[data-pos="1"] .fn-plan-pill { transform: translateX(100%); }
+
+/* TrialBadge */
+.fn-trial-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: color-mix(in oklch, var(--accent) 14%, var(--surface));
+  color: var(--accent-deep);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-weight: 500;
+}
+.fn-trial-badge::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+/* SocialProofRow */
+.fn-proof {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 0;
+}
+.fn-proof-cell {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  text-align: center;
+  padding: 0 12px;
+  border-right: 1px solid var(--border);
+}
+.fn-proof-cell:last-child { border-right: none; }
+.fn-proof-cell .num {
+  font-family: var(--font-display);
+  font-size: 24px;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  display: flex; align-items: center; gap: 4px;
+}
+.fn-proof-cell .num svg { width: 16px; height: 16px; color: var(--warning); }
+.fn-proof-cell .lbl {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* TestimonialCard */
+.fn-testimonial {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.fn-testimonial .quote {
+  font-family: var(--font-display);
+  font-size: 19px;
+  line-height: 1.4;
+  color: var(--text);
+  letter-spacing: -0.005em;
+}
+.fn-testimonial .quote::before { content: "“"; color: var(--accent); margin-right: 2px; }
+.fn-testimonial .quote::after  { content: "”"; color: var(--accent); margin-left: 2px; }
+.fn-testimonial .who { display: flex; align-items: center; gap: 12px; }
+.fn-testimonial .avatar {
+  width: 36px; height: 36px;
+  border-radius: 999px;
+  background:
+    conic-gradient(from 120deg,
+      var(--accent),
+      color-mix(in oklch, var(--accent) 50%, var(--cream-200)),
+      var(--accent));
+  position: relative;
+  flex-shrink: 0;
+}
+.fn-testimonial .avatar::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  background: var(--surface);
+  border-radius: 999px;
+}
+.fn-testimonial .meta {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+.fn-testimonial .meta strong { color: var(--text); font-weight: 500; }
+
+/* BenefitList */
+.fn-benefits { display: flex; flex-direction: column; gap: 10px; }
+.fn-benefits .row { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; color: var(--text); line-height: 1.5; }
+.fn-benefits .check {
+  width: 22px; height: 22px;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--accent) 18%, var(--surface));
+  display: grid; place-items: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.fn-benefits .check svg { width: 12px; height: 12px; color: var(--accent-deep); }
+
+/* Disclaimer */
+.fn-disclaimer {
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--text-faint);
+  text-align: center;
+  margin: 0;
+}
+.fn-disclaimer a { color: var(--text-muted); text-decoration: underline; }
+
+/* ScoreReadout */
+.fn-score {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.fn-score .head { display: flex; align-items: baseline; justify-content: space-between; }
+.fn-score .num {
+  font-family: var(--font-display);
+  font-size: 36px;
+  letter-spacing: -0.01em;
+}
+.fn-score .num em { font-style: normal; color: var(--text-muted); font-size: 0.6em; }
+.fn-score .band-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 500;
+}
+.fn-score-bar {
+  height: 12px;
+  border-radius: 999px;
+  background:
+    linear-gradient(to right,
+      var(--result-1) 0%, var(--result-1) 33%,
+      var(--result-2) 33%, var(--result-2) 66%,
+      var(--result-3) 66%, var(--result-3) 100%);
+  position: relative;
+}
+.fn-score-bar .marker {
+  position: absolute;
+  top: 50%;
+  width: 18px; height: 18px;
+  border-radius: 999px;
+  background: var(--accent-fg);
+  border: 3px solid var(--text);
+  transform: translate(-50%, -50%);
+  box-shadow: var(--shadow-2);
+}
+.fn-score-bar .ticks { position: absolute; inset: 0; }
+.fn-score-bar .ticks span {
+  position: absolute;
+  top: 100%; margin-top: 6px;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+/* PersonaReveal */
+.fn-persona {
+  border-radius: var(--radius-xl);
+  padding: 32px 24px;
+  display: flex; flex-direction: column; gap: 14px;
+  text-align: center;
+  background: color-mix(in oklch, var(--persona-color) 14%, var(--surface));
+  border: 1px solid color-mix(in oklch, var(--persona-color) 40%, var(--border));
+}
+.fn-persona .eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--persona-color);
+  font-weight: 500;
+}
+.fn-persona .name {
+  font-family: var(--font-display);
+  font-size: 44px;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  color: var(--text);
+}
+.fn-persona .name em { font-style: italic; color: var(--persona-color); }
+.fn-persona .blurb {
+  font-size: 15px;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+/* ResultBand */
+.fn-band {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+  background: color-mix(in oklch, var(--band-color) 16%, var(--surface));
+  color: color-mix(in oklch, var(--band-color) 70%, var(--text));
+  border: 1px solid color-mix(in oklch, var(--band-color) 35%, var(--border));
+}
+.fn-band::before {
+  content: ""; width: 8px; height: 8px; border-radius: 999px; background: var(--band-color);
+}
+
+/* ============================================================
+   SCREEN ANATOMY (annotated diagram)
+   ============================================================ */
+.anatomy-wrap { display: grid; grid-template-columns: 375px 1fr; gap: 64px; align-items: start; }
+.anatomy-screen {
+  width: 375px;
+  height: 720px;
+  background: var(--cream-100);
+  border: 1px solid var(--neutral-200);
+  border-radius: 36px;
+  overflow: hidden;
+  position: relative;
+  display: flex; flex-direction: column;
+}
+.anat-row { position: relative; }
+.anat-row.progress {
+  padding: 20px 24px 12px;
+  background: var(--cream-100);
+}
+.anat-row.topbar {
+  padding: 8px 16px 0;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.anat-row.body {
+  flex: 1;
+  padding: 28px 24px 24px;
+  display: flex; flex-direction: column; gap: 24px;
+}
+.anat-row.footer {
+  padding: 16px 24px 32px;
+  background: var(--cream-100);
+  border-top: 1px solid var(--cream-300);
+  display: flex; flex-direction: column; gap: 10px;
+}
+
+.anat-label {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--neutral-600);
+  white-space: nowrap;
+}
+.anat-label::before {
+  content: "";
+  display: inline-block;
+  width: 36px; height: 1px;
+  background: var(--neutral-400);
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.anatomy-key {
+  display: flex; flex-direction: column; gap: 24px;
+  padding-top: 12px;
+}
+.anatomy-key .row { display: grid; grid-template-columns: 96px 1fr; gap: 16px; padding-bottom: 18px; border-bottom: 1px solid var(--neutral-200); }
+.anatomy-key .row:last-child { border-bottom: none; }
+.anatomy-key .row .slot {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--neutral-700);
+  padding-top: 2px;
+}
+.anatomy-key .row h4 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 22px;
+  color: var(--neutral-900);
+}
+.anatomy-key .row p { margin: 4px 0 0; font-size: 13.5px; color: var(--neutral-700); line-height: 1.55; }
+
+/* ---------- Transition diagram ---------- */
+.transition-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+  align-items: center;
+  padding: 32px;
+  background: var(--neutral-0);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-md);
+}
+.trans-frames {
+  position: relative;
+  height: 360px;
+  background: var(--neutral-50);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.trans-frame {
+  position: absolute;
+  width: 200px; height: 320px;
+  border-radius: 24px;
+  background: var(--cream-100);
+  border: 1px solid var(--cream-300);
+  display: flex; flex-direction: column;
+  padding: 18px 16px;
+  gap: 12px;
+  box-shadow: var(--shadow-2);
+}
+.trans-frame .pb { height: 3px; background: var(--accent); width: 38%; border-radius: 999px; }
+.trans-frame .h  { font-family: var(--font-display); font-size: 22px; line-height: 1.15; color: var(--olive-900); }
+.trans-frame .h em { font-style: italic; color: var(--accent-deep); }
+.trans-frame .opt { background: var(--cream-50); border: 1.5px solid var(--cream-300); border-radius: 14px; padding: 10px 12px; font-size: 12px; color: var(--olive-900); }
+.trans-frame .opt.sel { border-color: var(--accent); background: color-mix(in oklch, var(--accent) 6%, var(--cream-50)); }
+.trans-frame .cta { margin-top: auto; background: var(--accent); color: var(--cream-50); padding: 12px; border-radius: 14px; text-align: center; font-size: 13px; }
+
+.trans-frame.outgoing { animation: outgoing 3.6s var(--ease-emphasis) infinite; z-index: 1; }
+.trans-frame.incoming { animation: incoming 3.6s var(--ease-emphasis) infinite; z-index: 2; }
+@keyframes outgoing {
+  0%, 30%       { transform: translateX(0); opacity: 1; }
+  60%, 100%     { transform: translateX(-100px); opacity: 0; }
+}
+@keyframes incoming {
+  0%, 30%       { transform: translateX(220px); opacity: 0; }
+  60%, 100%     { transform: translateX(0); opacity: 1; }
+}
+
+.trans-spec {
+  font-family: var(--font-sans);
+  display: flex; flex-direction: column; gap: 16px;
+}
+.trans-spec h3 {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 26px;
+  margin: 0;
+}
+.trans-spec dl {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 6px 12px;
+  margin: 0;
+  font-size: 13px;
+}
+.trans-spec dt {
+  font-family: var(--font-mono);
+  color: var(--neutral-500);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  align-self: center;
+}
+.trans-spec dd {
+  margin: 0;
+  color: var(--neutral-800);
+}
+.trans-spec dd code {
+  font-family: var(--font-mono);
+  background: var(--neutral-100);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+/* ============================================================
+   COMPOSITIONS (4 example screens, mobile)
+   ============================================================ */
+.comp-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+.comp {
+  display: flex; flex-direction: column; gap: 12px;
+}
+.comp-frame {
+  width: 100%;
+  aspect-ratio: 375 / 720;
+  background: var(--cream-100);
+  border-radius: 32px;
+  border: 1px solid var(--neutral-200);
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  position: relative;
+}
+.comp-progress { padding: 16px 20px 8px; }
+.comp-progress .pb { height: 3px; background: var(--cream-300); border-radius: 999px; overflow: hidden; }
+.comp-progress .pb > div { background: var(--accent); height: 100%; border-radius: inherit; }
+.comp-topbar { padding: 4px 12px 0; display: flex; align-items: center; }
+.comp-body { flex: 1; padding: 20px 22px 16px; display: flex; flex-direction: column; gap: 16px; min-height: 0; }
+.comp-footer { padding: 10px 22px 24px; display: flex; flex-direction: column; gap: 8px; }
+
+.comp .title-row {
+  display: flex; align-items: baseline; justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--neutral-500);
+}
+.comp .title-row .name {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 18px;
+  letter-spacing: -0.005em;
+  color: var(--neutral-900);
+  text-transform: none;
+}
+
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<!--
+  All JSX is inlined below in a single <script type="text/babel"> block.
+  External relative .jsx fetches require a preview token the browser doesn't have,
+  so external loading silently 401s — inline is the reliable path.
+-->
+<script type="text/babel" id="canvas-src">
+
+// DesignCanvas.jsx — Figma-ish design canvas wrapper
+// Warm gray grid bg + Sections + Artboards + PostIt notes.
+// Artboards are reorderable (grip-drag), labels/titles are inline-editable,
+// and any artboard can be opened in a fullscreen focus overlay (←/→/Esc).
+// State persists to a .design-canvas.state.json sidecar via the host
+// bridge. No assets, no deps.
+//
+// Usage:
+//   <DesignCanvas>
+//     <DCSection id="onboarding" title="Onboarding" subtitle="First-run variants">
+//       <DCArtboard id="a" label="A · Dusk" width={260} height={480}>…</DCArtboard>
+//       <DCArtboard id="b" label="B · Minimal" width={260} height={480}>…</DCArtboard>
+//     </DCSection>
+//   </DesignCanvas>
+
+const DC = {
+  bg: '#f0eee9',
+  grid: 'rgba(0,0,0,0.06)',
+  label: 'rgba(60,50,40,0.7)',
+  title: 'rgba(40,30,20,0.85)',
+  subtitle: 'rgba(60,50,40,0.6)',
+  postitBg: '#fef4a8',
+  postitText: '#5a4a2a',
+  font: '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif',
+};
+
+// One-time CSS injection (classes are dc-prefixed so they don't collide with
+// the hosted design's own styles).
+if (typeof document !== 'undefined' && !document.getElementById('dc-styles')) {
+  const s = document.createElement('style');
+  s.id = 'dc-styles';
+  s.textContent = [
+    '.dc-editable{cursor:text;outline:none;white-space:nowrap;border-radius:3px;padding:0 2px;margin:0 -2px}',
+    '.dc-editable:focus{background:#fff;box-shadow:0 0 0 1.5px #c96442}',
+    '[data-dc-slot]{transition:transform .18s cubic-bezier(.2,.7,.3,1)}',
+    '[data-dc-slot].dc-dragging{transition:none;z-index:10;pointer-events:none}',
+    '[data-dc-slot].dc-dragging .dc-card{box-shadow:0 12px 40px rgba(0,0,0,.25),0 0 0 2px #c96442;transform:scale(1.02)}',
+    '.dc-card{transition:box-shadow .15s,transform .15s}',
+    '.dc-card *{scrollbar-width:none}',
+    '.dc-card *::-webkit-scrollbar{display:none}',
+    '.dc-labelrow{display:flex;align-items:center;gap:4px;height:24px}',
+    '.dc-grip{cursor:grab;display:flex;align-items:center;padding:5px 4px;border-radius:4px;transition:background .12s}',
+    '.dc-grip:hover{background:rgba(0,0,0,.08)}',
+    '.dc-grip:active{cursor:grabbing}',
+    '.dc-labeltext{cursor:pointer;border-radius:4px;padding:3px 6px;display:flex;align-items:center;transition:background .12s}',
+    '.dc-labeltext:hover{background:rgba(0,0,0,.05)}',
+    '.dc-expand{position:absolute;bottom:100%;right:0;margin-bottom:5px;z-index:2;opacity:0;transition:opacity .12s,background .12s;',
+    '  width:22px;height:22px;border-radius:5px;border:none;cursor:pointer;padding:0;',
+    '  background:transparent;color:rgba(60,50,40,.7);display:flex;align-items:center;justify-content:center}',
+    '.dc-expand:hover{background:rgba(0,0,0,.06);color:#2a251f}',
+    '[data-dc-slot]:hover .dc-expand{opacity:1}',
+  ].join('\n');
+  document.head.appendChild(s);
+}
+
+const DCCtx = React.createContext(null);
+
+// ─────────────────────────────────────────────────────────────
+// DesignCanvas — stateful wrapper around the pan/zoom viewport.
+// Owns runtime state (per-section order, renamed titles/labels, focused
+// artboard). Order/titles/labels persist to a .design-canvas.state.json
+// sidecar next to the HTML. Reads go via plain fetch() so the saved
+// arrangement is visible anywhere the HTML + sidecar are served together
+// (omelette preview, direct link, downloaded zip). Writes go through the
+// host's window.omelette bridge — editing requires the omelette runtime.
+// Focus is ephemeral.
+// ─────────────────────────────────────────────────────────────
+const DC_STATE_FILE = '.design-canvas.state.json';
+
+function DesignCanvas({ children, minScale, maxScale, style }) {
+  const [state, setState] = React.useState({ sections: {}, focus: null });
+  // Hold rendering until the sidecar read settles so the saved order/titles
+  // appear on first paint (no source-order flash). didRead gates writes until
+  // the read settles so the empty initial state can't clobber a slow read;
+  // skipNextWrite suppresses the one echo-write that would otherwise follow
+  // hydration.
+  const [ready, setReady] = React.useState(false);
+  const didRead = React.useRef(false);
+  const skipNextWrite = React.useRef(false);
+
+  React.useEffect(() => {
+    let off = false;
+    fetch('./' + DC_STATE_FILE)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((saved) => {
+        if (off || !saved || !saved.sections) return;
+        skipNextWrite.current = true;
+        setState((s) => ({ ...s, sections: saved.sections }));
+      })
+      .catch(() => {})
+      .finally(() => { didRead.current = true; if (!off) setReady(true); });
+    const t = setTimeout(() => { if (!off) setReady(true); }, 150);
+    return () => { off = true; clearTimeout(t); };
+  }, []);
+
+  React.useEffect(() => {
+    if (!didRead.current) return;
+    if (skipNextWrite.current) { skipNextWrite.current = false; return; }
+    const t = setTimeout(() => {
+      window.omelette?.writeFile(DC_STATE_FILE, JSON.stringify({ sections: state.sections })).catch(() => {});
+    }, 250);
+    return () => clearTimeout(t);
+  }, [state.sections]);
+
+  // Build registries synchronously from children so FocusOverlay can read
+  // them in the same render. Only direct DCSection > DCArtboard children are
+  // walked — wrapping them in other elements opts out of focus/reorder.
+  const registry = {};     // slotId -> { sectionId, artboard }
+  const sectionMeta = {};  // sectionId -> { title, subtitle, slotIds[] }
+  const sectionOrder = [];
+  React.Children.forEach(children, (sec) => {
+    if (!sec || sec.type !== DCSection) return;
+    const sid = sec.props.id ?? sec.props.title;
+    if (!sid) return;
+    sectionOrder.push(sid);
+    const persisted = state.sections[sid] || {};
+    const srcIds = [];
+    React.Children.forEach(sec.props.children, (ab) => {
+      if (!ab || ab.type !== DCArtboard) return;
+      const aid = ab.props.id ?? ab.props.label;
+      if (!aid) return;
+      registry[`${sid}/${aid}`] = { sectionId: sid, artboard: ab };
+      srcIds.push(aid);
+    });
+    const kept = (persisted.order || []).filter((k) => srcIds.includes(k));
+    sectionMeta[sid] = {
+      title: persisted.title ?? sec.props.title,
+      subtitle: sec.props.subtitle,
+      slotIds: [...kept, ...srcIds.filter((k) => !kept.includes(k))],
+    };
+  });
+
+  const api = React.useMemo(() => ({
+    state,
+    section: (id) => state.sections[id] || {},
+    patchSection: (id, p) => setState((s) => ({
+      ...s,
+      sections: { ...s.sections, [id]: { ...s.sections[id], ...(typeof p === 'function' ? p(s.sections[id] || {}) : p) } },
+    })),
+    setFocus: (slotId) => setState((s) => ({ ...s, focus: slotId })),
+  }), [state]);
+
+  // Esc exits focus; any outside pointerdown commits an in-progress rename.
+  React.useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') api.setFocus(null); };
+    const onPd = (e) => {
+      const ae = document.activeElement;
+      if (ae && ae.isContentEditable && !ae.contains(e.target)) ae.blur();
+    };
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('pointerdown', onPd, true);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.removeEventListener('pointerdown', onPd, true);
+    };
+  }, [api]);
+
+  return (
+    <DCCtx.Provider value={api}>
+      <DCViewport minScale={minScale} maxScale={maxScale} style={style}>{ready && children}</DCViewport>
+      {state.focus && registry[state.focus] && (
+        <DCFocusOverlay entry={registry[state.focus]} sectionMeta={sectionMeta} sectionOrder={sectionOrder} />
+      )}
+    </DCCtx.Provider>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// DCViewport — transform-based pan/zoom (internal)
+//
+// Input mapping (Figma-style):
+//   • trackpad pinch  → zoom   (ctrlKey wheel; Safari gesture* events)
+//   • trackpad scroll → pan    (two-finger)
+//   • mouse wheel     → zoom   (notched; distinguished from trackpad scroll)
+//   • middle-drag / primary-drag-on-bg → pan
+//
+// Transform state lives in a ref and is written straight to the DOM
+// (translate3d + will-change) so wheel ticks don't go through React —
+// keeps pans at 60fps on dense canvases.
+// ─────────────────────────────────────────────────────────────
+function DCViewport({ children, minScale = 0.1, maxScale = 8, style = {} }) {
+  const vpRef = React.useRef(null);
+  const worldRef = React.useRef(null);
+  const tf = React.useRef({ x: 0, y: 0, scale: 1 });
+
+  const apply = React.useCallback(() => {
+    const { x, y, scale } = tf.current;
+    const el = worldRef.current;
+    if (el) el.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scale})`;
+  }, []);
+
+  React.useEffect(() => {
+    const vp = vpRef.current;
+    if (!vp) return;
+
+    const zoomAt = (cx, cy, factor) => {
+      const r = vp.getBoundingClientRect();
+      const px = cx - r.left, py = cy - r.top;
+      const t = tf.current;
+      const next = Math.min(maxScale, Math.max(minScale, t.scale * factor));
+      const k = next / t.scale;
+      // keep the world point under the cursor fixed
+      t.x = px - (px - t.x) * k;
+      t.y = py - (py - t.y) * k;
+      t.scale = next;
+      apply();
+    };
+
+    // Mouse-wheel vs trackpad-scroll heuristic. A physical wheel sends
+    // line-mode deltas (Firefox) or large integer pixel deltas with no X
+    // component (Chrome/Safari, typically multiples of 100/120). Trackpad
+    // two-finger scroll sends small/fractional pixel deltas, often with
+    // non-zero deltaX. ctrlKey is set by the browser for trackpad pinch.
+    const isMouseWheel = (e) =>
+      e.deltaMode !== 0 ||
+      (e.deltaX === 0 && Number.isInteger(e.deltaY) && Math.abs(e.deltaY) >= 40);
+
+    const onWheel = (e) => {
+      e.preventDefault();
+      if (isGesturing) return; // Safari: gesture* owns the pinch — discard concurrent wheels
+      if (e.ctrlKey) {
+        // trackpad pinch (or explicit ctrl+wheel)
+        zoomAt(e.clientX, e.clientY, Math.exp(-e.deltaY * 0.01));
+      } else if (isMouseWheel(e)) {
+        // notched mouse wheel — fixed-ratio step per click
+        zoomAt(e.clientX, e.clientY, Math.exp(-Math.sign(e.deltaY) * 0.18));
+      } else {
+        // trackpad two-finger scroll — pan
+        tf.current.x -= e.deltaX;
+        tf.current.y -= e.deltaY;
+        apply();
+      }
+    };
+
+    // Safari sends native gesture* events for trackpad pinch with a smooth
+    // e.scale; preferring these over the ctrl+wheel fallback gives a much
+    // better feel there. No-ops on other browsers. Safari also fires
+    // ctrlKey wheel events during the same pinch — isGesturing makes
+    // onWheel drop those entirely so they neither zoom nor pan.
+    let gsBase = 1;
+    let isGesturing = false;
+    const onGestureStart = (e) => { e.preventDefault(); isGesturing = true; gsBase = tf.current.scale; };
+    const onGestureChange = (e) => {
+      e.preventDefault();
+      zoomAt(e.clientX, e.clientY, (gsBase * e.scale) / tf.current.scale);
+    };
+    const onGestureEnd = (e) => { e.preventDefault(); isGesturing = false; };
+
+    // Drag-pan: middle button anywhere, or primary button on canvas
+    // background (anything that isn't an artboard or an inline editor).
+    let drag = null;
+    const onPointerDown = (e) => {
+      const onBg = !e.target.closest('[data-dc-slot], .dc-editable');
+      if (!(e.button === 1 || (e.button === 0 && onBg))) return;
+      e.preventDefault();
+      vp.setPointerCapture(e.pointerId);
+      drag = { id: e.pointerId, lx: e.clientX, ly: e.clientY };
+      vp.style.cursor = 'grabbing';
+    };
+    const onPointerMove = (e) => {
+      if (!drag || e.pointerId !== drag.id) return;
+      tf.current.x += e.clientX - drag.lx;
+      tf.current.y += e.clientY - drag.ly;
+      drag.lx = e.clientX; drag.ly = e.clientY;
+      apply();
+    };
+    const onPointerUp = (e) => {
+      if (!drag || e.pointerId !== drag.id) return;
+      vp.releasePointerCapture(e.pointerId);
+      drag = null;
+      vp.style.cursor = '';
+    };
+
+    vp.addEventListener('wheel', onWheel, { passive: false });
+    vp.addEventListener('gesturestart', onGestureStart, { passive: false });
+    vp.addEventListener('gesturechange', onGestureChange, { passive: false });
+    vp.addEventListener('gestureend', onGestureEnd, { passive: false });
+    vp.addEventListener('pointerdown', onPointerDown);
+    vp.addEventListener('pointermove', onPointerMove);
+    vp.addEventListener('pointerup', onPointerUp);
+    vp.addEventListener('pointercancel', onPointerUp);
+    return () => {
+      vp.removeEventListener('wheel', onWheel);
+      vp.removeEventListener('gesturestart', onGestureStart);
+      vp.removeEventListener('gesturechange', onGestureChange);
+      vp.removeEventListener('gestureend', onGestureEnd);
+      vp.removeEventListener('pointerdown', onPointerDown);
+      vp.removeEventListener('pointermove', onPointerMove);
+      vp.removeEventListener('pointerup', onPointerUp);
+      vp.removeEventListener('pointercancel', onPointerUp);
+    };
+  }, [apply, minScale, maxScale]);
+
+  const gridSvg = `url("data:image/svg+xml,%3Csvg width='120' height='120' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M120 0H0v120' fill='none' stroke='${encodeURIComponent(DC.grid)}' stroke-width='1'/%3E%3C/svg%3E")`;
+  return (
+    <div
+      ref={vpRef}
+      className="design-canvas"
+      style={{
+        height: '100vh', width: '100vw',
+        background: DC.bg,
+        overflow: 'hidden',
+        overscrollBehavior: 'none',
+        touchAction: 'none',
+        position: 'relative',
+        fontFamily: DC.font,
+        boxSizing: 'border-box',
+        ...style,
+      }}
+    >
+      <div
+        ref={worldRef}
+        style={{
+          position: 'absolute', top: 0, left: 0,
+          transformOrigin: '0 0',
+          willChange: 'transform',
+          width: 'max-content', minWidth: '100%',
+          minHeight: '100%',
+          padding: '60px 0 80px',
+        }}
+      >
+        <div style={{ position: 'absolute', inset: -6000, backgroundImage: gridSvg, backgroundSize: '120px 120px', pointerEvents: 'none', zIndex: -1 }} />
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// DCSection — editable title + h-row of artboards in persisted order
+// ─────────────────────────────────────────────────────────────
+function DCSection({ id, title, subtitle, children, gap = 48 }) {
+  const ctx = React.useContext(DCCtx);
+  const sid = id ?? title;
+  const all = React.Children.toArray(children);
+  const artboards = all.filter((c) => c && c.type === DCArtboard);
+  const rest = all.filter((c) => !(c && c.type === DCArtboard));
+  const srcOrder = artboards.map((a) => a.props.id ?? a.props.label);
+  const sec = (ctx && sid && ctx.section(sid)) || {};
+
+  const order = React.useMemo(() => {
+    const kept = (sec.order || []).filter((k) => srcOrder.includes(k));
+    return [...kept, ...srcOrder.filter((k) => !kept.includes(k))];
+  }, [sec.order, srcOrder.join('|')]);
+
+  const byId = Object.fromEntries(artboards.map((a) => [a.props.id ?? a.props.label, a]));
+
+  return (
+    <div data-dc-section={sid} style={{ marginBottom: 80, position: 'relative' }}>
+      <div style={{ padding: '0 60px 56px' }}>
+        <DCEditable tag="div" value={sec.title ?? title}
+          onChange={(v) => ctx && sid && ctx.patchSection(sid, { title: v })}
+          style={{ fontSize: 28, fontWeight: 600, color: DC.title, letterSpacing: -0.4, marginBottom: 6, display: 'inline-block' }} />
+        {subtitle && <div style={{ fontSize: 16, color: DC.subtitle }}>{subtitle}</div>}
+      </div>
+      <div style={{ display: 'flex', gap, padding: '0 60px', alignItems: 'flex-start', width: 'max-content' }}>
+        {order.map((k) => (
+          <DCArtboardFrame key={k} sectionId={sid} artboard={byId[k]} order={order}
+            label={(sec.labels || {})[k] ?? byId[k].props.label}
+            onRename={(v) => ctx && ctx.patchSection(sid, (x) => ({ labels: { ...x.labels, [k]: v } }))}
+            onReorder={(next) => ctx && ctx.patchSection(sid, { order: next })}
+            onFocus={() => ctx && ctx.setFocus(`${sid}/${k}`)} />
+        ))}
+      </div>
+      {rest}
+    </div>
+  );
+}
+
+// DCArtboard — marker; rendered by DCArtboardFrame via DCSection.
+function DCArtboard() { return null; }
+
+function DCArtboardFrame({ sectionId, artboard, label, order, onRename, onReorder, onFocus }) {
+  const { id: rawId, label: rawLabel, width = 260, height = 480, children, style = {} } = artboard.props;
+  const id = rawId ?? rawLabel;
+  const ref = React.useRef(null);
+
+  // Live drag-reorder: dragged card sticks to cursor; siblings slide into
+  // their would-be slots in real time via transforms. DOM order only
+  // changes on drop.
+  const onGripDown = (e) => {
+    e.preventDefault(); e.stopPropagation();
+    const me = ref.current;
+    // translateX is applied in local (pre-scale) space but pointer deltas and
+    // getBoundingClientRect().left are screen-space — divide by the viewport's
+    // current scale so the dragged card tracks the cursor at any zoom level.
+    const scale = me.getBoundingClientRect().width / me.offsetWidth || 1;
+    const peers = Array.from(document.querySelectorAll(`[data-dc-section="${sectionId}"] [data-dc-slot]`));
+    const homes = peers.map((el) => ({ el, id: el.dataset.dcSlot, x: el.getBoundingClientRect().left }));
+    const slotXs = homes.map((h) => h.x);
+    const startIdx = order.indexOf(id);
+    const startX = e.clientX;
+    let liveOrder = order.slice();
+    me.classList.add('dc-dragging');
+
+    const layout = () => {
+      for (const h of homes) {
+        if (h.id === id) continue;
+        const slot = liveOrder.indexOf(h.id);
+        h.el.style.transform = `translateX(${(slotXs[slot] - h.x) / scale}px)`;
+      }
+    };
+
+    const move = (ev) => {
+      const dx = ev.clientX - startX;
+      me.style.transform = `translateX(${dx / scale}px)`;
+      const cur = homes[startIdx].x + dx;
+      let nearest = 0, best = Infinity;
+      for (let i = 0; i < slotXs.length; i++) {
+        const d = Math.abs(slotXs[i] - cur);
+        if (d < best) { best = d; nearest = i; }
+      }
+      if (liveOrder.indexOf(id) !== nearest) {
+        liveOrder = order.filter((k) => k !== id);
+        liveOrder.splice(nearest, 0, id);
+        layout();
+      }
+    };
+
+    const up = () => {
+      document.removeEventListener('pointermove', move);
+      document.removeEventListener('pointerup', up);
+      const finalSlot = liveOrder.indexOf(id);
+      me.classList.remove('dc-dragging');
+      me.style.transform = `translateX(${(slotXs[finalSlot] - homes[startIdx].x) / scale}px)`;
+      // After the settle transition, kill transitions + clear transforms +
+      // commit the reorder in the same frame so there's no visual snap-back.
+      setTimeout(() => {
+        for (const h of homes) { h.el.style.transition = 'none'; h.el.style.transform = ''; }
+        if (liveOrder.join('|') !== order.join('|')) onReorder(liveOrder);
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          for (const h of homes) h.el.style.transition = '';
+        }));
+      }, 180);
+    };
+    document.addEventListener('pointermove', move);
+    document.addEventListener('pointerup', up);
+  };
+
+  return (
+    <div ref={ref} data-dc-slot={id} style={{ position: 'relative', flexShrink: 0 }}>
+      <div className="dc-labelrow" style={{ position: 'absolute', bottom: '100%', left: -4, marginBottom: 4, color: DC.label }}>
+        <div className="dc-grip" onPointerDown={onGripDown} title="Drag to reorder">
+          <svg width="9" height="13" viewBox="0 0 9 13" fill="currentColor"><circle cx="2" cy="2" r="1.1"/><circle cx="7" cy="2" r="1.1"/><circle cx="2" cy="6.5" r="1.1"/><circle cx="7" cy="6.5" r="1.1"/><circle cx="2" cy="11" r="1.1"/><circle cx="7" cy="11" r="1.1"/></svg>
+        </div>
+        <div className="dc-labeltext" onClick={onFocus} title="Click to focus">
+          <DCEditable value={label} onChange={onRename} onClick={(e) => e.stopPropagation()}
+            style={{ fontSize: 15, fontWeight: 500, color: DC.label, lineHeight: 1 }} />
+        </div>
+      </div>
+      <button className="dc-expand" onClick={onFocus} onPointerDown={(e) => e.stopPropagation()} title="Focus">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"><path d="M7 1h4v4M5 11H1V7M11 1L7.5 4.5M1 11l3.5-3.5"/></svg>
+      </button>
+      <div className="dc-card"
+        style={{ borderRadius: 2, boxShadow: '0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06)', overflow: 'hidden', width, height, background: '#fff', ...style }}>
+        {children || <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#bbb', fontSize: 13, fontFamily: DC.font }}>{id}</div>}
+      </div>
+    </div>
+  );
+}
+
+// Inline rename — commits on blur or Enter.
+function DCEditable({ value, onChange, style, tag = 'span', onClick }) {
+  const T = tag;
+  return (
+    <T className="dc-editable" contentEditable suppressContentEditableWarning
+      onClick={onClick}
+      onPointerDown={(e) => e.stopPropagation()}
+      onBlur={(e) => onChange && onChange(e.currentTarget.textContent)}
+      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); e.currentTarget.blur(); } }}
+      style={style}>{value}</T>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Focus mode — overlay one artboard; ←/→ within section, ↑/↓ across
+// sections, Esc or backdrop click to exit.
+// ─────────────────────────────────────────────────────────────
+function DCFocusOverlay({ entry, sectionMeta, sectionOrder }) {
+  const ctx = React.useContext(DCCtx);
+  const { sectionId, artboard } = entry;
+  const sec = ctx.section(sectionId);
+  const meta = sectionMeta[sectionId];
+  const peers = meta.slotIds;
+  const aid = artboard.props.id ?? artboard.props.label;
+  const idx = peers.indexOf(aid);
+  const secIdx = sectionOrder.indexOf(sectionId);
+
+  const go = (d) => { const n = peers[(idx + d + peers.length) % peers.length]; if (n) ctx.setFocus(`${sectionId}/${n}`); };
+  const goSection = (d) => {
+    const ns = sectionOrder[(secIdx + d + sectionOrder.length) % sectionOrder.length];
+    const first = sectionMeta[ns] && sectionMeta[ns].slotIds[0];
+    if (first) ctx.setFocus(`${ns}/${first}`);
+  };
+
+  React.useEffect(() => {
+    const k = (e) => {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
+      if (e.key === 'ArrowUp') { e.preventDefault(); goSection(-1); }
+      if (e.key === 'ArrowDown') { e.preventDefault(); goSection(1); }
+    };
+    document.addEventListener('keydown', k);
+    return () => document.removeEventListener('keydown', k);
+  });
+
+  const { width = 260, height = 480, children } = artboard.props;
+  const [vp, setVp] = React.useState({ w: window.innerWidth, h: window.innerHeight });
+  React.useEffect(() => { const r = () => setVp({ w: window.innerWidth, h: window.innerHeight }); window.addEventListener('resize', r); return () => window.removeEventListener('resize', r); }, []);
+  const scale = Math.max(0.1, Math.min((vp.w - 200) / width, (vp.h - 260) / height, 2));
+
+  const [ddOpen, setDd] = React.useState(false);
+  const Arrow = ({ dir, onClick }) => (
+    <button onClick={(e) => { e.stopPropagation(); onClick(); }}
+      style={{ position: 'absolute', top: '50%', [dir]: 28, transform: 'translateY(-50%)',
+        border: 'none', background: 'rgba(255,255,255,.08)', color: 'rgba(255,255,255,.9)',
+        width: 44, height: 44, borderRadius: 22, fontSize: 18, cursor: 'pointer',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background .15s' }}
+      onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,.18)')}
+      onMouseLeave={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,.08)')}>
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+        <path d={dir === 'left' ? 'M11 3L5 9l6 6' : 'M7 3l6 6-6 6'} /></svg>
+    </button>
+  );
+
+  // Portal to body so position:fixed is the real viewport regardless of any
+  // transform on DesignCanvas's ancestors (including the canvas zoom itself).
+  return ReactDOM.createPortal(
+    <div onClick={() => ctx.setFocus(null)}
+      onWheel={(e) => e.preventDefault()}
+      style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(24,20,16,.6)', backdropFilter: 'blur(14px)',
+        fontFamily: DC.font, color: '#fff' }}>
+
+      {/* top bar: section dropdown (left) · close (right) */}
+      <div onClick={(e) => e.stopPropagation()}
+        style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 72, display: 'flex', alignItems: 'flex-start', padding: '16px 20px 0', gap: 16 }}>
+        <div style={{ position: 'relative' }}>
+          <button onClick={() => setDd((o) => !o)}
+            style={{ border: 'none', background: 'transparent', color: '#fff', cursor: 'pointer', padding: '6px 8px',
+              borderRadius: 6, textAlign: 'left', fontFamily: 'inherit' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 18, fontWeight: 600, letterSpacing: -0.3 }}>{meta.title}</span>
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" style={{ opacity: .7 }}><path d="M2 4l3.5 3.5L9 4"/></svg>
+            </span>
+            {meta.subtitle && <span style={{ display: 'block', fontSize: 13, opacity: .6, fontWeight: 400, marginTop: 2 }}>{meta.subtitle}</span>}
+          </button>
+          {ddOpen && (
+            <div style={{ position: 'absolute', top: '100%', left: 0, marginTop: 4, background: '#2a251f', borderRadius: 8,
+              boxShadow: '0 8px 32px rgba(0,0,0,.4)', padding: 4, minWidth: 200, zIndex: 10 }}>
+              {sectionOrder.map((sid) => (
+                <button key={sid} onClick={() => { setDd(false); const f = sectionMeta[sid].slotIds[0]; if (f) ctx.setFocus(`${sid}/${f}`); }}
+                  style={{ display: 'block', width: '100%', textAlign: 'left', border: 'none', cursor: 'pointer',
+                    background: sid === sectionId ? 'rgba(255,255,255,.1)' : 'transparent', color: '#fff',
+                    padding: '8px 12px', borderRadius: 5, fontSize: 14, fontWeight: sid === sectionId ? 600 : 400, fontFamily: 'inherit' }}>
+                  {sectionMeta[sid].title}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+        <div style={{ flex: 1 }} />
+        <button onClick={() => ctx.setFocus(null)}
+          onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,.12)')}
+          onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+          style={{ border: 'none', background: 'transparent', color: 'rgba(255,255,255,.7)', width: 32, height: 32,
+            borderRadius: 16, fontSize: 20, cursor: 'pointer', lineHeight: 1, transition: 'background .12s' }}>×</button>
+      </div>
+
+      {/* card centered, label + index below — only the card itself stops
+          propagation so any backdrop click (including the margins around
+          the card) exits focus */}
+      <div
+        style={{ position: 'absolute', top: 64, bottom: 56, left: 100, right: 100, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16 }}>
+        <div onClick={(e) => e.stopPropagation()} style={{ width: width * scale, height: height * scale, position: 'relative' }}>
+          <div style={{ width, height, transform: `scale(${scale})`, transformOrigin: 'top left', background: '#fff', borderRadius: 2, overflow: 'hidden',
+            boxShadow: '0 20px 80px rgba(0,0,0,.4)' }}>
+            {children || <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#bbb' }}>{aid}</div>}
+          </div>
+        </div>
+        <div onClick={(e) => e.stopPropagation()} style={{ fontSize: 14, fontWeight: 500, opacity: .85, textAlign: 'center' }}>
+          {(sec.labels || {})[aid] ?? artboard.props.label}
+          <span style={{ opacity: .5, marginLeft: 10, fontVariantNumeric: 'tabular-nums' }}>{idx + 1} / {peers.length}</span>
+        </div>
+      </div>
+
+      <Arrow dir="left" onClick={() => go(-1)} />
+      <Arrow dir="right" onClick={() => go(1)} />
+
+      {/* dots */}
+      <div onClick={(e) => e.stopPropagation()}
+        style={{ position: 'absolute', bottom: 20, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 8 }}>
+        {peers.map((p, i) => (
+          <button key={p} onClick={() => ctx.setFocus(`${sectionId}/${p}`)}
+            style={{ border: 'none', padding: 0, cursor: 'pointer', width: 6, height: 6, borderRadius: 3,
+              background: i === idx ? '#fff' : 'rgba(255,255,255,.3)' }} />
+        ))}
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Post-it — absolute-positioned sticky note
+// ─────────────────────────────────────────────────────────────
+function DCPostIt({ children, top, left, right, bottom, rotate = -2, width = 180 }) {
+  return (
+    <div style={{
+      position: 'absolute', top, left, right, bottom, width,
+      background: DC.postitBg, padding: '14px 16px',
+      fontFamily: '"Comic Sans MS", "Marker Felt", "Segoe Print", cursive',
+      fontSize: 14, lineHeight: 1.4, color: DC.postitText,
+      boxShadow: '0 2px 8px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08)',
+      transform: `rotate(${rotate}deg)`,
+      zIndex: 5,
+    }}>{children}</div>
+  );
+}
+
+Object.assign(window, { DesignCanvas, DCSection, DCArtboard, DCPostIt });
+
+
+</script>
+
+<script type="text/babel" id="catalog-src">
+// Funnel-mode primitives — every component shown with all states.
+// All canonical names per brief: Screen, ProgressBar, Stack, Group, Spacer,
+// Heading, Body, Caption, Eyebrow, ChoiceList, MultiChoiceList, BinaryChoice,
+// ScaleInput, SliderInput, ShortTextInput, LongTextInput, ImageChoiceGrid,
+// RankList, PrimaryCTA, SecondaryLink, BackButton, PriceCard, PlanToggle,
+// TrialBadge, SocialProofRow, TestimonialCard, BenefitList, Disclaimer,
+// ScoreReadout, PersonaReveal, ResultBand.
+
+const ChevronLeft = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+);
+const Star = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+);
+const CheckSm = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+);
+
+// ---------- helper layouts ----------
+function Frame({ kind, children, label, tag }) {
+  return (
+    <div className="state">
+      <div className="state-label">
+        <span>{label}</span>{tag && <span className="tag">{tag}</span>}
+      </div>
+      <div className={`state-frame funnel ${kind || ""}`}>{children}</div>
+    </div>
+  );
+}
+function PrimCard({ name, propsLine, desc, children }) {
+  return (
+    <div className="prim">
+      <div className="prim-head">
+        <span className="name">{name}</span>
+        <span className="key">catalog.{name}</span>
+        <span className="props">{propsLine}</span>
+      </div>
+      {desc && <p className="prim-desc">{desc}</p>}
+      {children}
+    </div>
+  );
+}
+function MobileVP({ children, w = 327 }) {
+  return (
+    <div className="vp-mobile" style={{width: w + 48}}>
+      <div className="vp-mobile-head"><span>iPhone · 375w</span><span>funnel</span></div>
+      <div className="vp-mobile-body funnel">{children}</div>
+    </div>
+  );
+}
+function DesktopVP({ children }) {
+  return (
+    <div className="vp-desktop">
+      <div className="vp-desktop-head"><span>≥ 768px · centered</span><span>funnel</span></div>
+      <div className="vp-desktop-body funnel"><div className="desktop-content">{children}</div></div>
+    </div>
+  );
+}
+
+// =========================================================
+// SECTION 1 — Layout & Structure
+// =========================================================
+function LayoutSection() {
+  return (
+    <div className="cat-section">
+      <div className="cat-section-head">
+        <span className="num">01 / 06</span>
+        <h2>Layout &amp; structure</h2>
+        <span className="desc">Containers and rhythm. The Screen is the only top-level primitive; everything else slots into Stack or Group.</span>
+      </div>
+
+      {/* Screen */}
+      <PrimCard
+        name="Screen"
+        propsLine="background, hasBack, hasProgress, footer"
+        desc="Top-level container. Slots: progressBar (top), backButton (top-left, optional), body (center), footer (bottom, optional). Background is a token reference, not a free color.">
+        <div className="states cols-3">
+          <Frame label="Default · with progress" kind="tall">
+            <MiniScreen progress={0.4} />
+          </Frame>
+          <Frame label="With back · no progress" kind="tall">
+            <MiniScreen back />
+          </Frame>
+          <Frame label="No chrome · paywall body" kind="tall">
+            <MiniScreen plain />
+          </Frame>
+        </div>
+      </PrimCard>
+
+      {/* ProgressBar */}
+      <PrimCard
+        name="ProgressBar"
+        propsLine="current, total OR percent">
+        <div className="states cols-4">
+          <Frame label="0 of 8"><div className="funnel" style={{width: "100%"}}><div className="fn-progress"><div className="fill" style={{width: "0%"}}></div></div></div></Frame>
+          <Frame label="3 of 8"><div className="funnel" style={{width: "100%"}}><div className="fn-progress"><div className="fill" style={{width: "37.5%"}}></div></div></div></Frame>
+          <Frame label="6 of 8"><div className="funnel" style={{width: "100%"}}><div className="fn-progress"><div className="fill" style={{width: "75%"}}></div></div></div></Frame>
+          <Frame label="Complete"><div className="funnel" style={{width: "100%"}}><div className="fn-progress"><div className="fill" style={{width: "100%"}}></div></div></div></Frame>
+        </div>
+      </PrimCard>
+
+      {/* Stack / Group / Spacer */}
+      <PrimCard
+        name="Stack · Group · Spacer"
+        propsLine="Stack: gap=sm/md/lg/xl · Group: align=start/center/between">
+        <div className="states cols-3">
+          <Frame label="Stack · gap=md (16)" kind="tall">
+            <div className="funnel fn-stack fn-stack-md" style={{width: "100%"}}>
+              <RhythmBlock h={36} />
+              <RhythmBlock h={36} />
+              <RhythmBlock h={36} />
+            </div>
+          </Frame>
+          <Frame label="Group · between" kind="tall">
+            <div className="funnel fn-group fn-group-between" style={{width: "100%"}}>
+              <RhythmBlock w={64} h={36} />
+              <RhythmBlock w={120} h={36} />
+            </div>
+          </Frame>
+          <Frame label="Spacer · 24" kind="tall">
+            <div className="funnel fn-stack" style={{width: "100%"}}>
+              <RhythmBlock h={36} />
+              <div style={{height: 24, borderLeft: "1px dashed var(--cream-400)", borderRight: "1px dashed var(--cream-400)", marginLeft: 12, marginRight: 12, fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--neutral-500)", display: "grid", placeItems: "center"}}>↕ 24</div>
+              <RhythmBlock h={36} />
+            </div>
+          </Frame>
+        </div>
+      </PrimCard>
+    </div>
+  );
+}
+function MiniScreen({ progress, back, plain }) {
+  return (
+    <div style={{
+      width: "100%", height: 200,
+      background: "var(--cream-100)",
+      borderRadius: 18,
+      border: "1px solid var(--cream-300)",
+      display: "flex", flexDirection: "column",
+      padding: "12px 14px", gap: 10
+    }}>
+      {progress != null && <div className="fn-progress" style={{height: 3}}><div className="fill" style={{width: `${progress*100}%`}}></div></div>}
+      {back && <div style={{display: "flex", alignItems: "center", gap: 6}}><div style={{width: 24, height: 24, borderRadius: 999, background: "var(--cream-200)"}}></div></div>}
+      <div className="fn-h3" style={{fontSize: 16, lineHeight: 1.2}}>What's your <em>main</em> goal?</div>
+      {!plain && <div className="fn-body fn-body-sm" style={{fontSize: 11}}>Pick the one that fits best.</div>}
+      <div style={{display: "flex", flexDirection: "column", gap: 6, flex: 1}}>
+        <div style={{height: 24, background: "var(--cream-50)", border: "1px solid var(--cream-300)", borderRadius: 10}}></div>
+        <div style={{height: 24, background: "color-mix(in oklch, var(--olive-500) 6%, var(--cream-50))", border: "1.5px solid var(--olive-500)", borderRadius: 10}}></div>
+        <div style={{height: 24, background: "var(--cream-50)", border: "1px solid var(--cream-300)", borderRadius: 10}}></div>
+      </div>
+      <div style={{height: 28, background: "var(--olive-500)", borderRadius: 12}}></div>
+    </div>
+  );
+}
+function RhythmBlock({ h = 32, w }) {
+  return <div style={{
+    height: h, width: w || "100%",
+    background: "repeating-linear-gradient(135deg, var(--cream-200) 0 6px, var(--cream-50) 6px 12px)",
+    border: "1px dashed var(--cream-400)",
+    borderRadius: 8
+  }} />;
+}
+
+// =========================================================
+// SECTION 2 — Typography & Content
+// =========================================================
+function TypeSection() {
+  return (
+    <div className="cat-section">
+      <div className="cat-section-head">
+        <span className="num">02 / 06</span>
+        <h2>Typography &amp; content</h2>
+        <span className="desc">Display serif for emphasis (Heading), sans for everything else (Body, Caption), monospace for Eyebrow's micro-context labels.</span>
+      </div>
+
+      <PrimCard name="Heading" propsLine="level=1|2|3 · color=default|primary|muted">
+        <div className="states cols-3">
+          <Frame label="h1 · default"><h1 className="fn-h1">A few quick questions, <em>then your plan</em></h1></Frame>
+          <Frame label="h2 · primary"><h2 className="fn-h2 fn-h-primary">Start living healthier</h2></Frame>
+          <Frame label="h3 · muted"><h3 className="fn-h3 fn-h-muted">Section overline</h3></Frame>
+        </div>
+      </PrimCard>
+
+      <PrimCard name="Body" propsLine="size=sm|md|lg">
+        <div className="states cols-3">
+          <Frame label="sm"><p className="fn-body fn-body-sm">Pick the one that fits best — you can refine your plan after this.</p></Frame>
+          <Frame label="md"><p className="fn-body fn-body-md">Pick the one that fits best — you can refine your plan after this.</p></Frame>
+          <Frame label="lg"><p className="fn-body fn-body-lg">Pick the one that fits best.</p></Frame>
+        </div>
+      </PrimCard>
+
+      <PrimCard name="Caption · Eyebrow" propsLine="Caption: text · Eyebrow: text">
+        <div className="states cols-2">
+          <Frame label="Caption"><p className="fn-caption">By continuing you agree to our terms. Cancel anytime in Settings.</p></Frame>
+          <Frame label="Eyebrow"><p className="fn-eyebrow">Question 3 of 8</p></Frame>
+        </div>
+      </PrimCard>
+    </div>
+  );
+}
+
+// =========================================================
+// SECTION 3 — Interactive answer primitives
+// =========================================================
+function AnswersSection() {
+  return (
+    <div className="cat-section">
+      <div className="cat-section-head">
+        <span className="num">03 / 06</span>
+        <h2>Interactive answers</h2>
+        <span className="desc">The vocabulary the LLM picks from when composing question screens. All states shown.</span>
+      </div>
+
+      {/* ChoiceList */}
+      <PrimCard
+        name="ChoiceList"
+        propsLine="options[] · autoAdvance=bool · selectedIndex"
+        desc="Single-select. Auto-advance on tap or wait for Continue (configurable). Hover, focus, selected, and error states shown.">
+        <div className="states cols-2">
+          <Frame label="Default · hover on row 2" kind="tall">
+            <div className="funnel fn-stack fn-stack-sm" style={{width: "100%"}}>
+              <div className="fn-choice"><div className="marker"></div><div className="label">Lose weight steadily</div></div>
+              <div className="fn-choice" style={{borderColor: "var(--cream-400)"}}><div className="marker"></div><div className="label">Build muscle</div></div>
+              <div className="fn-choice"><div className="marker"></div><div className="label">Eat with more energy</div></div>
+              <div className="fn-choice"><div className="marker"></div><div className="label">Just exploring</div></div>
+            </div>
+          </Frame>
+          <Frame label="Focused · selected · error" kind="tall">
+            <div className="funnel fn-stack fn-stack-sm" style={{width: "100%"}}>
+              <div className="fn-choice is-focused"><div className="marker"></div><div className="label">Lose weight steadily</div></div>
+              <div className="fn-choice is-selected"><div className="marker"></div><div className="label">Build muscle</div></div>
+              <div className="fn-choice is-error"><div className="marker"></div><div className="label">Eat with more energy</div></div>
+              <div className="fn-choice"><div className="marker"></div><div className="label">Just exploring</div></div>
+            </div>
+          </Frame>
+        </div>
+      </PrimCard>
+
+      {/* MultiChoiceList */}
+      <PrimCard
+        name="MultiChoiceList"
+        propsLine="options[] · selected[] · min, max"
+        desc="Multi-select. Square markers + checkmark on selected. Always requires Continue.">
+        <Frame label="2 of 4 selected" kind="tall">
+          <div className="funnel fn-stack fn-stack-sm" style={{width: "100%"}}>
+            <div className="fn-choice is-selected"><div className="marker box"></div><div className="label">Eggs &amp; toast</div></div>
+            <div className="fn-choice"><div className="marker box"></div><div className="label">Cereal</div></div>
+            <div className="fn-choice is-selected"><div className="marker box"></div><div className="label">Coffee &amp; nothing else</div></div>
+            <div className="fn-choice"><div className="marker box"></div><div className="label">I skip breakfast</div></div>
+          </div>
+        </Frame>
+      </PrimCard>
+
+      {/* BinaryChoice */}
+      <PrimCard
+        name="BinaryChoice"
+        propsLine="yesLabel, noLabel · selected">
+        <div className="states cols-3">
+          <Frame label="Default" kind="tall">
+            <div className="funnel fn-binary" style={{width: "100%"}}>
+              <button><div className="glyph yes">✓</div><div className="lbl">Yes</div></button>
+              <button><div className="glyph">✕</div><div className="lbl">No</div></button>
+            </div>
+          </Frame>
+          <Frame label="Yes selected" kind="tall">
+            <div className="funnel fn-binary" style={{width: "100%"}}>
+              <button className="is-selected"><div className="glyph">✓</div><div className="lbl">Yes</div></button>
+              <button><div className="glyph">✕</div><div className="lbl">No</div></button>
+            </div>
+          </Frame>
+          <Frame label="No selected" kind="tall">
+            <div className="funnel fn-binary" style={{width: "100%"}}>
+              <button><div className="glyph yes">✓</div><div className="lbl">Yes</div></button>
+              <button className="is-selected"><div className="glyph">✕</div><div className="lbl">No</div></button>
+            </div>
+          </Frame>
+        </div>
+      </PrimCard>
+
+      {/* ScaleInput */}
+      <PrimCard
+        name="ScaleInput"
+        propsLine="steps=5|10 · endpoints={left,right} · selected">
+        <div className="states cols-2">
+          <Frame label="1–5 · step 4 selected">
+            <div className="funnel fn-scale" style={{width: "100%"}}>
+              <div className="fn-scale-track cols-5">
+                {[1,2,3,4,5].map(n => <div key={n} className={`fn-scale-step${n===4?" is-selected":""}`}>{n}</div>)}
+              </div>
+              <div className="fn-scale-ends"><span>NEVER</span><span>DAILY</span></div>
+            </div>
+          </Frame>
+          <Frame label="1–10 · step 7 selected">
+            <div className="funnel fn-scale" style={{width: "100%"}}>
+              <div className="fn-scale-track cols-10">
+                {Array.from({length: 10}, (_,i) => i+1).map(n => <div key={n} className={`fn-scale-step${n===7?" is-selected":""}`}>{n}</div>)}
+              </div>
+              <div className="fn-scale-ends"><span>LOW</span><span>HIGH</span></div>
+            </div>
+          </Frame>
+        </div>
+      </PrimCard>
+
+      {/* SliderInput */}
+      <PrimCard
+        name="SliderInput"
+        propsLine="min, max, step, value · format=fn">
+        <div className="states cols-2">
+          <Frame label="Default · 32 lbs">
+            <div className="funnel fn-slider" style={{width: "100%"}}>
+              <div className="fn-slider-rail">
+                <div className="fn-slider-fill" style={{right: "60%"}}></div>
+                <div className="fn-slider-thumb" style={{left: "40%"}}></div>
+                <div className="fn-slider-bubble" style={{left: "40%"}}>32 lbs</div>
+              </div>
+              <div className="fn-slider-ends"><span>0</span><span>100</span></div>
+            </div>
+          </Frame>
+          <Frame label="High · 78 lbs">
+            <div className="funnel fn-slider" style={{width: "100%"}}>
+              <div className="fn-slider-rail">
+                <div className="fn-slider-fill" style={{right: "22%"}}></div>
+                <div className="fn-slider-thumb" style={{left: "78%"}}></div>
+                <div className="fn-slider-bubble" style={{left: "78%"}}>78 lbs</div>
+              </div>
+              <div className="fn-slider-ends"><span>0</span><span>100</span></div>
+            </div>
+          </Frame>
+        </div>
+      </PrimCard>
+
+      {/* Short / Long text */}
+      <PrimCard
+        name="ShortTextInput · LongTextInput"
+        propsLine="ShortTextInput: placeholder · LongTextInput: maxLength · counter">
+        <div className="states cols-3">
+          <Frame label="Short · empty"><input className="funnel fn-input" placeholder="Your name" /></Frame>
+          <Frame label="Short · focused, filled"><input className="funnel fn-input is-focused" defaultValue="Sam" /></Frame>
+          <Frame label="Short · error">
+            <div style={{width: "100%"}}>
+              <input className="funnel fn-input is-error" defaultValue="" placeholder="Your name" />
+              <div className="funnel fn-input-error">This field is required.</div>
+            </div>
+          </Frame>
+          <Frame label="Long · empty" kind="tall"><textarea className="funnel fn-textarea" placeholder="Anything else we should know?"></textarea></Frame>
+          <Frame label="Long · filled · counter" kind="tall">
+            <div style={{width: "100%"}}>
+              <textarea className="funnel fn-textarea" defaultValue="I'm getting back into running after a knee injury — looking for plans that ramp up slowly."></textarea>
+              <div className="funnel fn-textarea-meta">102 / 280</div>
+            </div>
+          </Frame>
+        </div>
+      </PrimCard>
+
+      {/* ImageChoiceGrid */}
+      <PrimCard
+        name="ImageChoiceGrid"
+        propsLine="cards[] · multi=bool · cols=2 default">
+        <div className="states cols-2">
+          <Frame label="Single · 1 selected" kind="tall">
+            <div className="funnel fn-imgrid" style={{width: "100%"}}>
+              <div className="fn-imgcard"><div className="placeholder">eggs &amp; toast</div><div className="lbl">Eggs &amp; toast</div></div>
+              <div className="fn-imgcard is-selected"><div className="placeholder">oats</div><div className="lbl">Oats &amp; fruit</div></div>
+              <div className="fn-imgcard"><div className="placeholder">smoothie</div><div className="lbl">Smoothie</div></div>
+              <div className="fn-imgcard"><div className="placeholder">skip</div><div className="lbl">I skip it</div></div>
+            </div>
+          </Frame>
+          <Frame label="Multi · 2 selected" kind="tall">
+            <div className="funnel fn-imgrid" style={{width: "100%"}}>
+              <div className="fn-imgcard is-selected"><div className="placeholder">running</div><div className="lbl">Running</div></div>
+              <div className="fn-imgcard"><div className="placeholder">cycling</div><div className="lbl">Cycling</div></div>
+              <div className="fn-imgcard is-selected"><div className="placeholder">strength</div><div className="lbl">Strength</div></div>
+              <div className="fn-imgcard"><div className="placeholder">yoga</div><div className="lbl">Yoga</div></div>
+            </div>
+          </Frame>
+        </div>
+      </PrimCard>
+
+      {/* RankList */}
+      <PrimCard
+        name="RankList"
+        propsLine="items[] · ordered output"
+        desc="Drag handle on the right; works on touch + mouse. Active drag rotates slightly with elevated shadow.">
+        <div className="states cols-2">
+          <Frame label="Resting" kind="tall">
+            <div className="funnel fn-rank" style={{width: "100%"}}>
+              {["More energy","Better sleep","Lose weight","Build strength"].map((t, i) => (
+                <div key={t} className="fn-rank-row"><div className="num">{i+1}</div><div className="lbl">{t}</div><div className="grip"><span></span><span></span><span></span></div></div>
+              ))}
+            </div>
+          </Frame>
+          <Frame label="Dragging row 3" kind="tall">
+            <div className="funnel fn-rank" style={{width: "100%"}}>
+              <div className="fn-rank-row"><div className="num">1</div><div className="lbl">More energy</div><div className="grip"><span></span><span></span><span></span></div></div>
+              <div className="fn-rank-row"><div className="num">2</div><div className="lbl">Better sleep</div><div className="grip"><span></span><span></span><span></span></div></div>
+              <div className="fn-rank-row is-dragging"><div className="num">3</div><div className="lbl">Lose weight</div><div className="grip"><span></span><span></span><span></span></div></div>
+              <div className="fn-rank-row"><div className="num">4</div><div className="lbl">Build strength</div><div className="grip"><span></span><span></span><span></span></div></div>
+            </div>
+          </Frame>
+        </div>
+      </PrimCard>
+    </div>
+  );
+}
+
+// =========================================================
+// SECTION 4 — CTA & navigation
+// =========================================================
+function CTASection() {
+  return (
+    <div className="cat-section">
+      <div className="cat-section-head">
+        <span className="num">04 / 06</span>
+        <h2>CTA &amp; navigation</h2>
+        <span className="desc">A funnel screen has at most one PrimaryCTA. SecondaryLink is the escape hatch. BackButton lives in Screen's slot, not floating.</span>
+      </div>
+
+      <PrimCard name="PrimaryCTA" propsLine="label · loading · disabled · onPress">
+        <div className="states cols-5">
+          <Frame label="Default"><button className="funnel fn-cta">Continue</button></Frame>
+          <Frame label="Hover"><button className="funnel fn-cta" style={{background: "var(--olive-700)"}}>Continue</button></Frame>
+          <Frame label="Pressed"><button className="funnel fn-cta" style={{background: "var(--olive-700)", transform: "translateY(1px)", boxShadow: "var(--shadow-1)"}}>Continue</button></Frame>
+          <Frame label="Loading"><button className="funnel fn-cta is-loading">Continue</button></Frame>
+          <Frame label="Disabled"><button className="funnel fn-cta is-disabled" disabled>Continue</button></Frame>
+        </div>
+      </PrimCard>
+
+      <PrimCard name="SecondaryLink · BackButton" propsLine="SecondaryLink: label · BackButton: onPress">
+        <div className="states cols-3">
+          <Frame label="SecondaryLink · default"><button className="funnel fn-link">Skip for now</button></Frame>
+          <Frame label="SecondaryLink · hover"><button className="funnel fn-link" style={{color: "var(--olive-900)"}}>Skip for now</button></Frame>
+          <Frame label="BackButton">
+            <button className="funnel fn-back"><ChevronLeft /></button>
+          </Frame>
+        </div>
+      </PrimCard>
+    </div>
+  );
+}
+
+// =========================================================
+// SECTION 5 — Conversion-focused
+// =========================================================
+function ConversionSection() {
+  return (
+    <div className="cat-section">
+      <div className="cat-section-head">
+        <span className="num">05 / 06</span>
+        <h2>Conversion-focused</h2>
+        <span className="desc">Used <em>when</em> the prompt asks for paywall / upsell screens. Part of the catalog so the LLM has the vocabulary, not because every funnel ends in a paywall.</span>
+      </div>
+
+      <PrimCard name="PriceCard" propsLine="title · price · perUnit · term · save · selected">
+        <div className="states cols-2">
+          <Frame label="Yearly · selected · save badge" kind="tall">
+            <div className="funnel" style={{width: "100%", paddingTop: 12}}>
+              <div className="fn-price is-selected">
+                <span className="save-pill">Save 67%</span>
+                <div className="marker"></div>
+                <div className="body">
+                  <div className="title">Annual plan</div>
+                  <div className="perunit">$0.27 / day</div>
+                </div>
+                <div className="price-stack">
+                  <div className="big">$99.99</div>
+                  <div className="term">per year</div>
+                </div>
+              </div>
+            </div>
+          </Frame>
+          <Frame label="Monthly · default" kind="tall">
+            <div className="funnel" style={{width: "100%"}}>
+              <div className="fn-price">
+                <div className="marker"></div>
+                <div className="body">
+                  <div className="title">Monthly plan</div>
+                  <div className="perunit">$0.50 / day</div>
+                </div>
+                <div className="price-stack">
+                  <div className="big">$14.99</div>
+                  <div className="term">per month</div>
+                </div>
+              </div>
+            </div>
+          </Frame>
+        </div>
+      </PrimCard>
+
+      <PrimCard name="PlanToggle · TrialBadge" propsLine="PlanToggle: options[2] · selectedIndex · TrialBadge: label">
+        <div className="states cols-3">
+          <Frame label="Yearly active">
+            <div className="funnel fn-plan" data-pos="0" style={{width: "100%", maxWidth: 260}}>
+              <div className="fn-plan-pill"></div>
+              <button className="is-selected">Yearly</button>
+              <button>Monthly</button>
+            </div>
+          </Frame>
+          <Frame label="Monthly active">
+            <div className="funnel fn-plan" data-pos="1" style={{width: "100%", maxWidth: 260}}>
+              <div className="fn-plan-pill"></div>
+              <button>Yearly</button>
+              <button className="is-selected">Monthly</button>
+            </div>
+          </Frame>
+          <Frame label="TrialBadge">
+            <span className="funnel fn-trial-badge">7-day free trial</span>
+          </Frame>
+        </div>
+      </PrimCard>
+
+      <PrimCard name="SocialProofRow" propsLine="cells[] · {value, label, icon?}">
+        <Frame label="Three cells">
+          <div className="funnel fn-proof" style={{width: "100%"}}>
+            <div className="fn-proof-cell">
+              <div className="num">4.9 <Star /></div>
+              <div className="lbl">App Store</div>
+            </div>
+            <div className="fn-proof-cell">
+              <div className="num">1M+</div>
+              <div className="lbl">Members</div>
+            </div>
+            <div className="fn-proof-cell">
+              <div className="num">87%</div>
+              <div className="lbl">Hit goals</div>
+            </div>
+          </div>
+        </Frame>
+      </PrimCard>
+
+      <PrimCard name="TestimonialCard" propsLine="quote · author · role · avatar?">
+        <div className="states cols-2">
+          <Frame label="With avatar (geometric)" kind="tall">
+            <div className="funnel fn-testimonial" style={{width: "100%"}}>
+              <div className="quote">I finally stopped overthinking dinner. Olive just tells me what to make and I cook it.</div>
+              <div className="who">
+                <div className="avatar"></div>
+                <div className="meta"><strong>Maya R.</strong><br/>Brooklyn, NY · 6 months in</div>
+              </div>
+            </div>
+          </Frame>
+          <Frame label="No avatar" kind="tall">
+            <div className="funnel fn-testimonial" style={{width: "100%"}}>
+              <div className="quote">Down 14 pounds without ever feeling like I was on a diet.</div>
+              <div className="who">
+                <div className="meta"><strong>James K.</strong><br/>Software engineer · Austin</div>
+              </div>
+            </div>
+          </Frame>
+        </div>
+      </PrimCard>
+
+      <PrimCard name="BenefitList · Disclaimer" propsLine="BenefitList: items[] · Disclaimer: text">
+        <div className="states cols-2">
+          <Frame label="BenefitList" kind="tall">
+            <div className="funnel fn-benefits" style={{width: "100%"}}>
+              {["Personalized weekly meal plan","Auto-generated grocery lists","Macro tracking, no calorie counting","Cancel anytime in Settings"].map(t => (
+                <div key={t} className="row"><span className="check"><CheckSm /></span><span>{t}</span></div>
+              ))}
+            </div>
+          </Frame>
+          <Frame label="Disclaimer" kind="tall">
+            <p className="funnel fn-disclaimer">Your free trial begins today. After 7 days you'll be charged $99.99/year unless you cancel. <a href="#">Cancel anytime</a> in Settings → Subscription.</p>
+          </Frame>
+        </div>
+      </PrimCard>
+    </div>
+  );
+}
+
+// =========================================================
+// SECTION 6 — Result-specific
+// =========================================================
+function ResultSection() {
+  return (
+    <div className="cat-section">
+      <div className="cat-section-head">
+        <span className="num">06 / 06</span>
+        <h2>Result-specific</h2>
+        <span className="desc">For quizzes that end in a score or persona. Uses the 5 result-color tokens.</span>
+      </div>
+
+      <PrimCard name="ScoreReadout" propsLine="value, max · bands[] · label">
+        <Frame label="7 / 15 · middle band">
+          <div className="funnel fn-score" style={{width: "100%"}}>
+            <div className="head">
+              <div className="num">7<em> / 15</em></div>
+              <span className="band-label" style={{background: "color-mix(in oklch, var(--result-2) 16%, var(--cream-50))", color: "color-mix(in oklch, var(--result-2) 60%, var(--olive-900))"}}>Building habits</span>
+            </div>
+            <div className="fn-score-bar">
+              <div className="ticks"><span style={{left: "16%"}}>0</span><span style={{left: "50%"}}>7</span><span style={{left: "84%"}}>15</span></div>
+              <div className="marker" style={{left: "47%"}}></div>
+            </div>
+          </div>
+        </Frame>
+      </PrimCard>
+
+      <PrimCard name="PersonaReveal" propsLine="name · color (1–5) · blurb">
+        <div className="states cols-2">
+          <Frame label="Result-3 · sage" kind="tall">
+            <div className="funnel fn-persona" style={{width: "100%", "--persona-color": "var(--result-3)"}}>
+              <div className="eyebrow">You are</div>
+              <div className="name">The <em>Steady Builder</em></div>
+              <div className="blurb">You're not chasing motivation — you're building a routine that runs on autopilot.</div>
+            </div>
+          </Frame>
+          <Frame label="Result-1 · terracotta" kind="tall">
+            <div className="funnel fn-persona" style={{width: "100%", "--persona-color": "var(--result-1)"}}>
+              <div className="eyebrow">You are</div>
+              <div className="name">The <em>Spark</em></div>
+              <div className="blurb">High energy, fast moves. We'll match your pace and keep you out of burnout.</div>
+            </div>
+          </Frame>
+        </div>
+      </PrimCard>
+
+      <PrimCard name="ResultBand" propsLine="label · color (1–5)">
+        <div className="states cols-5">
+          {[
+            ["result-1", "Needs work"],
+            ["result-2", "Building"],
+            ["result-3", "On track"],
+            ["result-4", "Strong"],
+            ["result-5", "Excellent"]
+          ].map(([c, l]) => (
+            <Frame key={c} label={c}>
+              <span className="funnel fn-band" style={{"--band-color": `var(--${c})`}}>{l}</span>
+            </Frame>
+          ))}
+        </div>
+      </PrimCard>
+    </div>
+  );
+}
+
+// =========================================================
+// Top-level catalog sheet
+// =========================================================
+function CatalogSheet() {
+  return (
+    <div className="sheet">
+      <div className="sheet-head">
+        <div>
+          <div className="eyebrow">Quiz Funnel Studio · Foundations 04</div>
+          <h1>Funnel mode <em>catalog</em></h1>
+        </div>
+        <div className="meta">
+          31 primitives · all states<br/>
+          mobile 375 → desktop ≥768<br/>
+          flat catalog · LLM vocabulary
+        </div>
+      </div>
+
+      <LayoutSection />
+      <TypeSection />
+      <AnswersSection />
+      <CTASection />
+      <ConversionSection />
+      <ResultSection />
+    </div>
+  );
+}
+
+Object.assign(window, { CatalogSheet });
+
+
+// Anatomy diagram + transition spec + 4 example compositions
+
+function AnatomySheet() {
+  return (
+    <div className="sheet">
+      <div className="sheet-head">
+        <div>
+          <div className="eyebrow">Foundations 05 · Screen anatomy</div>
+          <h1>How a Screen <em>holds together</em></h1>
+        </div>
+        <div className="meta">4 slots · top→bottom<br/>progress · back · body · footer</div>
+      </div>
+
+      <div className="anatomy-wrap">
+        <div style={{position: "relative", width: 375}}>
+          <div className="anatomy-screen funnel">
+            <div className="anat-row progress">
+              <div className="fn-progress"><div className="fill" style={{width: "37%"}}></div></div>
+              <span className="anat-label" style={{top: -8, left: "100%", marginLeft: 16}}>Slot · progressBar</span>
+            </div>
+            <div className="anat-row topbar">
+              <button className="fn-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <span className="anat-label" style={{top: 4, left: "100%", marginLeft: 16}}>Slot · backButton (optional)</span>
+            </div>
+            <div className="anat-row body">
+              <p className="fn-eyebrow">Question 3 of 8</p>
+              <h1 className="fn-h1" style={{fontSize: 30}}>What does <em>breakfast</em> usually look like?</h1>
+              <div className="fn-stack fn-stack-sm">
+                <div className="fn-choice"><div className="marker"></div><div className="label">Eggs &amp; toast</div></div>
+                <div className="fn-choice is-selected"><div className="marker"></div><div className="label">Oats &amp; fruit</div></div>
+                <div className="fn-choice"><div className="marker"></div><div className="label">Smoothie</div></div>
+                <div className="fn-choice"><div className="marker"></div><div className="label">I skip it</div></div>
+              </div>
+              <span className="anat-label" style={{top: "30%", left: "100%", marginLeft: 16}}>Slot · body (Stack of primitives)</span>
+            </div>
+            <div className="anat-row footer">
+              <button className="fn-cta">Continue</button>
+              <button className="fn-link">Skip for now</button>
+              <span className="anat-label" style={{bottom: 24, left: "100%", marginLeft: 16}}>Slot · footer (CTA + link)</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="anatomy-key">
+          <div className="row"><div className="slot">progressBar</div>
+            <div><h4>Top edge · 4px tall</h4><p>Always at the very top when present. Animates fill on entry. Hidden entirely on terminal screens (results, thank-you).</p></div></div>
+          <div className="row"><div className="slot">backButton</div>
+            <div><h4>Top-left · 40×40 hit area</h4><p>Optional. Hidden on first screen and on screens flagged as one-way (results, paywalls after commit).</p></div></div>
+          <div className="row"><div className="slot">body</div>
+            <div><h4>Center · vertical Stack</h4><p>The composition slot. The LLM emits a Stack of primitives here. Padding: 24px horizontal on mobile, auto-centered max-width 480–560 on desktop.</p></div></div>
+          <div className="row"><div className="slot">footer</div>
+            <div><h4>Bottom · sticky on tall content</h4><p>PrimaryCTA + optional SecondaryLink. On paywalls, also holds Disclaimer. Stays in view as body scrolls.</p></div></div>
+        </div>
+      </div>
+
+      <div className="cat-section" style={{marginTop: 64, marginBottom: 0}}>
+        <div className="cat-section-head">
+          <span className="num">Motion</span>
+          <h2>Inter-screen transition</h2>
+          <span className="desc">A funnel is a forward-moving conversation. Slide-from-right at <code>medium · 320ms</code> with the emphasis ease keeps it lively without feeling spring-bouncy.</span>
+        </div>
+        <div className="transition-grid">
+          <div className="trans-frames">
+            <div className="trans-frame outgoing">
+              <div className="pb"></div>
+              <div className="h">What's your <em>main</em> goal?</div>
+              <div className="opt">Lose weight</div>
+              <div className="opt sel">Build muscle</div>
+              <div className="opt">More energy</div>
+              <div className="cta">Continue</div>
+            </div>
+            <div className="trans-frame incoming">
+              <div className="pb" style={{width: "50%"}}></div>
+              <div className="h">How <em>active</em> are you?</div>
+              <div className="opt">Sedentary</div>
+              <div className="opt">Lightly active</div>
+              <div className="opt">Very active</div>
+              <div className="cta">Continue</div>
+            </div>
+          </div>
+          <div className="trans-spec">
+            <h3>Slide-from-right, fade-out-left</h3>
+            <dl>
+              <dt>duration</dt><dd><code>--motion-medium</code> · 320ms</dd>
+              <dt>ease</dt><dd><code>--ease-emphasis</code> · cubic-bezier(0.3, 0, 0, 1)</dd>
+              <dt>incoming</dt><dd>translateX 100% → 0, opacity 0 → 1</dd>
+              <dt>outgoing</dt><dd>translateX 0 → -25%, opacity 1 → 0</dd>
+              <dt>back nav</dt><dd>same curve, mirrored — slide-from-left</dd>
+              <dt>progress</dt><dd>fill animates simultaneously, same duration</dd>
+              <dt>terminal</dt><dd>Result &amp; thank-you screens use <code>--motion-large</code> · 500ms with a 40px scale-up to feel celebratory</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ----- 4 example compositions -----
+function CompositionsSheet() {
+  return (
+    <div className="sheet">
+      <div className="sheet-head">
+        <div>
+          <div className="eyebrow">Foundations 06 · Compositions</div>
+          <h1>Same vocabulary, <em>four very different screens</em></h1>
+        </div>
+        <div className="meta">A flat catalog composed by prompt<br/>NOT a sequence — independent examples</div>
+      </div>
+
+      <div className="comp-grid">
+        {/* A · Quiz question */}
+        <div className="comp">
+          <div className="title-row"><span>A · Quiz question</span><span>QUESTION</span></div>
+          <div className="comp-frame funnel">
+            <div className="comp-progress"><div className="pb"><div style={{width: "37.5%"}}></div></div></div>
+            <div className="comp-topbar"><button className="fn-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button></div>
+            <div className="comp-body">
+              <p className="fn-eyebrow">Question 3 of 8</p>
+              <h1 className="fn-h1" style={{fontSize: 26, lineHeight: 1.18}}>What does <em>breakfast</em> usually look like?</h1>
+              <div className="fn-stack fn-stack-sm" style={{marginTop: 4}}>
+                <div className="fn-choice" style={{padding: "14px 16px"}}><div className="marker"></div><div className="label" style={{fontSize: 14}}>Eggs &amp; toast</div></div>
+                <div className="fn-choice is-selected" style={{padding: "14px 16px"}}><div className="marker"></div><div className="label" style={{fontSize: 14}}>Oats &amp; fruit</div></div>
+                <div className="fn-choice" style={{padding: "14px 16px"}}><div className="marker"></div><div className="label" style={{fontSize: 14}}>Smoothie</div></div>
+                <div className="fn-choice" style={{padding: "14px 16px"}}><div className="marker"></div><div className="label" style={{fontSize: 14}}>I skip it</div></div>
+              </div>
+            </div>
+            <div className="comp-footer">
+              <button className="fn-cta" style={{padding: "14px 18px", fontSize: 15, borderRadius: 16}}>Continue</button>
+              <button className="fn-link" style={{fontSize: 12}}>Skip for now</button>
+            </div>
+          </div>
+          <p className="fn-caption" style={{textAlign: "center", color: "var(--neutral-600)"}}>Screen › Stack › [Eyebrow, Heading, ChoiceList, PrimaryCTA, SecondaryLink]</p>
+        </div>
+
+        {/* B · Quiz result */}
+        <div className="comp">
+          <div className="title-row"><span>B · Quiz result</span><span>RESULT</span></div>
+          <div className="comp-frame funnel" style={{background: "var(--cream-100)"}}>
+            <div className="comp-progress"><div className="pb"><div style={{width: "100%"}}></div></div></div>
+            <div className="comp-body" style={{paddingTop: 28}}>
+              <h1 className="fn-h1" style={{fontSize: 28, lineHeight: 1.15, textAlign: "center"}}>You're <em>doing great</em></h1>
+              <div className="fn-score" style={{padding: 18, gap: 12}}>
+                <div className="head">
+                  <div className="num" style={{fontSize: 28}}>11<em style={{fontSize: "0.6em"}}> / 15</em></div>
+                  <span className="band-label" style={{background: "color-mix(in oklch, var(--result-3) 18%, var(--cream-50))", color: "color-mix(in oklch, var(--result-3) 60%, var(--olive-900))", fontSize: 9}}>On track</span>
+                </div>
+                <div className="fn-score-bar"><div className="marker" style={{left: "75%"}}></div></div>
+              </div>
+              <p className="fn-body fn-body-sm" style={{textAlign: "center", marginTop: 4, fontSize: 13}}>You're already doing more right than most. The plan we built focuses on the few habits still holding you back.</p>
+            </div>
+            <div className="comp-footer">
+              <button className="fn-cta" style={{padding: "14px 18px", fontSize: 15, borderRadius: 16}}>See my plan</button>
+            </div>
+          </div>
+          <p className="fn-caption" style={{textAlign: "center", color: "var(--neutral-600)"}}>Screen › Stack › [Heading, ScoreReadout, Body, PrimaryCTA]</p>
+        </div>
+
+        {/* C · Standalone paywall */}
+        <div className="comp">
+          <div className="title-row"><span>C · Paywall</span><span>PAYWALL</span></div>
+          <div className="comp-frame funnel">
+            <div className="comp-body" style={{paddingTop: 24, gap: 12}}>
+              <h1 className="fn-h1" style={{fontSize: 24, lineHeight: 1.15, textAlign: "center"}}>Start living <em>healthier</em> today</h1>
+              <div className="fn-proof" style={{padding: "10px 0", borderRadius: 14}}>
+                <div className="fn-proof-cell" style={{padding: "0 6px"}}><div className="num" style={{fontSize: 16}}>4.9 <span style={{color: "var(--warning)", fontSize: 11}}>★</span></div><div className="lbl" style={{fontSize: 8.5}}>App Store</div></div>
+                <div className="fn-proof-cell" style={{padding: "0 6px"}}><div className="num" style={{fontSize: 16}}>1M+</div><div className="lbl" style={{fontSize: 8.5}}>Members</div></div>
+                <div className="fn-proof-cell" style={{padding: "0 6px"}}><div className="num" style={{fontSize: 16}}>87%</div><div className="lbl" style={{fontSize: 8.5}}>Hit goals</div></div>
+              </div>
+              <div className="fn-plan" data-pos="0" style={{fontSize: 12}}>
+                <div className="fn-plan-pill"></div>
+                <button className="is-selected" style={{padding: "8px 12px"}}>Yearly</button>
+                <button style={{padding: "8px 12px"}}>Monthly</button>
+              </div>
+              <div className="fn-stack fn-stack-sm">
+                <div className="fn-price is-selected" style={{padding: "12px 14px"}}>
+                  <span className="save-pill" style={{fontSize: 8.5, padding: "2px 7px"}}>Save 67%</span>
+                  <div className="marker" style={{width: 18, height: 18}}></div>
+                  <div className="body"><div className="title" style={{fontSize: 12.5}}>Annual</div><div className="perunit" style={{fontSize: 9.5}}>$0.27 / day</div></div>
+                  <div className="price-stack"><div className="big" style={{fontSize: 20}}>$99.99</div><div className="term" style={{fontSize: 9}}>/yr</div></div>
+                </div>
+                <div className="fn-price" style={{padding: "12px 14px"}}>
+                  <div className="marker" style={{width: 18, height: 18}}></div>
+                  <div className="body"><div className="title" style={{fontSize: 12.5}}>Monthly</div><div className="perunit" style={{fontSize: 9.5}}>$0.50 / day</div></div>
+                  <div className="price-stack"><div className="big" style={{fontSize: 20}}>$14.99</div><div className="term" style={{fontSize: 9}}>/mo</div></div>
+                </div>
+              </div>
+            </div>
+            <div className="comp-footer">
+              <button className="fn-cta" style={{padding: "13px 16px", fontSize: 14, borderRadius: 16}}>Try for $0.00</button>
+              <p className="fn-disclaimer" style={{fontSize: 9.5, marginTop: 2}}>7-day free trial. Then $99.99/yr. Cancel anytime.</p>
+            </div>
+          </div>
+          <p className="fn-caption" style={{textAlign: "center", color: "var(--neutral-600)"}}>Screen › Stack › [Heading, SocialProofRow, PlanToggle, PriceCard×2, PrimaryCTA, Disclaimer]</p>
+        </div>
+
+        {/* D · Thank-you */}
+        <div className="comp">
+          <div className="title-row"><span>D · Thank-you</span><span>TERMINAL</span></div>
+          <div className="comp-frame funnel">
+            <div className="comp-body" style={{justifyContent: "center", textAlign: "center", gap: 18}}>
+              <div style={{width: 64, height: 64, borderRadius: 999, background: "color-mix(in oklch, var(--olive-500) 18%, var(--cream-50))", display: "grid", placeItems: "center", margin: "0 auto", color: "var(--olive-700)"}}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" style={{width: 28, height: 28}}><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <h1 className="fn-h1" style={{fontSize: 32, lineHeight: 1.1}}>You're <em>in</em></h1>
+              <p className="fn-body fn-body-md" style={{fontSize: 14, lineHeight: 1.55}}>Your plan is ready. We've sent a copy to your email and saved everything to your Olive account.</p>
+            </div>
+            <div className="comp-footer">
+              <button className="fn-cta" style={{padding: "14px 18px", fontSize: 15, borderRadius: 16}}>Open Olive</button>
+            </div>
+          </div>
+          <p className="fn-caption" style={{textAlign: "center", color: "var(--neutral-600)"}}>Screen › Stack › [Heading, Body, PrimaryCTA]</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, { AnatomySheet, CompositionsSheet });
+
+</script>
+
+<script type="text/babel" id="app-src">
+// Mounts the catalog inside the design canvas.
+const { DesignCanvas, DCSection, DCArtboard } = window;
+
+function App() {
+  return (
+    <DesignCanvas title="Quiz Funnel Studio · Funnel Catalog v0.1">
+      <DCSection id="primitives" title="Primitives">
+        <DCArtboard id="catalog" label="Funnel mode catalog · 31 primitives, all states" width={1480} height={5800}>
+          <CatalogSheet />
+        </DCArtboard>
+      </DCSection>
+      <DCSection id="anatomy" title="Anatomy & motion">
+        <DCArtboard id="anatomy" label="Screen anatomy + inter-screen transition" width={1480} height={1480}>
+          <AnatomySheet />
+        </DCArtboard>
+      </DCSection>
+      <DCSection id="comps" title="Example compositions">
+        <DCArtboard id="comps" label="4 finished screens — same flat catalog" width={1480} height={1100}>
+          <CompositionsSheet />
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+
+</script>
+
+</body>
+</html>

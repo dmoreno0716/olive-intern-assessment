@@ -234,28 +234,36 @@ how far each session got.
 ## 8. Cost per generation
 
 Real numbers from `pnpm test:gen` against the 9-prompt regression
-suite (5 baseline + 4 edge cases), measured 2026-04-28:
+suite (5 baseline + 4 edge cases), measured 2026-04-28 with the
+Round-7 system prompt that includes the terminal-screen rule + the
+personality-quiz few-shot example:
 
-| Prompt                  | Opus 4.7 cost | Sonnet 4.6 cost | Output tokens (Opus / Sonnet) |
-|-------------------------|---------------|-----------------|-------------------------------|
-| eater-quiz              | $0.2607       | $0.0452         | 1,981 / ~1,900                |
-| lead-gen                | $0.3056       | $0.0604         | 2,580 / ~2,400                |
-| paywall                 | $0.1643       | $0.0274         | 696 / ~600                    |
-| onboarding              | $0.2932       | $0.0527         | 2,415 / ~2,200                |
-| feedback                | $0.1760       | $0.0329         | 854 / ~800                    |
-| very-short              | $0.2445       | $0.0407         | 1,768 / ~1,600                |
-| very-long               | $0.3787       | $0.0721         | 3,521 / ~3,300                |
-| paywall-only-no-quiz    | $0.1733       | $0.0317         | 809 / ~750                    |
-| quiz-no-paywall         | $0.2703       | $0.0520         | 2,101 / ~2,000                |
-| **Total (9 prompts)**   | **$2.2665**   | **$0.4151**     |                               |
-| **Per-quiz average**    | **$0.252**    | **$0.046**      |                               |
+| Prompt                  | Opus 4.7 cost | Sonnet 4.6 cost | Output tokens (Opus) |
+|-------------------------|---------------|-----------------|----------------------|
+| eater-quiz              | $0.3428       | ~$0.062         | 2,650                |
+| lead-gen                | $0.3333       | ~$0.060         | 2,540                |
+| paywall                 | $0.2066       | ~$0.038         | ~880                 |
+| onboarding              | $0.3207       | ~$0.058         | 2,229                |
+| feedback                | $0.2208       | ~$0.040         | 898                  |
+| very-short              | $0.2789       | ~$0.051         | 1,672                |
+| very-long               | $0.4069       | ~$0.074         | 3,343                |
+| paywall-only-no-quiz    | $0.2224       | ~$0.041         | 911                  |
+| quiz-no-paywall         | $0.3131       | ~$0.057         | 2,119                |
+| **Total (9 prompts)**   | **$2.6455**   | **~$0.481**     |                      |
+| **Per-quiz average**    | **$0.294**    | **~$0.053**     |                      |
 
-Input tokens are roughly constant (~7,500 per call) — the catalog
-prompt is the same across runs. Output tokens scale with spec size
-(intro+5q ≈ 1,900 out, intro+7q ≈ 2,400 out, 9-screen long-form ≈
-3,500 out). The retry path adds one extra LLM round-trip when it
-fires; on the baseline first-attempt success rate is 9/9, so the retry
-budget is in practice spent on hard prompts rather than every quiz.
+Input tokens are roughly constant (~10,300 per call now — the new
+prompt added the terminal-screen rule + a fourth few-shot example
+covering the personality-quiz pattern, taking the system message from
+~7,500 to ~10,300 tokens). Output tokens scale with spec size; quizzes
+that previously ended on a question now include a result screen, so
+output averages are slightly higher.
+
+The increase from $0.252/quiz (pre-Round-7-fix) to $0.294/quiz is
+$0.042/quiz — the cost of generating a working funnel rather than a
+broken one. Sonnet's average rose proportionally (~$0.046 → ~$0.053).
+The retry path adds one extra LLM round-trip when it fires; baseline
+first-attempt success rate remains 9/9 across both models.
 
 ## 9. What I'd do differently with more time
 
@@ -304,6 +312,37 @@ budget is in practice spent on hard prompts rather than every quiz.
   programmatically (myers/structural diff over the catalog tree), so
   the human summary is grounded in a real diff and the apply step is
   deterministic.
+
+- **Per-primitive runtime tests.** During final QA I discovered
+  EmailGate's button wasn't wired to `runtime.onCTA` — the visual
+  catalog tests in Round 2 only mounted each primitive in Studio
+  (no runtime context) and confirmed it rendered, never that its CTA
+  fired or its field setter updated state. Four other primitives had
+  the same gap: `ImageChoiceGrid`, `ToggleRow`, `NumberInput`, and
+  `LongText` all rendered fine but never bound their values to
+  `useFunnelField`, so end-user answers vanished. Each was a one-line
+  fix once spotted, but the entire class of bug would have been caught
+  by tests that mount each primitive inside `<FunnelRuntimeProvider>`
+  and assert that (a) interacting with it calls `setField` with the
+  expected key/value, and (b) any embedded buttons call `runtime.onCTA`.
+  With more time, I'd write that suite — one `expect(setField).toHaveBeenCalledWith(...)`
+  per interactive primitive — before any other UI work.
+
+- **System-prompt evolution.** I initially assumed the LLM would intuit
+  terminal reveal screens from the catalog descriptions and the
+  presence of `kind: "result"` on `Screen`. It did for some prompts
+  (the recommendation-style "lead-gen quiz" produced a result every
+  time) but not consistently — the eater-quiz prompt produced 6
+  question screens with a "See my eater type" CTA pointing at nothing.
+  The fix was three things together: an explicit "quizzes that promise
+  a result MUST end with a result Screen" rule, a per-quiz-type
+  taxonomy (personality / score-based / recommendation / lead-gen /
+  survey), and a few-shot example showing the segmentation-question →
+  reveal-screen pattern. The lesson: catalog descriptions tell the LLM
+  what each primitive *does*; they don't tell it what *combinations*
+  are mandatory. Composition rules — especially negative ones ("never
+  end on a question whose CTA implies a reveal") — need their own
+  section in the prompt, with a few-shot per case.
 
 ---
 

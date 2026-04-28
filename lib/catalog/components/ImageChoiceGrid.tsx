@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { z } from "zod";
 import type { CatalogNode } from "../types";
+import { useFunnelField } from "@/lib/funnel/runtime";
 
 export const ImageChoiceGridSchema = z.object({
   field: z.string(),
@@ -25,7 +26,13 @@ export function ImageChoiceGrid({ node }: { node: CatalogNode }) {
   const props = (node.props ?? {}) as Partial<ImageChoiceGridProps>;
   const options = props.options ?? [];
   const cols = props.cols ?? "2";
-  const [selected, setSelected] = useState<string | null>(null);
+  const [localSelected, setLocalSelected] = useState<string | null>(null);
+  const field = useFunnelField<string | null>(props.field, null);
+  const selected = field.bound ? field.value : localSelected;
+  const setSelected = (value: string, label: string) => {
+    if (field.bound) field.setValue(value, label);
+    else setLocalSelected(value);
+  };
   const overflow = options.length > 6;
 
   const Tile = ({
@@ -39,7 +46,7 @@ export function ImageChoiceGrid({ node }: { node: CatalogNode }) {
         type="button"
         role="radio"
         aria-checked={isSelected}
-        onClick={() => setSelected(opt.value)}
+        onClick={() => setSelected(opt.value, opt.label)}
         className={`group relative flex flex-col gap-2 overflow-hidden rounded-[var(--r-lg)] border-[1.5px] bg-[var(--fsurf)] p-2 text-left transition-colors duration-[var(--m-fast)] ease-[var(--ease)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--faccent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--fbg)] ${
           isSelected
             ? "border-[var(--olive-500)] bg-[color-mix(in_oklch,var(--olive-500)_6%,var(--fsurf))]"

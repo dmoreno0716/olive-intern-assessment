@@ -1,17 +1,25 @@
 # 01 — Eater Quiz
 
-A pure segmentation quiz: an intro screen plus 5 single-choice questions
-that ask about cooking habits, taste preferences, and meal patterns. No
-email gate, no paywall, no result screen — the LLM honored the prompt
-and didn't auto-inject anything.
+A 5-question personality quiz that segments users by eating style and
+ends on a `kind="result"` Screen revealing their archetype. Spec shape:
+`intro → 5× question → result`. Final question's CTA ("See my eater
+type") points at the actual reveal screen — not a no-op.
 
-This example demonstrates two things:
+This example demonstrates:
 
-1. The minimum viable funnel — questions only, end on the last question.
-   The dashboard handles this gracefully: the result donut and Top
-   Result stat card hide themselves (per `design/DECISIONS.md` #12)
-   because the spec has no `kind="result"` Screen.
-2. The LLM's restraint. The prompt didn't ask for a result screen, so
-   the spec doesn't have one — even though many quiz authors would
-   default to "5 questions → recommendation" (per
-   `design/DECISIONS.md` #2, the system never auto-appends).
+1. The personality-quiz pattern: an `intro` Screen sets expectations,
+   the questions build a segmentation profile, and the `result` Screen
+   uses `ResultBadge` + `ResultHero` to reveal the archetype with
+   instrument-serif italic emphasis (per `design/DECISIONS.md` #14 +
+   the funnel-mode font story).
+2. The dashboard's result-distribution donut: the segmentation field
+   (the first `ChoiceList`) determines which slice each completer
+   lands in, color-coded with `--r1` through `--r5`. Click a slice to
+   filter the responses table.
+3. The system prompt's terminal-screen rule. An earlier version of
+   this example ended on a question with CTA "See my eater type"
+   pointing at nothing — the LLM was making the right copy choice but
+   not generating the screen the copy promised. The current
+   `prompts/system.md` has explicit instruction + a few-shot example
+   for personality quizzes; see Round 7's `DECISIONS.md` "system-prompt
+   evolution" note.

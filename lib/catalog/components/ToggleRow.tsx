@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { z } from "zod";
 import type { CatalogNode } from "../types";
+import { useFunnelField } from "@/lib/funnel/runtime";
 
 export const ToggleRowSchema = z.object({
   field: z.string(),
@@ -18,14 +19,22 @@ type ToggleRowProps = z.infer<typeof ToggleRowSchema>;
 
 export function ToggleRow({ node }: { node: CatalogNode }) {
   const props = (node.props ?? {}) as Partial<ToggleRowProps>;
-  const [on, setOn] = useState<boolean>(props.default ?? false);
+  const initial = props.default ?? false;
+  const [localOn, setLocalOn] = useState<boolean>(initial);
+  const field = useFunnelField<boolean>(props.field, initial);
+  const on = field.bound ? field.value : localOn;
+  const toggle = () => {
+    const next = !on;
+    if (field.bound) field.setValue(next);
+    else setLocalOn(next);
+  };
 
   return (
     <button
       type="button"
       role="switch"
       aria-checked={on}
-      onClick={() => setOn((v) => !v)}
+      onClick={toggle}
       className="flex w-full min-h-[60px] items-center justify-between gap-3 rounded-[var(--r-lg)] border-[1.5px] border-[var(--fborder)] bg-[var(--fsurf)] px-4 py-3 text-left transition-colors hover:border-[var(--fborder-s)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--faccent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--fbg)]"
     >
       <span className="flex flex-col gap-0.5">

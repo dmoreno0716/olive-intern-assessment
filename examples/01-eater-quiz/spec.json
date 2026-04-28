@@ -24,7 +24,7 @@
         {
           "kind": "Body",
           "props": {
-            "text": "Five quick questions. We'll name your eating style and what it says about you."
+            "text": "Five quick questions about how you actually eat — not how you think you should. We'll match you to your eater type."
           }
         }
       ],
@@ -41,7 +41,7 @@
   {
     "kind": "Screen",
     "props": {
-      "id": "meal-pace",
+      "id": "weekday-rhythm",
       "kind": "question",
       "body": [
         {
@@ -53,31 +53,31 @@
         {
           "kind": "Heading",
           "props": {
-            "text": "How fast do you usually eat?",
-            "emphasis": "how fast",
+            "text": "What does your weekday eating rhythm look like?",
+            "emphasis": "weekday rhythm",
             "size": "2xl"
           }
         },
         {
           "kind": "ChoiceList",
           "props": {
-            "field": "mealPace",
+            "field": "weekdayRhythm",
             "options": [
               {
-                "value": "slow",
-                "label": "Slow — I savor every bite"
+                "value": "scheduled",
+                "label": "Three meals, roughly the same times every day"
               },
               {
-                "value": "steady",
-                "label": "Steady — somewhere in the middle"
+                "value": "grazer",
+                "label": "Small bites and snacks throughout the day"
               },
               {
-                "value": "fast",
-                "label": "Fast — I'm done before everyone else"
+                "value": "skipper",
+                "label": "Skip a meal or two, eat big when I'm hungry"
               },
               {
-                "value": "distracted",
-                "label": "Depends — usually while doing something else"
+                "value": "chaotic",
+                "label": "It depends — work and life run the schedule"
               }
             ]
           }
@@ -96,7 +96,7 @@
   {
     "kind": "Screen",
     "props": {
-      "id": "hunger-cue",
+      "id": "menu-pick",
       "kind": "question",
       "body": [
         {
@@ -108,141 +108,31 @@
         {
           "kind": "Heading",
           "props": {
-            "text": "What usually makes you eat?",
-            "emphasis": "makes you eat",
+            "text": "How do you pick what to eat?",
+            "emphasis": "pick what to eat",
             "size": "2xl"
           }
         },
         {
           "kind": "ChoiceList",
           "props": {
-            "field": "hungerCue",
+            "field": "menuPick",
             "options": [
               {
-                "value": "hunger",
-                "label": "Real hunger — my body tells me"
+                "value": "planner",
+                "label": "Plan the week, batch-cook on Sunday"
               },
               {
-                "value": "clock",
-                "label": "The clock — it's mealtime"
+                "value": "cravings",
+                "label": "Whatever I'm in the mood for in the moment"
               },
               {
-                "value": "mood",
-                "label": "Mood — stress, boredom, comfort"
+                "value": "routine",
+                "label": "Same handful of meals on rotation"
               },
               {
-                "value": "social",
-                "label": "Other people — when they're eating, I am too"
-              }
-            ]
-          }
-        }
-      ],
-      "footer": [
-        {
-          "kind": "PrimaryCTA",
-          "props": {
-            "label": "Continue"
-          }
-        }
-      ]
-    }
-  },
-  {
-    "kind": "Screen",
-    "props": {
-      "id": "menu-style",
-      "kind": "question",
-      "body": [
-        {
-          "kind": "Eyebrow",
-          "props": {
-            "text": "3 of 5"
-          }
-        },
-        {
-          "kind": "Heading",
-          "props": {
-            "text": "How do you order at a new restaurant?",
-            "emphasis": "new restaurant",
-            "size": "2xl"
-          }
-        },
-        {
-          "kind": "ChoiceList",
-          "props": {
-            "field": "menuStyle",
-            "options": [
-              {
-                "value": "usual",
-                "label": "I find my safe go-to and stick with it"
-              },
-              {
-                "value": "adventurous",
-                "label": "I pick the weirdest thing on the menu"
-              },
-              {
-                "value": "researched",
-                "label": "I read reviews before I even arrive"
-              },
-              {
-                "value": "follow",
-                "label": "I copy whoever ordered first"
-              }
-            ]
-          }
-        }
-      ],
-      "footer": [
-        {
-          "kind": "PrimaryCTA",
-          "props": {
-            "label": "Continue"
-          }
-        }
-      ]
-    }
-  },
-  {
-    "kind": "Screen",
-    "props": {
-      "id": "fridge-vibe",
-      "kind": "question",
-      "body": [
-        {
-          "kind": "Eyebrow",
-          "props": {
-            "text": "4 of 5"
-          }
-        },
-        {
-          "kind": "Heading",
-          "props": {
-            "text": "What does your fridge look like right now?",
-            "emphasis": "right now",
-            "size": "2xl"
-          }
-        },
-        {
-          "kind": "ChoiceList",
-          "props": {
-            "field": "fridgeVibe",
-            "options": [
-              {
-                "value": "stocked",
-                "label": "Stocked and organized — meal-prepped"
-              },
-              {
-                "value": "chaos",
-                "label": "Chaotic — half-finished everything"
-              },
-              {
-                "value": "minimal",
-                "label": "Nearly empty — I shop daily"
-              },
-              {
-                "value": "takeout",
-                "label": "Mostly takeout containers"
+                "value": "explorer",
+                "label": "Try something new most days"
               }
             ]
           }
@@ -267,14 +157,14 @@
         {
           "kind": "Eyebrow",
           "props": {
-            "text": "5 of 5"
+            "text": "3 of 5"
           }
         },
         {
           "kind": "Heading",
           "props": {
-            "text": "Pick your ultimate comfort meal.",
-            "emphasis": "comfort meal",
+            "text": "When you want comfort food, you reach for…",
+            "emphasis": "comfort food",
             "size": "2xl"
           }
         },
@@ -284,20 +174,130 @@
             "field": "comfortFood",
             "options": [
               {
-                "value": "homemade",
-                "label": "Something homemade from childhood"
+                "value": "warm-bowl",
+                "label": "A warm grain bowl or stew"
               },
               {
-                "value": "indulgent",
-                "label": "Pizza, burger, or fries — fully indulgent"
+                "value": "carbs",
+                "label": "Pasta, pizza, or fresh bread"
               },
               {
-                "value": "fresh",
-                "label": "A bright, fresh bowl or salad"
+                "value": "sweet",
+                "label": "Something sweet — chocolate or fruit"
               },
               {
-                "value": "noodles",
-                "label": "A steaming bowl of noodles or soup"
+                "value": "savory-snack",
+                "label": "Crunchy savory snacks — chips, nuts, crackers"
+              }
+            ]
+          }
+        }
+      ],
+      "footer": [
+        {
+          "kind": "PrimaryCTA",
+          "props": {
+            "label": "Continue"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "kind": "Screen",
+    "props": {
+      "id": "social-eating",
+      "kind": "question",
+      "body": [
+        {
+          "kind": "Eyebrow",
+          "props": {
+            "text": "4 of 5"
+          }
+        },
+        {
+          "kind": "Heading",
+          "props": {
+            "text": "How do you feel about eating with other people?",
+            "emphasis": "with other people",
+            "size": "2xl"
+          }
+        },
+        {
+          "kind": "ChoiceList",
+          "props": {
+            "field": "socialEating",
+            "options": [
+              {
+                "value": "love-it",
+                "label": "Love it — meals are better shared"
+              },
+              {
+                "value": "depends",
+                "label": "Depends on the company and the day"
+              },
+              {
+                "value": "prefer-solo",
+                "label": "Prefer eating alone, on my own pace"
+              },
+              {
+                "value": "host",
+                "label": "I'd rather host than be hosted"
+              }
+            ]
+          }
+        }
+      ],
+      "footer": [
+        {
+          "kind": "PrimaryCTA",
+          "props": {
+            "label": "Continue"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "kind": "Screen",
+    "props": {
+      "id": "eating-pace",
+      "kind": "question",
+      "body": [
+        {
+          "kind": "Eyebrow",
+          "props": {
+            "text": "5 of 5"
+          }
+        },
+        {
+          "kind": "Heading",
+          "props": {
+            "text": "What's your pace at the table?",
+            "emphasis": "pace at the table",
+            "size": "2xl"
+          }
+        },
+        {
+          "kind": "ChoiceList",
+          "props": {
+            "field": "eatingPace",
+            "options": [
+              {
+                "value": "slow-burn",
+                "label": "Slow — I savor every bite"
+              },
+              {
+                "value": "steady",
+                "label": "Steady, with conversation breaks"
+              },
+              {
+                "value": "quick",
+                "label": "Quick — I'm usually onto the next thing"
+              },
+              {
+                "value": "distracted",
+                "label": "Distracted — phone, TV, or work alongside"
               }
             ]
           }
@@ -308,7 +308,58 @@
           "kind": "PrimaryCTA",
           "props": {
             "label": "See my eater type",
-            "action": "submit"
+            "action": "next"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "kind": "Screen",
+    "props": {
+      "id": "result",
+      "kind": "result",
+      "showProgress": false,
+      "showBack": false,
+      "body": [
+        {
+          "kind": "ResultBadge",
+          "props": {
+            "label": "Your eater type"
+          }
+        },
+        {
+          "kind": "ResultHero",
+          "props": {
+            "resultName": "You're a Slow Burn Eater.",
+            "emphasis": "Slow Burn",
+            "tagline": "You eat on your own rhythm and find comfort in familiar flavors. Your superpower is presence — when you sit down to eat, you actually taste it."
+          }
+        },
+        {
+          "kind": "Body",
+          "props": {
+            "text": "Slow Burn Eaters thrive on warm bowls, unhurried meals, and a small set of go-to dishes. We'll send you Olive's Slow Burn pack — 7 recipes built around how you actually eat.",
+            "tone": "muted"
+          }
+        }
+      ],
+      "footer": [
+        {
+          "kind": "PrimaryCTA",
+          "props": {
+            "label": "Send me the pack",
+            "action": "external",
+            "href": "/pack/slow-burn"
+          }
+        },
+        {
+          "kind": "SecondaryCTA",
+          "props": {
+            "label": "Share my eater type",
+            "action": "share",
+            "shareTitle": "I'm a Slow Burn Eater 🍃",
+            "shareText": "I'm a Slow Burn Eater on Olive — what kind of eater are you?"
           }
         }
       ]

@@ -3,6 +3,7 @@
 import { useId } from "react";
 import { z } from "zod";
 import type { CatalogNode } from "../types";
+import { useFunnelField } from "@/lib/funnel/runtime";
 
 export const NumberInputSchema = z.object({
   field: z.string(),
@@ -20,6 +21,8 @@ type NumberInputProps = z.infer<typeof NumberInputSchema>;
 export function NumberInput({ node }: { node: CatalogNode }) {
   const props = (node.props ?? {}) as Partial<NumberInputProps>;
   const id = useId();
+  const field = useFunnelField<string>(props.field, "");
+  const value = field.bound ? field.value : "";
   return (
     <div className="flex h-12 w-full items-stretch overflow-hidden rounded-[var(--r-md)] border-[1.5px] border-[var(--fborder)] bg-[var(--fsurf)] focus-within:border-[var(--faccent)]">
       <input
@@ -30,6 +33,8 @@ export function NumberInput({ node }: { node: CatalogNode }) {
         min={props.min}
         max={props.max}
         step={props.step ?? 1}
+        value={value}
+        onChange={(e) => field.bound && field.setValue(e.target.value)}
         className="flex-1 bg-transparent px-4 font-mono text-[15px] tabular-nums text-[var(--ftext)] placeholder:text-[var(--ftext-f)] focus:outline-none"
       />
       {props.unit && (

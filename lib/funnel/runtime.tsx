@@ -39,6 +39,11 @@ export type FunnelRuntime = {
   retreat(): void;
   /** True once the current screen has dwelled past the helper threshold. */
   dwellHelperVisible: boolean;
+  /** 0..1 fraction reflecting how far the visitor is through the
+   * user-facing journey. Computed in FunnelPlayer from the spec — intro
+   * is 0, question N of M is N/M, gate and result are 1. Custom screens
+   * fall back to position-based. */
+  progressFraction: number;
 };
 
 const FunnelRuntimeContext = createContext<FunnelRuntime | null>(null);
@@ -104,5 +109,6 @@ export function useScreenChrome(node: CatalogNode | undefined) {
     isActive: !screenId || screenId === runtime.currentScreenId,
     retreat: runtime.retreat,
     dwellHelperVisible: runtime.dwellHelperVisible,
+    progressFraction: runtime.progressFraction,
   };
 }

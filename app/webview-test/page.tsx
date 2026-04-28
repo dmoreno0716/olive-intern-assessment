@@ -44,6 +44,9 @@ const MAX_ROWS = 200;
  * Internal QA harness. Mounts the public funnel inside an iframe and
  * captures the postMessage protocol both ways. Spec:
  * design/WEBVIEW_HARNESS.md and design/designs/05_Public_Harness.html.
+ *
+ * Accepts `?url=<funnel-url>` to pre-fill and auto-load — used by the
+ * Studio's published-modal "Open in webview test harness" deep link.
  */
 export default function WebviewTestHarness() {
   const [urlInput, setUrlInput] = useState("");
@@ -61,6 +64,20 @@ export default function WebviewTestHarness() {
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const idRef = useRef(0);
+
+  /* ────────── ?url= deep-link from Studio ────────── */
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const fromQuery = params.get("url");
+    if (!fromQuery) return;
+    const stripped = fromQuery.replace(/^https?:\/\//, "");
+    setUrlInput(stripped);
+    const finalUrl = fromQuery.startsWith("http") ? fromQuery : `http://${fromQuery}`;
+    setIframeUrl(finalUrl);
+    setIframeKey((k) => k + 1);
+    setIframeLoaded(false);
+  }, []);
 
   /* ────────── inbound postMessage capture ────────── */
   useEffect(() => {

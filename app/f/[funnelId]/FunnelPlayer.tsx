@@ -23,6 +23,7 @@ type Props = {
   spec: CatalogNode[];
   source: string | null;
   title?: string;
+  preview?: boolean;
 };
 
 type FieldEntry = { value: unknown; label?: string };
@@ -39,6 +40,7 @@ export function FunnelPlayer({
   spec,
   source,
   title,
+  preview = false,
 }: Props) {
   const screens = spec;
   const total = screens.length;
@@ -87,21 +89,24 @@ export function FunnelPlayer({
   /* ────────── session bootstrap ────────── */
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/sessions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        funnel_id: funnelId,
-        variant_id: variantId,
-        source,
-      }),
-    })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((row) => {
-        if (cancelled || !row?.id) return;
-        setSessionId(row.id);
+    // Studio preview must not create response rows.
+    if (!preview) {
+      fetch("/api/sessions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          funnel_id: funnelId,
+          variant_id: variantId,
+          source,
+        }),
       })
-      .catch(() => {});
+        .then((r) => (r.ok ? r.json() : null))
+        .then((row) => {
+          if (cancelled || !row?.id) return;
+          setSessionId(row.id);
+        })
+        .catch(() => {});
+    }
     emit({
       type: "funnel:loaded",
       payload: {
@@ -114,7 +119,28 @@ export function FunnelPlayer({
     return () => {
       cancelled = true;
     };
-  }, [funnelId, variantId, source, total, emit]);
+  }, [funnelId, variantId, source, total, emit, preview]);
+
+  /* ────────── preview control listener (Studio iframe only) ────────── */
+  useEffect(() => {
+    if (!preview) return;
+    const onMsg = (e: MessageEvent) => {
+      const data = e.data as { type?: string; payload?: unknown } | null;
+      if (!data) return;
+      if (data.type === "preview:goto") {
+        const idx = (data.payload as { index?: number } | undefined)?.index;
+        if (typeof idx !== "number") return;
+        const clamped = Math.max(0, Math.min(idx, total - 1));
+        setDirection(clamped >= index ? "forward" : "backward");
+        setIndex(clamped);
+      } else if (data.type === "preview:restart") {
+        setDirection("backward");
+        setIndex(0);
+      }
+    };
+    window.addEventListener("message", onMsg);
+    return () => window.removeEventListener("message", onMsg);
+  }, [preview, total, index]);
 
   /* ────────── per-screen lifecycle: emit screen:shown + dwell timer ────────── */
   useEffect(() => {
@@ -137,6 +163,7 @@ export function FunnelPlayer({
 
   /* ────────── pagehide → funnel:abandoned ────────── */
   useEffect(() => {
+    if (preview) return;
     const onHide = () => {
       if (completedRef.current) return;
       const partial: Record<string, unknown> = {};
@@ -165,7 +192,7 @@ export function FunnelPlayer({
     };
     window.addEventListener("pagehide", onHide);
     return () => window.removeEventListener("pagehide", onHide);
-  }, [funnelId, variantName, currentScreenId, sessionId, emit]);
+  }, [funnelId, variantName, currentScreenId, sessionId, emit, preview]);
 
   /* ────────── helpers used by runtime API ────────── */
   const setField = useCallback((field: string, value: unknown, label?: string) => {
@@ -289,18 +316,49 @@ export function FunnelPlayer({
       await fireCompletion();
       if (payload.action === "external" && payload.href) {
         setOverlay({ href: payload.href });
-        setTimeout(() => {
-          // Navigate after the overlay's settle window. In a real app the
-          // native handler would route; for the web demo we fall back to
-          // the href.
-          if (typeof window !== "undefined") {
-            window.location.assign(payload.href!);
-          }
-        }, 900);
+        // In preview the iframe should not actually navigate away — the
+        // overlay alone communicates the conversion intent.
+        if (!preview) {
+          setTimeout(() => {
+            // Navigate after the overlay's settle window. In a real app the
+            // native handler would route; for the web demo we fall back to
+            // the href.
+            if (typeof window !== "undefined") {
+              window.location.assign(payload.href!);
+            }
+          }, 900);
+        }
       }
     },
-    [isLast, advance, emit, sessionId, fireCompletion],
+    [isLast, advance, emit, sessionId, fireCompletion, preview],
   );
+
+  /* ────────── progress: question-aware ────────── */
+  // Walk the spec once per render to find every question screen. Progress
+  // reflects the user-facing journey, not the spec array index — intro
+  // screens read 0, question N of M reads N/M, gate/result read 1, and
+  // custom screens fall back to position-based.
+  const progressFraction = useMemo(() => {
+    const kindAt = (i: number) =>
+      ((screens[i]?.props as { kind?: unknown } | undefined)?.kind as string) ??
+      "question";
+    const currentKind = kindAt(index);
+    const questionIndices: number[] = [];
+    for (let i = 0; i < screens.length; i++) {
+      if (kindAt(i) === "question") questionIndices.push(i);
+    }
+    const totalQuestions = questionIndices.length;
+
+    if (currentKind === "intro") return 0;
+    if (currentKind === "result" || currentKind === "gate") return 1;
+    if (currentKind === "question" && totalQuestions > 0) {
+      const pos = questionIndices.indexOf(index);
+      // 1-based position so the first question reads 1/N.
+      return (pos + 1) / totalQuestions;
+    }
+    // Custom or unknown: fall back to position-based.
+    return total > 0 ? (index + 1) / total : 0;
+  }, [screens, index, total]);
 
   /* ────────── runtime context value ────────── */
   const runtime: FunnelRuntime = useMemo(
@@ -322,6 +380,7 @@ export function FunnelPlayer({
       onCTA,
       retreat,
       dwellHelperVisible,
+      progressFraction,
     }),
     [
       funnelId,
@@ -337,6 +396,7 @@ export function FunnelPlayer({
       onCTA,
       retreat,
       dwellHelperVisible,
+      progressFraction,
     ],
   );
 

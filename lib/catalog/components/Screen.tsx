@@ -26,17 +26,22 @@ type ScreenProps = z.infer<typeof ScreenSchema>;
 
 export function Screen({ node }: { node: CatalogNode }) {
   const props = (node.props ?? {}) as Partial<ScreenProps>;
-  const showProgress = props.showProgress ?? true;
+  const screenKind = props.kind ?? "question";
+  // Result screens default to no progress bar — the visitor is "done"
+  // and a partial bar reads as broken (see DECISIONS engineering note
+  // #1 / round-6 bug-fix). The spec can still opt back in by setting
+  // showProgress: true explicitly.
+  const showProgress =
+    props.showProgress ?? (screenKind === "result" ? false : true);
   const showBackProp = props.showBack ?? true;
   const body = (props.body ?? []) as CatalogNode[];
   const footer = (props.footer ?? []) as CatalogNode[];
   const dwellHelper = props.dwellHelper;
 
   const chrome = useScreenChrome(node);
-  // Studio preview keeps the old fixed 40% bar.
-  const progress = chrome
-    ? (chrome.currentIndex + 1) / Math.max(chrome.totalScreens, 1)
-    : 0.4;
+  // Live runtime: question-aware progress from FunnelPlayer.
+  // Studio preview (no chrome): keep the old fixed 40% bar.
+  const progress = chrome ? chrome.progressFraction : 0.4;
   // Hide back on screen 0 of a real run, in addition to the spec's flag.
   const showBack = chrome ? showBackProp && !chrome.isFirst : showBackProp;
   const showHelper = Boolean(chrome?.dwellHelperVisible && dwellHelper);

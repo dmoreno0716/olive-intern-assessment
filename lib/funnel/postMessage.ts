@@ -92,6 +92,17 @@ export type HostToIframeEvent =
   | { type: "theme:set"; payload: { mode: "light" | "dark" } }
   | { type: "navigation:back"; payload: Record<string, never> };
 
+/* ────────── Studio-only preview control protocol ──────────
+ * Distinct from the public host→iframe events above. Only honored when
+ * the funnel page is mounted with `?preview=1` (Studio preview iframe).
+ * Public webview hosts never send these — we don't ship them in
+ * HOST_TO_IFRAME_EVENT_TYPES so the webview test harness ignores them. */
+export type PreviewControlEvent =
+  | { type: "preview:goto"; payload: { index: number } }
+  | { type: "preview:restart"; payload: Record<string, never> };
+
+export type PreviewControlType = PreviewControlEvent["type"];
+
 export type HostToIframeType = HostToIframeEvent["type"];
 
 export const HOST_TO_IFRAME_EVENT_TYPES: HostToIframeType[] = [

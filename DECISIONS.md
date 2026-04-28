@@ -377,7 +377,35 @@ creator didn't author, and per `design/PUBLIC_FUNNEL.md` "Completion
 behavior" the CTA stays tappable on the final spec-defined screen — so
 the overlay must be transient, not a destination.
 
-### A.2 FunnelRoot bridge — why a one-element json-render spec
+### A.2 PoweredFooter hidden by default
+
+The auto-rendered "Powered by Olive" mark at the bottom of every
+Screen (`design/DECISIONS.md` #9) is hidden by default in this build —
+`HIDE_POWERED_FOOTER` in `lib/catalog/components/Screen.tsx` is the
+toggle, currently `true`. The conditional render and the surrounding
+markup are preserved so a real Olive deployment can flip it back to
+`false` (or read it from a per-funnel `hidePoweredFooter` config row)
+without touching layout. Hiding it for the assessment is the right
+call: the platform-attribution chrome doesn't add anything to the
+demo, and the freed-up vertical space gives short Screens (the result
+reveal especially) a more grounded composition.
+
+### A.3 Result-screen body is vertically centered
+
+Result screens carry less content than question screens by design — a
+`ResultBadge` + `ResultHero` + short tagline lands around 280px tall in
+a ~640px body container, which left a tall empty band between the
+reveal and the footer CTA when the body container used the default
+content-anchored-top alignment. `Screen.tsx` now applies
+`justify-center` on the body container only when `kind === "result"`,
+so the reveal sits in the middle of the screen with breathing room
+above and below — the composition reveal moments expect (BuzzFeed,
+16Personalities, etc. all do this). `min-h-fit` on the centered branch
+guards against the rare case of a result screen with enough content
+to need scroll. The `Stack` and `ResultHero` primitives are unchanged;
+the conditional is one line scoped to the screen kind.
+
+### A.4 FunnelRoot bridge — why a one-element json-render spec
 
 `lib/catalog/funnelRenderer.tsx` defines a single-element
 `@json-render/react` spec whose root is `FunnelRoot`, a thin adapter

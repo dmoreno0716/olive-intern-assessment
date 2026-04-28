@@ -24,6 +24,17 @@ export const ScreenDescription =
 
 type ScreenProps = z.infer<typeof ScreenSchema>;
 
+/**
+ * Funnel-level toggle for the auto-rendered "Powered by Olive" mark
+ * (per `design/DECISIONS.md` #9). Defaults to `true` for the assessment
+ * — the platform-attribution chrome doesn't add anything here, and
+ * suppressing it gives the result screen back the visual room. The
+ * conditional render below stays in place so a real Olive deployment
+ * can flip this back to `false` (or read from a per-funnel config row)
+ * without touching layout.
+ */
+const HIDE_POWERED_FOOTER = true;
+
 export function Screen({ node }: { node: CatalogNode }) {
   const props = (node.props ?? {}) as Partial<ScreenProps>;
   const screenKind = props.kind ?? "question";
@@ -80,7 +91,18 @@ export function Screen({ node }: { node: CatalogNode }) {
         </div>
       )}
 
-      <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-4 pt-2 pb-4">
+      <div
+        className={`flex flex-1 flex-col gap-6 overflow-y-auto px-4 pt-2 pb-4 ${
+          // Result screens have less content than questions by design — a
+          // ResultBadge + ResultHero + short tagline lands ~280px tall in
+          // a ~640px body container, leaving a tall empty band between
+          // the reveal and the footer CTA. Center vertically so the
+          // reveal sits in the middle of the screen with breathing room
+          // above and below; min-h-fit guards against the (rare) case of
+          // a result screen with enough content to need scroll.
+          screenKind === "result" ? "min-h-fit justify-center" : ""
+        }`}
+      >
         <Children nodes={body} prefix={`${props.id ?? "screen"}-body`} />
         {showHelper && (
           <div
@@ -99,17 +121,19 @@ export function Screen({ node }: { node: CatalogNode }) {
         </div>
       )}
 
-      <div className="flex items-center justify-center gap-1.5 px-3.5 py-1.5 font-mono text-[10.5px] uppercase tracking-[0.06em] text-[var(--ftext-f)]">
-        <span
-          aria-hidden
-          className="inline-block h-2.5 w-2.5 rounded-full"
-          style={{
-            background:
-              "conic-gradient(from 0deg, var(--olive-300), var(--olive-500), var(--olive-700), var(--olive-300))",
-          }}
-        />
-        <span>Powered by Olive</span>
-      </div>
+      {!HIDE_POWERED_FOOTER && (
+        <div className="flex items-center justify-center gap-1.5 px-3.5 py-1.5 font-mono text-[10.5px] uppercase tracking-[0.06em] text-[var(--ftext-f)]">
+          <span
+            aria-hidden
+            className="inline-block h-2.5 w-2.5 rounded-full"
+            style={{
+              background:
+                "conic-gradient(from 0deg, var(--olive-300), var(--olive-500), var(--olive-700), var(--olive-300))",
+            }}
+          />
+          <span>Powered by Olive</span>
+        </div>
+      )}
     </div>
   );
 }

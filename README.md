@@ -1,27 +1,33 @@
-# Olive Intern Assessment — Text-to-Quiz
+# Olive Quiz Funnel Studio
 
-This is the scaffold for the Olive technical interview. Read the assessment brief we sent you first. This README only covers how to get the project running locally.
+Generative quiz funnel builder for Olive. Non-technical creators type a
+description, an LLM generates a multi-screen funnel as Generative UI,
+the creator previews/edits/deploys it, and end users take it on the web
+or via webview in the Olive mobile app.
+
+The architecture is documented in `AGENTS.md`. The product/visual
+decisions are in `design/DECISIONS.md`. The engineering decisions are in
+`DECISIONS.md` (root). Three example funnels with prompts, specs, and
+URLs are under `examples/`.
 
 ---
 
-## What's in the box
+## Stack
 
 - **Next.js 16** (App Router) + **TypeScript** + **Tailwind v4**
-- **shadcn/ui** initialized with `Button` as a starter
-- **Supabase** local dev (Postgres + Studio + Auth) configured with **declarative schemas**
-- **LLM SDKs** already installed: `@anthropic-ai/sdk` and `openai`. Pick one.
-- **Zod** for runtime validation
-- Empty `DECISIONS.md` template you'll fill in as you build
-
-What's *not* in the box: a quiz schema, prompts, routes, components beyond `Button`, or any tables. That's the assessment.
+- **shadcn/ui** + **lucide-react** + **Recharts** (themed via tokens, not defaults)
+- **`@json-render/core` / `react` / `shadcn`** for the Generative UI runtime
+- **Zod** for catalog props validation
+- **Supabase** (local) for funnels / variants / sessions / responses
+- **`@anthropic-ai/sdk`** with **Claude Opus 4.7** by default — overridable
 
 ---
 
 ## Prerequisites
 
-- **Node 20+** (`.nvmrc` pins to 20)
-- **pnpm** (`corepack enable` or install via your package manager)
-- **Docker** — required for Supabase local dev
+- **Node 20+**
+- **pnpm** (`corepack enable`)
+- **Docker** (Supabase local dev)
 - **Supabase CLI** — `brew install supabase/tap/supabase` on macOS
 
 ---
@@ -32,83 +38,139 @@ What's *not* in the box: a quiz schema, prompts, routes, components beyond `Butt
 # 1. Install deps
 pnpm install
 
-# 2. Copy env template and fill in LLM key(s)
+# 2. Configure env — at minimum set ANTHROPIC_API_KEY
 cp .env.example .env.local
+# Edit .env.local:
+#   ANTHROPIC_API_KEY=sk-ant-...           (required)
+#   OLIVE_LLM_MODEL=claude-opus-4-7        (optional, defaults to Opus)
+#   NEXT_PUBLIC_APP_URL=http://localhost:3000
 
-# 3. Start Supabase local stack (Postgres + Studio + Auth)
+# 3. Start Supabase
 pnpm supabase start
+# Paste the printed anon key + service-role key into .env.local
 
-# 4. Paste the printed anon key and service role key into .env.local
+# 4. Seed a baseline demo funnel + the 3 example funnels
+pnpm seed                  # one "Slow Burn" demo funnel with stable id
+pnpm seed:examples         # 3 examples + ~10 fake sessions each
 
 # 5. Run the app
 pnpm dev
 ```
 
-Open http://localhost:3000.
-
-Supabase Studio runs at http://127.0.0.1:54323 once `supabase start` finishes.
+Open http://localhost:3000. Supabase Studio is at http://127.0.0.1:54323.
 
 ---
 
-## Database schema — declarative pattern
+## Surfaces
 
-We use **declarative schemas**, not hand-written migrations. You edit `CREATE TABLE` statements in `supabase/schemas/`, and the CLI generates migrations from the diff.
+| URL                                    | What's there                                                  |
+|----------------------------------------|---------------------------------------------------------------|
+| `/studio`                              | Empty Studio — type a prompt, watch generation, get a funnel  |
+| `/studio/<funnelId>`                   | Studio workbench — preview iframe + spec tree + chat refine   |
+| `/dashboard/<funnelId>`                | Analytics dashboard — variants, source breakdown, drop-off, donut, responses |
+| `/f/<funnelId>`                        | Public funnel — what end users see                            |
+| `/f/<funnelId>?utm_source=tiktok`      | Same funnel, sourced — variant resolver picks based on source |
+| `/webview-test?url=<funnel-url>`       | Webview test harness — postMessage console + device shells    |
+| `/catalog`                             | Visual catalog of all 31 primitives (engineer-facing)         |
 
-```
-supabase/schemas/
-├── 00_cleanup/      # DROPs for objects being removed
-├── 10_enums/        # PostgreSQL ENUM types
-├── 20_functions/    # Database functions
-├── 30_tables/       # Table definitions
-├── 35_triggers/     # Triggers
-├── 40_views/        # Views
-└── 90_rls/          # Row Level Security policies
-```
+---
 
-### Adding a table
+## Common tasks
 
 ```bash
-# 1. Write your CREATE TABLE in supabase/schemas/30_tables/10_quizzes.sql
+# Generate the 3 example funnels (data for the Loom and dashboard screenshots)
+pnpm seed:examples
 
-# 2. Generate a migration from the diff
-pnpm supabase db diff -f add_quizzes
+# Regression-test the LLM (9 prompts + retry path, ~$2.30 on Opus / $0.42 on Sonnet)
+pnpm test:gen
 
-# 3. Apply locally
-pnpm supabase db reset
+# Same on Sonnet for cost comparison
+OLIVE_LLM_MODEL=claude-sonnet-4-6 pnpm test:gen
+
+# Force the retry path with a synthetic invalid first attempt
+OLIVE_TEST_FORCE_INVALID_FIRST=1 pnpm test:gen --skip-happy
+
+# Type-check (fast, no build)
+pnpm exec tsc --noEmit
+
+# Production build
+pnpm build
+
+# Seed fake responses against an existing funnel
+pnpm tsx scripts/seed-example-responses.ts <funnel_id> [count]
 ```
 
-> `supabase db reset` drops the local DB and replays all migrations in order. Good for getting to a clean state.
+---
+
+## Webview harness
+
+The webview test harness at `/webview-test` mounts any funnel URL inside
+an iframe wrapped in a phone-shell DIV and shows the full postMessage
+protocol both ways. A successful play-through fires:
+
+```
+funnel:loaded → screen:shown → screen:completed + answer:submitted
+              → … → cta:clicked → funnel:completed
+```
+
+`funnel:abandoned` only fires on browser pagehide — to capture one,
+load a funnel, advance a screen or two, and reload the iframe.
+
+The Studio's published-modal "Open in webview test harness" deep-link
+pre-fills the URL and auto-loads.
+
+---
+
+## Database
+
+Four tables: `funnels → variants → sessions → responses`. Spec, answer,
+and routing-rule columns are JSONB so the LLM's nested catalog format
+lands unchanged. Migrations are auto-generated from the declarative
+schemas in `supabase/schemas/`.
+
+```bash
+# Reset local DB to declarative schema state
+pnpm supabase db reset
+
+# Generate a migration from a schema change
+pnpm supabase db diff -f <name>
+```
 
 ---
 
 ## Project layout
 
 ```
-app/                 # Next.js App Router
-components/ui/       # shadcn components (start with button.tsx)
-lib/                 # Utilities (cn helper from shadcn)
-supabase/
-├── config.toml      # Local stack config
-├── schemas/         # Declarative DDL (source of truth)
-└── migrations/      # Auto-generated from schema diffs
+app/
+├── api/funnels/[id]/{analytics,export,publish,resolve}/  # Funnel APIs
+├── api/sessions/                                          # Session lifecycle
+├── api/generate/, api/variants/[id]/refine/              # LLM endpoints
+├── dashboard/[funnelId]/                                  # Analytics dashboard
+├── f/[funnelId]/                                          # Public funnel page
+├── studio/[funnelId]/                                     # Studio workbench
+└── webview-test/                                          # QA harness
+
+lib/
+├── catalog/        # 31 primitives + Zod schemas + registry + renderer
+├── llm/            # Claude client, prompts, generate + refine, validation
+├── api/            # SpecSchema, routing resolver, JSON helpers
+├── studio/         # Spec ops, debounced saver, SSE stream parser
+└── funnel/         # Runtime context, postMessage protocol, dwell helper
+
+prompts/            # System / user-template / refine-system (committed)
+design/             # Bundle from product team — read-only reference
+examples/           # 3 example funnels with prompts + specs + URLs
+scripts/            # seed, seed:examples, test-generation
+supabase/           # Declarative schemas + auto-generated migrations
 ```
 
 ---
 
-## What to submit
+## Documentation
 
-Per the assessment brief:
-
-1. Working prototype — someone types a description, gets a live quiz, takes it, responses land in the dashboard
-2. `DECISIONS.md` filled in
-3. Your prompts committed to the repo (put them wherever makes sense — e.g. `prompts/`)
-4. 3 example generated quizzes with input prompt + spec + live URL + results screenshot
-5. 2-3 min screen recording of the end-to-end flow
-
----
-
-## A note on AI tooling
-
-Use whatever helps you ship. We use Claude Code at Olive. What matters is the product decisions, not whether you typed every character yourself.
-
-Good luck.
+- **`AGENTS.md`** — codebase overview and engineering conventions
+- **`DECISIONS.md`** — engineering decisions (LLM choice, schema, scoring, retries, cost)
+- **`design/DECISIONS.md`** — product/visual decisions (handoff bundle)
+- **`design/CATALOG.md`** — catalog primitives spec
+- **`examples/README.md`** — example funnels + how to capture screenshots
+- **`prompts/`** — system/user/refine prompts the LLM sees

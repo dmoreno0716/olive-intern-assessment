@@ -1,10 +1,16 @@
 /**
  * Regression suite for the funnel-spec generator.
  *
- * Pass 1: runs the 5 prompts that appear as "Try one of these" chips in
- *   the Studio empty state (design/STUDIO.md State 1) and prints, for
- *   each: validity status, screen count + kinds, token usage + USD cost,
- *   the full validated spec (or the validation issues).
+ * Pass 1: runs 9 prompts and prints, for each: validity status, screen
+ *   count + kinds, token usage + USD cost, the full validated spec (or
+ *   the validation issues).
+ *   - 5 baseline prompts (the Studio empty-state suggestion chips).
+ *   - 4 Round-7 edge cases: a very short prompt ("feedback quiz"), a
+ *     very long prompt with many requirements, a "standalone paywall
+ *     only — no quiz" prompt, and a "quiz only — no paywall" prompt.
+ *     The last two carry hard structural assertions verifying that the
+ *     LLM honors design/DECISIONS.md #2 ("the system never auto-injects
+ *     a paywall or thank-you screen the creator didn't ask for").
  *
  * Pass 2: re-runs the first prompt with OLIVE_TEST_FORCE_INVALID_FIRST=1
  *   set, which deterministically forces the first LLM call to return a
@@ -13,11 +19,11 @@
  *   Asserts: validation_error event emitted, retry happens, retry
  *   succeeds with attempts=2 OR fails with a structured error.
  *
- * Run: pnpm tsx scripts/test-generation.ts
+ * Run: pnpm tsx scripts/test-generation.ts (or `pnpm test:gen`)
  *
  * Optional flags:
- *   --json      emit the full pass-1 results as JSON on stdout
- *   --skip-happy   skip the 5-prompt happy path and run only the retry test
+ *   --json         emit the full pass-1 results as JSON on stdout
+ *   --skip-happy   skip pass-1 and run only the retry-path test
  *
  * Set OLIVE_LLM_MODEL in .env.local to override the default model.
  */
@@ -31,12 +37,54 @@ import type { StreamEvent } from "../lib/llm/types";
 loadEnvLocal();
 
 const PROMPTS: { label: string; prompt: string }[] = [
+  // Original 5 baseline prompts (the Studio empty-state suggestion chips).
   { label: "eater-quiz",    prompt: "5-question quiz: what kind of eater are you?" },
   { label: "lead-gen",      prompt: "Lead-gen quiz that recommends an Olive plan" },
   { label: "paywall",       prompt: "Standalone paywall for Olive Pro upsell" },
   { label: "onboarding",    prompt: "Onboarding quiz for new Olive users" },
   { label: "feedback",      prompt: "3-question feedback survey" },
+  // Round-7 edge cases.
+  { label: "very-short",    prompt: "feedback quiz" },
+  {
+    label: "very-long",
+    prompt:
+      "Build a 7-question pre-purchase quiz for a meal-kit subscription. " +
+      "The quiz must cover: (1) household size, (2) cooking experience, " +
+      "(3) cuisine preferences with at least 6 options, (4) dietary " +
+      "restrictions as multi-select, (5) weekly cooking frequency on a " +
+      "1-5 scale, (6) primary motivation as a single choice, (7) email " +
+      "capture. Open with a friendly intro screen, end with a personalized " +
+      "result that maps the cuisine preference to a recommended plan name. " +
+      "Result screen should celebrate the match in instrument-serif italic.",
+  },
+  {
+    label: "paywall-only-no-quiz",
+    prompt:
+      "A standalone paywall for Olive Pro — no quiz at all, just the value " +
+      "prop, three plan options, and a CTA. Do not add any quiz screens.",
+  },
+  {
+    label: "quiz-no-paywall",
+    prompt:
+      "A 4-question quiz that recommends an Olive eating archetype. Quiz " +
+      "only — absolutely no paywall, no checkout, no plan-selection screen. " +
+      "End on the result.",
+  },
 ];
+
+/**
+ * Subset of edge-case prompts that have hard structural assertions —
+ * "must NOT auto-inject a quiz / paywall" per `design/DECISIONS.md` #2.
+ * Pass-1 reports these as soft warnings if the structure drifts.
+ */
+const STRUCTURAL_ASSERTIONS: Record<
+  string,
+  { mustNotContainKind?: string[]; minScreens?: number }
+> = {
+  "paywall-only-no-quiz": { mustNotContainKind: ["question"] },
+  "quiz-no-paywall": { mustNotContainKind: ["gate"] },
+  "very-short": { minScreens: 2 },
+};
 
 type RunSummary = {
   label: string;
@@ -174,6 +222,34 @@ async function runPrompt(label: string, prompt: string): Promise<RunSummary> {
     console.log(`  ✓ valid spec — ${screens.length} screens, ${result.attempts} attempt(s), ${durationMs}ms`);
     console.log(`  screens: ${summary.screenKinds.join(", ")}`);
     if (summary.fields.length) console.log(`  fields:  ${summary.fields.join(", ")}`);
+
+    // Soft structural assertions for the edge-case prompts (per
+    // design/DECISIONS.md #2 — the system never auto-injects a paywall
+    // or quiz the creator didn't ask for).
+    const rule = STRUCTURAL_ASSERTIONS[label];
+    if (rule) {
+      const kinds = screens.map((s) => s.kind);
+      if (rule.mustNotContainKind) {
+        for (const banned of rule.mustNotContainKind) {
+          if (kinds.includes(banned)) {
+            console.log(
+              `  ⚠ structural drift: spec contains screen kind "${banned}" but the prompt asked for it to be omitted`,
+            );
+            process.exitCode = 1;
+          } else {
+            console.log(
+              `  ✓ structural assertion: no "${banned}" screen present`,
+            );
+          }
+        }
+      }
+      if (rule.minScreens != null && screens.length < rule.minScreens) {
+        console.log(
+          `  ⚠ structural drift: only ${screens.length} screen(s); expected at least ${rule.minScreens}`,
+        );
+        process.exitCode = 1;
+      }
+    }
   } else {
     summary.issues = result.issues ?? [];
     console.log(`  ✗ failed after ${result.attempts} attempt(s): ${result.error}`);

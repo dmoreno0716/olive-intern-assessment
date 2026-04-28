@@ -1,42 +1,315 @@
-# DECISIONS.md
+# DECISIONS.md — Engineering decisions
 
-A short log of the product and technical decisions you made while building Text-to-Quiz. Keep it honest — tradeoffs and "I'd do this differently with more time" are as valuable as wins.
+This is the **engineering** log. The companion `design/DECISIONS.md`
+captures product/visual decisions from the design handoff bundle (Linear-
+style flat catalog, no auto-injected paywalls, etc.); this doc covers
+the implementation choices that surround those decisions.
 
 ---
 
-## Quiz spec schema
+## 1. Quiz spec schema and rationale
 
-<!-- What shape does a generated quiz take? Why those fields? What did you deliberately leave out? -->
+The funnel spec is **a flat array of 31 typed primitives**, not a
+quiz-shaped schema. Every node has the same outer shape — `{ kind:
+string, props: object }` — and Zod schemas in `lib/catalog/schemas.ts`
+constrain the props per `kind`. The full inventory: layout (`Screen`,
+`Stack`, `Group`, `Spacer`, `Divider`), typography (`Heading`, `Body`,
+`Eyebrow`, `Caption`), answer primitives (`ChoiceList`, `MultiChoice`,
+`ImageChoiceGrid`, `ScalePicker`, `ShortText`, `LongText`, `EmailInput`,
+`NumberInput`, `ToggleRow`), navigation (`PrimaryCTA`, `SecondaryCTA`,
+`ProgressBar`, `BackButton`), result framing (`ResultBadge`,
+`ResultHero`), commerce (`PriceCard`, `EmailGate`, `SocialProof`,
+`Disclosure`), and decorative (`Avatar`, `IconBadge`, `PoweredFooter`).
 
-## LLM choice
+We chose Generative UI over a fixed quiz schema because the surface
+isn't *a quiz tool* — it's a generative funnel surface that happens to
+be commonly used for quizzes. This is the **Superwall replacement
+story**: the same catalog, the same renderer, and the same Studio chrome
+mount a 5-question segmentation quiz, a single-screen paywall, an email-
+capture lead-gen flow, or anything else the catalog can compose. A
+fixed `Quiz { questions: [...], result: {...} }` schema would foreclose
+on the paywall use case the moment we shipped it.
 
-<!-- Which provider and model did you use? Why? Cost-per-quiz estimate? -->
+The flat-catalog choice (no `quiz` / `paywall` / `result` buckets) is
+covered in `design/DECISIONS.md` #1 — composition is enforced by the
+schema (which children which Screens accept), not by primitive
+category, which keeps the LLM prompt simple ("here are 31 primitives,
+pick what fits").
 
-## Question type vocabulary
+## 2. LLM choice and why
 
-<!-- Which question types does your system support? Which did you skip and why? -->
+**Anthropic Claude.** Configurable via `OLIVE_LLM_MODEL` in
+`.env.local`; default is `claude-opus-4-7`. The model id flows through
+`lib/llm/client.ts` so the rest of the codebase stays model-agnostic —
+swapping the env var is a one-line change for cost-sensitive
+deployments.
 
-## Scoring & results logic
+We default to Opus for first-generation quality. Across the 9-prompt
+regression suite (5 baseline + 4 Round-7 edge cases), Opus produces
+**$0.252/quiz on average** with 100% structural validity, while Sonnet
+4.6 produces **$0.046/quiz on average** with the same 100% validity.
+Opus is **5.5× more expensive** for a margin in spec quality that's
+hard to quantify in this take-home but which is most pronounced in the
+"very-long" edge case — Opus produced a 9-screen spec that fully
+covered the prompt's 7 explicit requirements; Sonnet matched that
+breadth but tended to repeat the same option phrasing across questions.
 
-<!-- How does scoring work? Weighting? Branching? Multiple result dimensions? What's in vs. out of scope? -->
+For a creator surface where first-shot quality is the conversion
+event (a low-effort UX promises "type a description, see a real
+funnel"), Opus is the right default. The env-var override is the
+cost lever for high-volume deployments. Both numbers above are
+captured by the regression script's `pnpm test:gen` and reproducible.
 
-## Edit loop
+## 3. Question type vocabulary — supported and excluded
 
-<!-- After the first generation, how does a user iterate? Full regeneration, spec patching, or direct editing? Why? -->
+**Supported question primitives:** `ChoiceList` (single-select),
+`MultiChoice` (multi-select with min/max), `ImageChoiceGrid` (visual
+single-select, 2 or 3 columns), `ScalePicker` (1–5 / 1–7 numeric scale),
+`ShortText` (single-line), `LongText` (multi-line), `NumberInput`,
+`ToggleRow` (yes/no), and `EmailInput`. Plus the gate-side `EmailGate`
+which combines an email field with a CTA in one screen.
 
-## Prompt reliability
+**Deliberately excluded:**
+- **NPS (0–10 scale)** — `ScalePicker` already covers numeric scales
+  with explicit min/max props; reintroducing NPS-as-its-own-primitive
+  would just be a 0–10 ScalePicker with a different label. Better to
+  let creators describe "0 to 10 NPS scale" in the prompt and have the
+  LLM pick a `ScalePicker` with `min:0 max:10`.
+- **Multi-step branching logic encoded in the spec** — there's no
+  `Screen.next` field that conditionally points to different downstream
+  screens. Reason: branching as data is hard to author and harder to
+  audit; we prefer routing-as-variants (one funnel with N variants
+  picked by `?utm_source=` or dwell-time) over inline conditional
+  graphs. If a creator needs "TikTok users see this branch, IG users
+  see that one," they author two variants, not a forking spec.
+- **File uploads** — out of scope for the assessment surface; would
+  require object storage, virus scanning, and per-funnel quotas.
+- **Signature inputs** — niche enough that the LLM can fall back to a
+  `LongText` with a name field, and shipping a real signature primitive
+  would mean canvas + serialization + accessibility scope creep.
 
-<!-- How do you validate LLM output? Retries? Fallbacks? What happens when it returns garbage? -->
+## 4. Scoring and results logic
 
-## Data model
+**There is no scoring engine.** We don't compute a numeric score per
+session and bucket users into result tiers. Instead, we let the LLM
+**author the result screen(s) directly** — the spec contains the
+result content the creator wants, and at runtime every completer
+lands on whichever result screen the spec ends with.
 
-<!-- How are quizzes and responses stored? What does the quiz-creator dashboard actually show? -->
+For the dashboard's result-distribution donut, we use a heuristic:
+the **first ChoiceList/MultiChoice/ImageChoiceGrid field** in the
+variant's spec is the segmentation field, and we group completers by
+their answer to it (see `app/api/funnels/[id]/analytics/route.ts`'s
+`findSegmentationField`). This works because the kinds of quizzes
+creators describe ("what kind of eater are you", "what's your fitness
+goal") almost always carry the result signal in the first segmentation
+question.
 
-## Cost
+Why no scoring engine: weighted-sum scoring (each answer contributes
+points across N dimensions, the highest dimension determines the
+result) is the dominant pattern in commercial quiz tools, and it's
+**incompatible with creator-authored content authority**. A scoring
+engine forces creators to think in points rather than meaning, and the
+LLM would have to invent the weighting schema for every prompt — a step
+that adds cognitive load to the prompt and a source of unintended
+divergence between what the creator asked for and what the engine
+produces. Letting the LLM compose the result screen directly handles
+persona-style results, score-band results ("you're at level 3 of 5"),
+and recommendation results uniformly: the LLM picks the framing the
+creator's prompt implies, and the runtime is content-agnostic.
 
-<!-- Approximate $ per generated quiz. Show your math. -->
+The trade-off: we can't do "if score > 80, show result A; else show
+result B" without variants. That's by design — see #3 above.
 
-## CheckoutOverlay — visual chrome, not a handoff
+## 5. Edit loop approach
+
+**Two edit modalities run side-by-side: inline form fields AND chat
+refinement.** Per `design/DECISIONS.md` #6: "creators think
+structurally (spec tree) and visually (preview), and forcing them to
+pick one mode for editing slows them down."
+
+Inline editing (`app/studio/[funnelId]/PrimitiveEditor.tsx`) renders
+a Zod-derived form for the selected primitive — text fields for
+`Heading.text`, an array editor for `ChoiceList.options`, a select
+for `Screen.kind`. Edits apply optimistically to the local spec and
+debounce-save via `lib/studio/saver.ts`.
+
+Chat refinement (`app/studio/[funnelId]/ChatBar.tsx` + `lib/llm/refine.ts`)
+takes a natural-language instruction ("rename the first question",
+"add an option for vegetarian") and asks Claude to emit a JSON Patch
+against the current spec. The diff card shows a 3-line human summary
+(per `design/DECISIONS.md` #5 — "summary first, not full-spec"), not
+the raw RFC 6902 patch.
+
+The two paths share one source of truth (the local `spec` state) and
+one persistence layer (`saver.ts`'s `schedule(variantId, patch)`),
+so a creator can flip between modalities mid-edit without losing
+work.
+
+## 6. Prompt reliability — validation, retries, fallbacks
+
+Three layers, in order of when they run:
+
+1. **Schema validation.** Every generated spec is fed through
+   `SpecSchema.safeParse` from `lib/api/specSchema.ts`. The schema
+   recursively validates each node's `kind` against the catalog
+   registry and the props against the corresponding Zod schema. A
+   single unknown `kind` (e.g. the LLM hallucinating `ProgressDots`)
+   surfaces as a structured `SpecIssue { path, message }`.
+
+2. **One-shot retry with errors fed back.** `lib/llm/generate.ts`
+   wraps the call in attempt 1 → retry. On validation failure, it
+   builds a retry message containing the previous attempt's text **plus
+   the issue list**, so attempt 2 sees what went wrong and corrects.
+   The retry message construction lives in
+   `lib/llm/prompts.ts:buildRetryMessage`.
+
+3. **Persistence gate.** `app/api/generate/route.ts:45` is the gate —
+   `if (!result.ok)` returns the structured error to the client and
+   never persists the invalid spec. The Studio handles this gracefully
+   (the streaming filmstrip shows a retry-in-progress badge, then a
+   "couldn't generate — try a different prompt" message if both
+   attempts fail). No partially-valid specs ever land in Supabase.
+
+Empirically, on the 9-prompt regression baseline, **all 9 prompts
+produce valid specs on the first attempt** (Opus 4.7) — see the
+"PASS 1 SUMMARY" output of `pnpm test:gen`. The retry path is exercised
+by a deterministic test (`OLIVE_TEST_FORCE_INVALID_FIRST=1`) which
+forces attempt 1 to return a synthetic invalid spec; the test asserts
+that (a) a `validation_error` event is emitted with detailed issues,
+(b) attempt 2 hits the LLM with those issues fed back, (c) attempt 2
+recovers with a valid spec, and (d) the stream emits a clean structured
+final event with no crash. The retry-path test is in
+`scripts/test-generation.ts:runRetryPathTest()` and asserts six
+properties; all six pass on the current baseline.
+
+## 7. Data model for responses
+
+Four tables in Supabase, FK-linked top-down:
+
+```
+funnels
+  id, title, description, status (draft | published), created_at, updated_at
+
+variants
+  id, funnel_id → funnels, name, spec (JSONB), routing_rules (JSONB),
+  created_at, updated_at
+
+sessions
+  id, funnel_id → funnels, variant_id → variants,
+  source (utm_source, nullable), started_at, completed_at,
+  abandoned_at, total_dwell_ms, cta_clicked
+
+responses
+  id, session_id → sessions, screen_id, screen_index,
+  answer (JSONB), dwell_ms, submitted_at
+```
+
+Three things to call out:
+
+**Variants as routing targets.** A funnel has N variants (1–4); each
+variant carries its own `spec` and `routing_rules`. At request time the
+resolver in `lib/api/routing.ts:resolveVariant` picks one based on
+`?utm_source=` and an optional dwell threshold. This makes variants
+**siblings, not children** of a "primary" funnel — see
+`design/DECISIONS.md` #4 for why the Studio surfaces them as tabs, not
+a sidebar.
+
+**JSONB for spec/answer/routing_rules.** All three are open-ended
+and read-mostly. Storing them as JSONB lets us evolve the catalog
+without migrations and lets the LLM's output land in the row
+unchanged. Trade-off: we can't index across answer fields, but the
+analytics endpoint groups in-memory, and `responses` are queried by
+`session_id` (which IS indexed). Once response volume grows, the
+right move is a materialized view that flattens hot fields, not a
+column-per-question schema.
+
+**Sessions, not "completions".** We persist a session row at *start*,
+not on completion — that's how we count abandonment and drop-off. The
+public funnel page POSTs to `/api/sessions` on first iframe mount and
+stamps `completed_at` (or `abandoned_at`) on the appropriate
+event. The dashboard's drop-off chart reads `responses` to figure out
+how far each session got.
+
+## 8. Cost per generation
+
+Real numbers from `pnpm test:gen` against the 9-prompt regression
+suite (5 baseline + 4 edge cases), measured 2026-04-28:
+
+| Prompt                  | Opus 4.7 cost | Sonnet 4.6 cost | Output tokens (Opus / Sonnet) |
+|-------------------------|---------------|-----------------|-------------------------------|
+| eater-quiz              | $0.2607       | $0.0452         | 1,981 / ~1,900                |
+| lead-gen                | $0.3056       | $0.0604         | 2,580 / ~2,400                |
+| paywall                 | $0.1643       | $0.0274         | 696 / ~600                    |
+| onboarding              | $0.2932       | $0.0527         | 2,415 / ~2,200                |
+| feedback                | $0.1760       | $0.0329         | 854 / ~800                    |
+| very-short              | $0.2445       | $0.0407         | 1,768 / ~1,600                |
+| very-long               | $0.3787       | $0.0721         | 3,521 / ~3,300                |
+| paywall-only-no-quiz    | $0.1733       | $0.0317         | 809 / ~750                    |
+| quiz-no-paywall         | $0.2703       | $0.0520         | 2,101 / ~2,000                |
+| **Total (9 prompts)**   | **$2.2665**   | **$0.4151**     |                               |
+| **Per-quiz average**    | **$0.252**    | **$0.046**      |                               |
+
+Input tokens are roughly constant (~7,500 per call) — the catalog
+prompt is the same across runs. Output tokens scale with spec size
+(intro+5q ≈ 1,900 out, intro+7q ≈ 2,400 out, 9-screen long-form ≈
+3,500 out). The retry path adds one extra LLM round-trip when it
+fires; on the baseline first-attempt success rate is 9/9, so the retry
+budget is in practice spent on hard prompts rather than every quiz.
+
+## 9. What I'd do differently with more time
+
+- **Real auth and per-creator scoping.** Right now any visitor can
+  read or edit any funnel. Adding Supabase Auth (anon → magic-link
+  email) and RLS policies (`creator_id` column on `funnels`,
+  `auth.uid() = creator_id` policy) is the obvious next step. This
+  was deferred because the assessment doesn't ship a multi-tenant
+  hosting story, but it's the first thing I'd add for a real
+  deployment.
+
+- **Better dwell-time analytics.** Today the dashboard reports
+  median dwell per screen and a single threshold-based dwell helper
+  trigger. With more time, I'd add mean + p50 + p90 per screen, plus
+  a session-replay-lite that overlays each session's dwell pattern
+  against the median (creators want to see *why* people are slow on
+  question 3, not just that they are).
+
+- **A/B testing framework.** The dashboard's "Winning" tag in the
+  comparison table is a naive max-rate selector. A real implementation
+  would use Bayesian probability of being best, or sequential testing
+  with confidence intervals — and explicitly surface "not enough data
+  yet" rather than silently picking the first variant when both have
+  6 starts each. I sized this out in my head and decided it was the
+  weakest part of the dashboard for the time available.
+
+- **React Native shell.** `@json-render/react-native` is in our
+  dependency tree's neighbor packages — the catalog primitives could
+  in theory render natively. We didn't build a native shell because
+  the assessment's scope is the web + webview-harness story. Shipping
+  a real RN shell would replace the iframe-based webview test
+  (`design/DECISIONS.md` #11) with the actual native bridge.
+
+- **Playwright tests for the Studio.** Type-checking and the LLM
+  regression suite cover the layers I can test cheaply. The Studio's
+  state transitions (empty → generating → all-screens → published) are
+  end-to-end paths that would benefit from screenshot-based regression
+  tests. I left this out because the harness wasn't on the rubric, but
+  it's where I'd invest first if I was inheriting this repo.
+
+- **Smarter spec diffing for chat refinement.** The current diff card
+  shows a human summary, but the underlying patch is computed by Claude.
+  When the LLM emits a patch that doesn't quite match the user's
+  intent, the creator's only recovery is "Undo and try again." A real
+  refinement loop would diff the new spec against the old one
+  programmatically (myers/structural diff over the catalog tree), so
+  the human summary is grounded in a real diff and the apply step is
+  deterministic.
+
+---
+
+## Appendix: smaller engineering notes
+
+### A.1 CheckoutOverlay — visual chrome, not a handoff
 
 The translucent overlay that appears when a final-screen
 `action="external"` CTA is tapped is intentionally a UI affordance only.
@@ -65,6 +338,21 @@ creator didn't author, and per `design/PUBLIC_FUNNEL.md` "Completion
 behavior" the CTA stays tappable on the final spec-defined screen — so
 the overlay must be transient, not a destination.
 
-## What I'd do differently with more time
+### A.2 FunnelRoot bridge — why a one-element json-render spec
 
-<!-- Honest list. -->
+`lib/catalog/funnelRenderer.tsx` defines a single-element
+`@json-render/react` spec whose root is `FunnelRoot`, a thin adapter
+that delegates to our recursive `renderNode`. We could have authored
+the catalog as a true json-render spec (one element per node, children
+referenced by key), but the LLM-facing format in `design/CATALOG.md` is
+a **nested children-in-props** structure (`Screen.body[]`,
+`Group.children[]`), not a flat `elements{}` map.
+
+The bridge keeps both halves happy: the LLM emits the nested format it
+finds easiest to author and audit (no element-id bookkeeping), and we
+still get to mount the spec inside `@json-render/react`'s `Renderer` so
+all the future affordances of the json-render runtime (state binding,
+validation contexts, RepeatChildren) are available when we want them
+without rewriting the catalog. The cost is one component (`FunnelRoot`)
+that recursively walks the nested format itself rather than handing
+each level back to json-render — a small price for prompt clarity.

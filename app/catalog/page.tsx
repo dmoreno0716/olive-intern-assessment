@@ -193,7 +193,7 @@ export default function CatalogVerificationPage() {
         <p className="font-sans text-[14px] text-muted-foreground">
           Each frame below is one of the four example specs from
           design/CATALOG.md, piped through{" "}
-          <code className="font-mono text-[12px]">@json-render/react</code>'s
+          <code className="font-mono text-[12px]">@json-render/react</code>&apos;s
           Renderer with our catalog registry.
         </p>
       </header>

@@ -1,0 +1,318 @@
+[
+  {
+    "kind": "Screen",
+    "props": {
+      "id": "intro",
+      "kind": "intro",
+      "showProgress": false,
+      "showBack": false,
+      "body": [
+        {
+          "kind": "Eyebrow",
+          "props": {
+            "text": "5 questions"
+          }
+        },
+        {
+          "kind": "Heading",
+          "props": {
+            "text": "What kind of eater are you?",
+            "emphasis": "kind of eater",
+            "size": "2xl"
+          }
+        },
+        {
+          "kind": "Body",
+          "props": {
+            "text": "Five quick questions. We'll name your eating style and what it says about you."
+          }
+        }
+      ],
+      "footer": [
+        {
+          "kind": "PrimaryCTA",
+          "props": {
+            "label": "Start"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "kind": "Screen",
+    "props": {
+      "id": "meal-pace",
+      "kind": "question",
+      "body": [
+        {
+          "kind": "Eyebrow",
+          "props": {
+            "text": "1 of 5"
+          }
+        },
+        {
+          "kind": "Heading",
+          "props": {
+            "text": "How fast do you usually eat?",
+            "emphasis": "how fast",
+            "size": "2xl"
+          }
+        },
+        {
+          "kind": "ChoiceList",
+          "props": {
+            "field": "mealPace",
+            "options": [
+              {
+                "value": "slow",
+                "label": "Slow — I savor every bite"
+              },
+              {
+                "value": "steady",
+                "label": "Steady — somewhere in the middle"
+              },
+              {
+                "value": "fast",
+                "label": "Fast — I'm done before everyone else"
+              },
+              {
+                "value": "distracted",
+                "label": "Depends — usually while doing something else"
+              }
+            ]
+          }
+        }
+      ],
+      "footer": [
+        {
+          "kind": "PrimaryCTA",
+          "props": {
+            "label": "Continue"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "kind": "Screen",
+    "props": {
+      "id": "hunger-cue",
+      "kind": "question",
+      "body": [
+        {
+          "kind": "Eyebrow",
+          "props": {
+            "text": "2 of 5"
+          }
+        },
+        {
+          "kind": "Heading",
+          "props": {
+            "text": "What usually makes you eat?",
+            "emphasis": "makes you eat",
+            "size": "2xl"
+          }
+        },
+        {
+          "kind": "ChoiceList",
+          "props": {
+            "field": "hungerCue",
+            "options": [
+              {
+                "value": "hunger",
+                "label": "Real hunger — my body tells me"
+              },
+              {
+                "value": "clock",
+                "label": "The clock — it's mealtime"
+              },
+              {
+                "value": "mood",
+                "label": "Mood — stress, boredom, comfort"
+              },
+              {
+                "value": "social",
+                "label": "Other people — when they're eating, I am too"
+              }
+            ]
+          }
+        }
+      ],
+      "footer": [
+        {
+          "kind": "PrimaryCTA",
+          "props": {
+            "label": "Continue"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "kind": "Screen",
+    "props": {
+      "id": "menu-style",
+      "kind": "question",
+      "body": [
+        {
+          "kind": "Eyebrow",
+          "props": {
+            "text": "3 of 5"
+          }
+        },
+        {
+          "kind": "Heading",
+          "props": {
+            "text": "How do you order at a new restaurant?",
+            "emphasis": "new restaurant",
+            "size": "2xl"
+          }
+        },
+        {
+          "kind": "ChoiceList",
+          "props": {
+            "field": "menuStyle",
+            "options": [
+              {
+                "value": "usual",
+                "label": "I find my safe go-to and stick with it"
+              },
+              {
+                "value": "adventurous",
+                "label": "I pick the weirdest thing on the menu"
+              },
+              {
+                "value": "researched",
+                "label": "I read reviews before I even arrive"
+              },
+              {
+                "value": "follow",
+                "label": "I copy whoever ordered first"
+              }
+            ]
+          }
+        }
+      ],
+      "footer": [
+        {
+          "kind": "PrimaryCTA",
+          "props": {
+            "label": "Continue"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "kind": "Screen",
+    "props": {
+      "id": "fridge-vibe",
+      "kind": "question",
+      "body": [
+        {
+          "kind": "Eyebrow",
+          "props": {
+            "text": "4 of 5"
+          }
+        },
+        {
+          "kind": "Heading",
+          "props": {
+            "text": "What does your fridge look like right now?",
+            "emphasis": "right now",
+            "size": "2xl"
+          }
+        },
+        {
+          "kind": "ChoiceList",
+          "props": {
+            "field": "fridgeVibe",
+            "options": [
+              {
+                "value": "stocked",
+                "label": "Stocked and organized — meal-prepped"
+              },
+              {
+                "value": "chaos",
+                "label": "Chaotic — half-finished everything"
+              },
+              {
+                "value": "minimal",
+                "label": "Nearly empty — I shop daily"
+              },
+              {
+                "value": "takeout",
+                "label": "Mostly takeout containers"
+              }
+            ]
+          }
+        }
+      ],
+      "footer": [
+        {
+          "kind": "PrimaryCTA",
+          "props": {
+            "label": "Continue"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "kind": "Screen",
+    "props": {
+      "id": "comfort-food",
+      "kind": "question",
+      "body": [
+        {
+          "kind": "Eyebrow",
+          "props": {
+            "text": "5 of 5"
+          }
+        },
+        {
+          "kind": "Heading",
+          "props": {
+            "text": "Pick your ultimate comfort meal.",
+            "emphasis": "comfort meal",
+            "size": "2xl"
+          }
+        },
+        {
+          "kind": "ChoiceList",
+          "props": {
+            "field": "comfortFood",
+            "options": [
+              {
+                "value": "homemade",
+                "label": "Something homemade from childhood"
+              },
+              {
+                "value": "indulgent",
+                "label": "Pizza, burger, or fries — fully indulgent"
+              },
+              {
+                "value": "fresh",
+                "label": "A bright, fresh bowl or salad"
+              },
+              {
+                "value": "noodles",
+                "label": "A steaming bowl of noodles or soup"
+              }
+            ]
+          }
+        }
+      ],
+      "footer": [
+        {
+          "kind": "PrimaryCTA",
+          "props": {
+            "label": "See my eater type",
+            "action": "submit"
+          }
+        }
+      ]
+    }
+  }
+]
+

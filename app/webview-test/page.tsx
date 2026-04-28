@@ -428,22 +428,34 @@ function ConsolePanel({
           {rows.length} events · {screenIds.size} screens
         </span>
       </header>
-      <div className="flex flex-wrap gap-1.5 border-b border-[var(--n-200)] bg-[var(--n-50)] px-3.5 py-2.5">
-        <FilterChip
-          active={filter === "all"}
-          label="All"
-          count={counts.all ?? 0}
-          onClick={() => onFilterChange("all")}
-        />
-        {IFRAME_TO_HOST_EVENT_TYPES.map((t) => (
+      <div className="flex flex-col gap-1.5 border-b border-[var(--n-200)] bg-[var(--n-50)] px-3.5 py-2.5">
+        <div className="flex flex-wrap gap-1.5">
           <FilterChip
-            key={t}
-            active={filter === t}
-            label={t}
-            count={counts[t] ?? 0}
-            onClick={() => onFilterChange(t)}
+            active={filter === "all"}
+            label="All"
+            count={counts.all ?? 0}
+            onClick={() => onFilterChange("all")}
+            title="All captured events"
           />
-        ))}
+          {IFRAME_TO_HOST_EVENT_TYPES.map((t) => (
+            <FilterChip
+              key={t}
+              active={filter === t}
+              label={t}
+              count={counts[t] ?? 0}
+              onClick={() => onFilterChange(t)}
+              title={EVENT_TRIGGER_HINT[t]}
+            />
+          ))}
+        </div>
+        <span className="px-0.5 font-mono text-[10px] tracking-[0.04em] text-[var(--n-500)]">
+          A successful play-through fires{" "}
+          <code>funnel:loaded → screen:shown → screen:completed +
+          answer:submitted → … → cta:clicked → funnel:completed</code>.{" "}
+          <code>funnel:abandoned</code> only fires when the user closes
+          the page mid-funnel — reload the iframe before reaching the
+          final screen to capture one.
+        </span>
       </div>
       <div className="max-h-[560px] min-h-[340px] flex-1 overflow-auto bg-[var(--n-900)] font-mono text-[12px] text-[var(--n-200)]">
         {rows.length === 0 ? (
@@ -458,21 +470,41 @@ function ConsolePanel({
   );
 }
 
+/** When does each iframe→host event fire? Surfaced as chip tooltips to
+ *  help QA quickly recognize whether a missing event is "expected
+ *  unfired" (e.g. abandon, only on pagehide) or "actually broken." */
+const EVENT_TRIGGER_HINT: Record<IframeToHostType, string> = {
+  "funnel:loaded": "Fires on iframe mount, once per session",
+  "screen:shown": "Fires every time a new screen renders",
+  "screen:completed":
+    "Fires when the user advances past a screen (CTA tap or auto-advance)",
+  "answer:submitted":
+    "Fires once per field captured on the screen the user just left",
+  "cta:clicked": "Fires when the final-screen CTA is tapped",
+  "funnel:completed":
+    "Fires after cta:clicked on the final screen, alongside server-side completion",
+  "funnel:abandoned":
+    "Fires on browser pagehide before completion — reload mid-funnel to trigger",
+};
+
 function FilterChip({
   active,
   label,
   count,
   onClick,
+  title,
 }: {
   active: boolean;
   label: string;
   count: number;
   onClick: () => void;
+  title?: string;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
+      title={title}
       className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono text-[10.5px] tracking-[0.04em] ${
         active
           ? "border-[color-mix(in_oklch,var(--olive-500)_30%,transparent)] bg-[color-mix(in_oklch,var(--olive-500)_12%,white)] text-[var(--olive-700)]"

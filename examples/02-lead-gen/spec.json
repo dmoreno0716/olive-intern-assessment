@@ -1,0 +1,382 @@
+[
+  {
+    "kind": "Screen",
+    "props": {
+      "id": "intro",
+      "kind": "intro",
+      "showProgress": false,
+      "showBack": false,
+      "body": [
+        {
+          "kind": "Eyebrow",
+          "props": {
+            "text": "4 questions · 60 seconds"
+          }
+        },
+        {
+          "kind": "Heading",
+          "props": {
+            "text": "Find the Olive plan that fits your life.",
+            "emphasis": "fits your life",
+            "size": "2xl"
+          }
+        },
+        {
+          "kind": "Body",
+          "props": {
+            "text": "Answer four quick questions and we'll match you to the protocol that's working for people like you."
+          }
+        }
+      ],
+      "footer": [
+        {
+          "kind": "PrimaryCTA",
+          "props": {
+            "label": "Start the quiz"
+          }
+        },
+        {
+          "kind": "Caption",
+          "props": {
+            "text": "No card needed."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "kind": "Screen",
+    "props": {
+      "id": "primary-goal",
+      "kind": "question",
+      "body": [
+        {
+          "kind": "Eyebrow",
+          "props": {
+            "text": "1 of 4"
+          }
+        },
+        {
+          "kind": "Heading",
+          "props": {
+            "text": "What are you hoping to change?",
+            "emphasis": "hoping to change",
+            "size": "2xl"
+          }
+        },
+        {
+          "kind": "ChoiceList",
+          "props": {
+            "field": "primaryGoal",
+            "options": [
+              {
+                "value": "energy",
+                "label": "More steady energy",
+                "description": "Fewer crashes through the day"
+              },
+              {
+                "value": "focus",
+                "label": "Sharper focus",
+                "description": "Stay in deep work longer"
+              },
+              {
+                "value": "sleep",
+                "label": "Better sleep",
+                "description": "Wind down without screens"
+              },
+              {
+                "value": "stress",
+                "label": "Less stress",
+                "description": "Take the edge off"
+              }
+            ]
+          }
+        }
+      ],
+      "footer": [
+        {
+          "kind": "PrimaryCTA",
+          "props": {
+            "label": "Continue"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "kind": "Screen",
+    "props": {
+      "id": "stuck-when",
+      "kind": "question",
+      "body": [
+        {
+          "kind": "Eyebrow",
+          "props": {
+            "text": "2 of 4"
+          }
+        },
+        {
+          "kind": "Heading",
+          "props": {
+            "text": "When do you feel most stuck?",
+            "emphasis": "most stuck",
+            "size": "2xl"
+          }
+        },
+        {
+          "kind": "ChoiceList",
+          "props": {
+            "field": "stuckWhen",
+            "options": [
+              {
+                "value": "morning",
+                "label": "First thing in the morning"
+              },
+              {
+                "value": "afternoon",
+                "label": "Mid-afternoon slump"
+              },
+              {
+                "value": "evening",
+                "label": "Evenings after work"
+              },
+              {
+                "value": "night",
+                "label": "Right before bed"
+              }
+            ]
+          }
+        }
+      ],
+      "footer": [
+        {
+          "kind": "PrimaryCTA",
+          "props": {
+            "label": "Continue"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "kind": "Screen",
+    "props": {
+      "id": "time-budget",
+      "kind": "question",
+      "body": [
+        {
+          "kind": "Eyebrow",
+          "props": {
+            "text": "3 of 4"
+          }
+        },
+        {
+          "kind": "Heading",
+          "props": {
+            "text": "How much time can you carve out daily?",
+            "emphasis": "carve out daily",
+            "size": "2xl"
+          }
+        },
+        {
+          "kind": "ChoiceList",
+          "props": {
+            "field": "timeBudget",
+            "options": [
+              {
+                "value": "5",
+                "label": "5 minutes",
+                "description": "Just the essentials"
+              },
+              {
+                "value": "10",
+                "label": "10 minutes",
+                "description": "A focused micro-routine"
+              },
+              {
+                "value": "20",
+                "label": "20 minutes",
+                "description": "Room for a full practice"
+              },
+              {
+                "value": "flex",
+                "label": "It depends on the day"
+              }
+            ]
+          }
+        }
+      ],
+      "footer": [
+        {
+          "kind": "PrimaryCTA",
+          "props": {
+            "label": "Continue"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "kind": "Screen",
+    "props": {
+      "id": "experience",
+      "kind": "question",
+      "body": [
+        {
+          "kind": "Eyebrow",
+          "props": {
+            "text": "4 of 4"
+          }
+        },
+        {
+          "kind": "Heading",
+          "props": {
+            "text": "How experienced are you with this kind of practice?",
+            "emphasis": "kind of practice",
+            "size": "2xl"
+          }
+        },
+        {
+          "kind": "ChoiceList",
+          "props": {
+            "field": "experience",
+            "options": [
+              {
+                "value": "new",
+                "label": "Total beginner"
+              },
+              {
+                "value": "dabbled",
+                "label": "I've dabbled"
+              },
+              {
+                "value": "regular",
+                "label": "I have a regular practice"
+              }
+            ]
+          }
+        }
+      ],
+      "footer": [
+        {
+          "kind": "PrimaryCTA",
+          "props": {
+            "label": "See my plan",
+            "action": "next"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "kind": "Screen",
+    "props": {
+      "id": "email-gate",
+      "kind": "gate",
+      "showProgress": false,
+      "showBack": false,
+      "body": [
+        {
+          "kind": "Heading",
+          "props": {
+            "text": "Where should we send your plan?",
+            "emphasis": "your plan",
+            "size": "2xl",
+            "align": "center"
+          }
+        },
+        {
+          "kind": "Body",
+          "props": {
+            "text": "We'll show your match on the next screen and email a copy so you can start whenever.",
+            "tone": "muted"
+          }
+        },
+        {
+          "kind": "EmailGate",
+          "props": {
+            "field": "email",
+            "cta": "Show my plan",
+            "privacyNote": "We never sell your data. Unsubscribe in one click."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "kind": "Screen",
+    "props": {
+      "id": "result",
+      "kind": "result",
+      "showProgress": false,
+      "showBack": false,
+      "body": [
+        {
+          "kind": "ResultBadge",
+          "props": {
+            "label": "Your match"
+          }
+        },
+        {
+          "kind": "ResultHero",
+          "props": {
+            "resultName": "The Steady State plan fits you best.",
+            "emphasis": "Steady State",
+            "tagline": "A gentle 14-day reset built around short morning anchors and afternoon micro-resets — designed for the days your energy disappears."
+          }
+        },
+        {
+          "kind": "PriceCard",
+          "props": {
+            "title": "Steady State · 14 days",
+            "subtitle": "Included with your free Olive account",
+            "bullets": [
+              "Daily 10-minute anchor",
+              "Afternoon reset prompts",
+              "Progress journal",
+              "Cancel any time"
+            ],
+            "variant": "emphasis"
+          }
+        },
+        {
+          "kind": "SocialProof",
+          "props": {
+            "variant": "testimonial",
+            "testimonial": {
+              "quote": "I stopped crashing at 3pm by week one. The micro-resets are stupidly simple and they actually work.",
+              "author": "Maya R., on Steady State"
+            }
+          }
+        },
+        {
+          "kind": "Disclosure",
+          "props": {
+            "summary": "How did you pick this plan?",
+            "details": "Your answers pointed to afternoon energy dips and a tight time budget. Steady State is built for exactly that pattern — short, repeatable anchors instead of long sessions."
+          }
+        }
+      ],
+      "footer": [
+        {
+          "kind": "PrimaryCTA",
+          "props": {
+            "label": "Start my plan",
+            "action": "external",
+            "href": "/onboarding?plan=steady-state"
+          }
+        },
+        {
+          "kind": "SecondaryCTA",
+          "props": {
+            "label": "Share my result",
+            "action": "share",
+            "shareTitle": "My Olive plan",
+            "shareText": "I got matched with the Steady State plan on Olive 🍃"
+          }
+        }
+      ]
+    }
+  }
+]
+

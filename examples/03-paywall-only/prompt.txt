@@ -1,0 +1,1 @@
+A standalone paywall for Olive Pro — no quiz at all, just the value prop, three plan options, and a CTA. Do not add any quiz screens.

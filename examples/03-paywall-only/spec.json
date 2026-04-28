@@ -1,0 +1,116 @@
+[
+  {
+    "kind": "Screen",
+    "props": {
+      "id": "paywall",
+      "kind": "gate",
+      "showProgress": false,
+      "showBack": false,
+      "body": [
+        {
+          "kind": "Eyebrow",
+          "props": {
+            "text": "Olive Pro"
+          }
+        },
+        {
+          "kind": "Heading",
+          "props": {
+            "text": "Go deeper with Olive Pro.",
+            "emphasis": "deeper",
+            "size": "2xl",
+            "align": "center"
+          }
+        },
+        {
+          "kind": "Body",
+          "props": {
+            "text": "Every protocol, live coach calls, and the full library of guided sessions. Pick the plan that fits.",
+            "align": "center",
+            "tone": "muted"
+          }
+        },
+        {
+          "kind": "Stack",
+          "props": {
+            "gap": "md",
+            "children": [
+              {
+                "kind": "PriceCard",
+                "props": {
+                  "title": "Monthly · $19/mo",
+                  "subtitle": "Billed monthly",
+                  "bullets": [
+                    "All protocols and sessions",
+                    "Cancel any time"
+                  ]
+                }
+              },
+              {
+                "kind": "PriceCard",
+                "props": {
+                  "title": "Annual · $129/yr",
+                  "subtitle": "$10.75/mo · save 43%",
+                  "bullets": [
+                    "Everything in Monthly",
+                    "Live coach calls",
+                    "2 free months"
+                  ],
+                  "variant": "emphasis"
+                }
+              },
+              {
+                "kind": "PriceCard",
+                "props": {
+                  "title": "Lifetime · $299",
+                  "subtitle": "One-time payment",
+                  "bullets": [
+                    "Pay once, keep forever",
+                    "All future protocols included"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "kind": "SocialProof",
+          "props": {
+            "variant": "stats",
+            "stats": [
+              {
+                "value": "12,000",
+                "label": "members"
+              },
+              {
+                "value": "4.8★",
+                "label": "App Store"
+              },
+              {
+                "value": "92%",
+                "label": "stick with it"
+              }
+            ]
+          }
+        }
+      ],
+      "footer": [
+        {
+          "kind": "PrimaryCTA",
+          "props": {
+            "label": "Start with Olive Pro",
+            "action": "external",
+            "href": "/checkout?p=olive-pro"
+          }
+        },
+        {
+          "kind": "Caption",
+          "props": {
+            "text": "Cancel any time. We'll remind you 2 days before billing."
+          }
+        }
+      ]
+    }
+  }
+]
+

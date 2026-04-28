@@ -4,6 +4,7 @@ import { z } from "zod";
 import { ChevronLeft } from "lucide-react";
 import type { CatalogNode } from "../types";
 import { Children } from "../render";
+import { useScreenChrome } from "@/lib/funnel/runtime";
 
 export const ScreenSchema = z.object({
   id: z.string(),
@@ -12,23 +13,44 @@ export const ScreenSchema = z.object({
   showBack: z.boolean().default(true),
   body: z.array(z.any()),
   footer: z.array(z.any()).optional(),
+  /** Optional helper string surfaced after a long dwell on this screen
+   * (see lib/funnel/constants.ts DWELL_HELPER_THRESHOLD_MS). Funnel-mode
+   * runtime only — Studio preview never shows it. */
+  dwellHelper: z.string().optional(),
 });
 
 export const ScreenDescription =
-  "Top-level container for one funnel step. Owns progress indicator, back button, body, and footer slots. Every funnel spec is a list of Screen nodes.";
+  "Top-level container for one funnel step. Owns progress indicator, back button, body, and footer slots. Every funnel spec is a list of Screen nodes. Optional `dwellHelper` (string) surfaces in-place when the user lingers >8s on this screen.";
 
 type ScreenProps = z.infer<typeof ScreenSchema>;
 
 export function Screen({ node }: { node: CatalogNode }) {
   const props = (node.props ?? {}) as Partial<ScreenProps>;
   const showProgress = props.showProgress ?? true;
-  const showBack = props.showBack ?? true;
+  const showBackProp = props.showBack ?? true;
   const body = (props.body ?? []) as CatalogNode[];
   const footer = (props.footer ?? []) as CatalogNode[];
-  const progress = 0.4;
+  const dwellHelper = props.dwellHelper;
+
+  const chrome = useScreenChrome(node);
+  // Studio preview keeps the old fixed 40% bar.
+  const progress = chrome
+    ? (chrome.currentIndex + 1) / Math.max(chrome.totalScreens, 1)
+    : 0.4;
+  // Hide back on screen 0 of a real run, in addition to the spec's flag.
+  const showBack = chrome ? showBackProp && !chrome.isFirst : showBackProp;
+  const showHelper = Boolean(chrome?.dwellHelperVisible && dwellHelper);
+
+  // In live funnel mode the page Frame already supplies the card chrome;
+  // Screen just fills it. In Studio preview, Screen still renders its own
+  // 480×760 mock-card so the catalog page reads as a phone screenshot.
+  const liveMode = Boolean(chrome);
+  const containerClass = liveMode
+    ? "funnel relative flex h-full w-full flex-col bg-[var(--fbg)] text-[var(--ftext)]"
+    : "funnel relative mx-auto flex h-[760px] w-full max-w-[480px] flex-col overflow-hidden rounded-[22px] bg-[var(--fbg)] text-[var(--ftext)] shadow-2 ring-1 ring-[var(--fborder)]";
 
   return (
-    <div className="funnel relative mx-auto flex h-[760px] w-full max-w-[480px] flex-col overflow-hidden rounded-[22px] bg-[var(--fbg)] text-[var(--ftext)] shadow-2 ring-1 ring-[var(--fborder)]">
+    <div className={containerClass}>
       {showProgress && (
         <div className="px-[22px] pt-[14px] pb-2">
           <div className="h-[3px] w-full overflow-hidden rounded-full bg-[var(--fborder)]">
@@ -45,6 +67,7 @@ export function Screen({ node }: { node: CatalogNode }) {
           <button
             type="button"
             aria-label="Go back"
+            onClick={chrome?.retreat}
             className="grid h-11 w-11 place-items-center rounded-full text-[var(--olive-900)] transition hover:bg-[var(--fsurf2)]"
           >
             <ChevronLeft className="h-[22px] w-[22px]" strokeWidth={1.6} />
@@ -54,6 +77,15 @@ export function Screen({ node }: { node: CatalogNode }) {
 
       <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-4 pt-2 pb-4">
         <Children nodes={body} prefix={`${props.id ?? "screen"}-body`} />
+        {showHelper && (
+          <div
+            role="status"
+            className="mt-2 flex items-start gap-2 rounded-[var(--r-md)] border border-[var(--fborder-s)] bg-[var(--fsurf2)] px-3 py-2.5 font-sans text-[13px] leading-snug text-[var(--ftext-m)]"
+          >
+            <span className="mt-[3px] inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--olive-500)]" />
+            <span>{dwellHelper}</span>
+          </div>
+        )}
       </div>
 
       {footer.length > 0 && (

@@ -1,5 +1,5 @@
 import type { z } from "zod";
-import { catalogComponents } from "@/lib/catalog";
+import { catalogComponents } from "@/lib/catalog/registry-data";
 
 /**
  * Generates the catalog reference section of the system prompt directly

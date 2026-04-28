@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { z } from "zod";
 import type { CatalogNode } from "../types";
+import { useFunnelField } from "@/lib/funnel/runtime";
 
 export const ScalePickerSchema = z.object({
   field: z.string(),
@@ -21,7 +22,13 @@ export function ScalePicker({ node }: { node: CatalogNode }) {
   const props = (node.props ?? {}) as Partial<ScalePickerProps>;
   const min = props.min ?? 1;
   const max = props.max ?? 5;
-  const [selected, setSelected] = useState<number | null>(null);
+  const [localSelected, setLocalSelected] = useState<number | null>(null);
+  const field = useFunnelField<number | null>(props.field, null);
+  const selected = field.bound ? field.value : localSelected;
+  const setSelected = (n: number) => {
+    if (field.bound) field.setValue(n);
+    else setLocalSelected(n);
+  };
   const stops: number[] = [];
   for (let i = min; i <= max; i++) stops.push(i);
 

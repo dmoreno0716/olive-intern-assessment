@@ -3,6 +3,7 @@
 import { useId, useState } from "react";
 import { z } from "zod";
 import type { CatalogNode } from "../types";
+import { useFunnelField } from "@/lib/funnel/runtime";
 
 export const EmailInputSchema = z.object({
   field: z.string().default("email"),
@@ -20,7 +21,13 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export function EmailInput({ node }: { node: CatalogNode }) {
   const props = (node.props ?? {}) as Partial<EmailInputProps>;
   const id = useId();
-  const [value, setValue] = useState("");
+  const [localValue, setLocalValue] = useState("");
+  const field = useFunnelField<string>(props.field ?? "email", "");
+  const value = field.bound ? field.value : localValue;
+  const setValue = (v: string) => {
+    if (field.bound) field.setValue(v);
+    else setLocalValue(v);
+  };
   const [touched, setTouched] = useState(false);
   const isValid = EMAIL_RE.test(value);
   const showError = touched && value.length > 0 && !isValid;

@@ -39,6 +39,8 @@ export const exampleQuizSpec: CatalogNode[] = [
     props: {
       id: "stuck-when",
       kind: "question",
+      dwellHelper:
+        "Take your time — there's no wrong answer. Pick whatever feels closest to true today.",
       body: [
         { kind: "Eyebrow", props: { text: "1 of 2" } },
         {

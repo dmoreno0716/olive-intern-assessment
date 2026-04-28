@@ -4,6 +4,7 @@ import { useState } from "react";
 import { z } from "zod";
 import * as Lucide from "lucide-react";
 import type { CatalogNode } from "../types";
+import { useFunnelField } from "@/lib/funnel/runtime";
 
 export const ChoiceListSchema = z.object({
   field: z.string(),
@@ -33,7 +34,13 @@ function getLucideIcon(name?: string) {
 export function ChoiceList({ node }: { node: CatalogNode }) {
   const props = (node.props ?? {}) as Partial<ChoiceListProps>;
   const options = props.options ?? [];
-  const [selected, setSelected] = useState<string | null>(null);
+  const [localSelected, setLocalSelected] = useState<string | null>(null);
+  const field = useFunnelField<string | null>(props.field, null);
+  const selected = field.bound ? field.value : localSelected;
+  const setSelected = (value: string, label: string) => {
+    if (field.bound) field.setValue(value, label);
+    else setLocalSelected(value);
+  };
   return (
     <ul role="radiogroup" className="flex flex-col gap-2">
       {options.map((opt) => {
@@ -45,7 +52,7 @@ export function ChoiceList({ node }: { node: CatalogNode }) {
               type="button"
               role="radio"
               aria-checked={isSelected}
-              onClick={() => setSelected(opt.value)}
+              onClick={() => setSelected(opt.value, opt.label)}
               className={`flex w-full min-h-[60px] items-center gap-3 rounded-[var(--r-lg)] border-[1.5px] px-4 py-[15px] text-left transition-colors duration-[var(--m-fast)] ease-[var(--ease)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--faccent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--fbg)] ${
                 isSelected
                   ? "border-[var(--olive-500)] bg-[color-mix(in_oklch,var(--olive-500)_6%,var(--fsurf))]"

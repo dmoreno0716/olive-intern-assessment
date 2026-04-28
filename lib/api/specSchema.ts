@@ -1,36 +1,38 @@
 import { z } from "zod";
 
-import { ScreenSchema } from "@/lib/catalog/components/Screen";
-import { StackSchema } from "@/lib/catalog/components/Stack";
-import { GroupSchema } from "@/lib/catalog/components/Group";
-import { SpacerSchema } from "@/lib/catalog/components/Spacer";
-import { DividerSchema } from "@/lib/catalog/components/Divider";
-import { HeadingSchema } from "@/lib/catalog/components/Heading";
-import { BodySchema } from "@/lib/catalog/components/Body";
-import { EyebrowSchema } from "@/lib/catalog/components/Eyebrow";
-import { CaptionSchema } from "@/lib/catalog/components/Caption";
-import { ChoiceListSchema } from "@/lib/catalog/components/ChoiceList";
-import { MultiChoiceSchema } from "@/lib/catalog/components/MultiChoice";
-import { ImageChoiceGridSchema } from "@/lib/catalog/components/ImageChoiceGrid";
-import { ScalePickerSchema } from "@/lib/catalog/components/ScalePicker";
-import { ShortTextSchema } from "@/lib/catalog/components/ShortText";
-import { LongTextSchema } from "@/lib/catalog/components/LongText";
-import { EmailInputSchema } from "@/lib/catalog/components/EmailInput";
-import { NumberInputSchema } from "@/lib/catalog/components/NumberInput";
-import { ToggleRowSchema } from "@/lib/catalog/components/ToggleRow";
-import { PrimaryCTASchema } from "@/lib/catalog/components/PrimaryCTA";
-import { SecondaryCTASchema } from "@/lib/catalog/components/SecondaryCTA";
-import { ProgressBarSchema } from "@/lib/catalog/components/ProgressBar";
-import { BackButtonSchema } from "@/lib/catalog/components/BackButton";
-import { ResultBadgeSchema } from "@/lib/catalog/components/ResultBadge";
-import { ResultHeroSchema } from "@/lib/catalog/components/ResultHero";
-import { PriceCardSchema } from "@/lib/catalog/components/PriceCard";
-import { EmailGateSchema } from "@/lib/catalog/components/EmailGate";
-import { SocialProofSchema } from "@/lib/catalog/components/SocialProof";
-import { DisclosureSchema } from "@/lib/catalog/components/Disclosure";
-import { AvatarSchema } from "@/lib/catalog/components/Avatar";
-import { IconBadgeSchema } from "@/lib/catalog/components/IconBadge";
-import { PoweredFooterSchema } from "@/lib/catalog/components/PoweredFooter";
+import {
+  AvatarSchema,
+  BackButtonSchema,
+  BodySchema,
+  CaptionSchema,
+  ChoiceListSchema,
+  DisclosureSchema,
+  DividerSchema,
+  EmailGateSchema,
+  EmailInputSchema,
+  EyebrowSchema,
+  GroupSchema,
+  HeadingSchema,
+  IconBadgeSchema,
+  ImageChoiceGridSchema,
+  LongTextSchema,
+  MultiChoiceSchema,
+  NumberInputSchema,
+  PoweredFooterSchema,
+  PriceCardSchema,
+  PrimaryCTASchema,
+  ProgressBarSchema,
+  ResultBadgeSchema,
+  ResultHeroSchema,
+  ScalePickerSchema,
+  ScreenSchema,
+  SecondaryCTASchema,
+  ShortTextSchema,
+  SocialProofSchema,
+  SpacerSchema,
+  StackSchema,
+  ToggleRowSchema,
+} from "@/lib/catalog/schemas";
 
 const kindSchemas: Record<string, z.ZodTypeAny> = {
   Screen: ScreenSchema,

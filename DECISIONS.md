@@ -36,6 +36,35 @@ A short log of the product and technical decisions you made while building Text-
 
 <!-- Approximate $ per generated quiz. Show your math. -->
 
+## CheckoutOverlay — visual chrome, not a handoff
+
+The translucent overlay that appears when a final-screen
+`action="external"` CTA is tapped is intentionally a UI affordance only.
+By the time it mounts, `FunnelPlayer.onCTA` has already:
+
+  1. emitted `cta:clicked` and `funnel:completed` postMessage events,
+  2. POSTed the `cta_clicked` server event, and
+  3. scheduled `window.location.assign(href)` on a ~900ms timer.
+
+We don't put the navigation inside the overlay component because the
+real handoff in production is the iOS/Android native handler reading
+`cta:clicked` from the webview bridge — the overlay is just the
+"something happened" feedback users see for the brief window between the
+click landing and the new context (StoreKit, browser, etc.) taking
+over. Coupling navigation to the overlay would make it harder to swap
+in the real handler without touching presentation code.
+
+The overlay also mirrors the event trail (`cta:clicked ✓`,
+`funnel:completed ✓`, `checkout → href …`) deliberately. It's a debugging
+affordance: a QA running the funnel inside the webview harness can
+visually correlate what they're seeing on the screen with what's
+landing in the postMessage console on the right.
+
+Per `design/DECISIONS.md` #2 we never inject a thank-you screen the
+creator didn't author, and per `design/PUBLIC_FUNNEL.md` "Completion
+behavior" the CTA stays tappable on the final spec-defined screen — so
+the overlay must be transient, not a destination.
+
 ## What I'd do differently with more time
 
 <!-- Honest list. -->

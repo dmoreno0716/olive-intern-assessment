@@ -5,6 +5,7 @@ import { z } from "zod";
 import { Check } from "lucide-react";
 import type { CatalogNode } from "../types";
 import { ChoiceListSchema } from "./ChoiceList";
+import { useFunnelField } from "@/lib/funnel/runtime";
 
 export const MultiChoiceSchema = ChoiceListSchema.extend({
   min: z.number().int().nonnegative().default(0),
@@ -20,25 +21,27 @@ export function MultiChoice({ node }: { node: CatalogNode }) {
   const props = (node.props ?? {}) as Partial<MultiChoiceProps>;
   const options = props.options ?? [];
   const max = props.max;
-  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [localSelected, setLocalSelected] = useState<string[]>([]);
+  const field = useFunnelField<string[]>(props.field, []);
+  const selected = field.bound ? field.value : localSelected;
 
   function toggle(value: string) {
-    setSelected((prev) => {
-      const next = new Set(prev);
-      if (next.has(value)) {
-        next.delete(value);
-      } else {
-        if (max && next.size >= max) return prev;
-        next.add(value);
-      }
-      return next;
-    });
+    const has = selected.includes(value);
+    let next: string[];
+    if (has) {
+      next = selected.filter((v) => v !== value);
+    } else {
+      if (max && selected.length >= max) return;
+      next = [...selected, value];
+    }
+    if (field.bound) field.setValue(next);
+    else setLocalSelected(next);
   }
 
   return (
     <ul className="flex flex-col gap-2">
       {options.map((opt) => {
-        const isSelected = selected.has(opt.value);
+        const isSelected = selected.includes(opt.value);
         return (
           <li key={opt.value}>
             <button

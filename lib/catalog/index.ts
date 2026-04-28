@@ -1,84 +1,110 @@
 import { defineCatalog } from "@json-render/core";
 import { schema } from "@json-render/react/schema";
 
-import { Screen, ScreenSchema, ScreenDescription } from "./components/Screen";
-import { Stack, StackSchema, StackDescription } from "./components/Stack";
-import { Group, GroupSchema, GroupDescription } from "./components/Group";
-import { Spacer, SpacerSchema, SpacerDescription } from "./components/Spacer";
-import { Divider, DividerSchema, DividerDescription } from "./components/Divider";
-import { Heading, HeadingSchema, HeadingDescription } from "./components/Heading";
-import { Body, BodySchema, BodyDescription } from "./components/Body";
-import { Eyebrow, EyebrowSchema, EyebrowDescription } from "./components/Eyebrow";
-import { Caption, CaptionSchema, CaptionDescription } from "./components/Caption";
-import { ChoiceList, ChoiceListSchema, ChoiceListDescription } from "./components/ChoiceList";
-import { MultiChoice, MultiChoiceSchema, MultiChoiceDescription } from "./components/MultiChoice";
-import { ImageChoiceGrid, ImageChoiceGridSchema, ImageChoiceGridDescription } from "./components/ImageChoiceGrid";
-import { ScalePicker, ScalePickerSchema, ScalePickerDescription } from "./components/ScalePicker";
-import { ShortText, ShortTextSchema, ShortTextDescription } from "./components/ShortText";
-import { LongText, LongTextSchema, LongTextDescription } from "./components/LongText";
-import { EmailInput, EmailInputSchema, EmailInputDescription } from "./components/EmailInput";
-import { NumberInput, NumberInputSchema, NumberInputDescription } from "./components/NumberInput";
-import { ToggleRow, ToggleRowSchema, ToggleRowDescription } from "./components/ToggleRow";
-import { PrimaryCTA, PrimaryCTASchema, PrimaryCTADescription } from "./components/PrimaryCTA";
-import { SecondaryCTA, SecondaryCTASchema, SecondaryCTADescription } from "./components/SecondaryCTA";
-import { ProgressBar, ProgressBarSchema, ProgressBarDescription } from "./components/ProgressBar";
-import { BackButton, BackButtonSchema, BackButtonDescription } from "./components/BackButton";
-import { ResultBadge, ResultBadgeSchema, ResultBadgeDescription } from "./components/ResultBadge";
-import { ResultHero, ResultHeroSchema, ResultHeroDescription } from "./components/ResultHero";
-import { PriceCard, PriceCardSchema, PriceCardDescription } from "./components/PriceCard";
-import { EmailGate, EmailGateSchema, EmailGateDescription } from "./components/EmailGate";
-import { SocialProof, SocialProofSchema, SocialProofDescription } from "./components/SocialProof";
-import { Disclosure, DisclosureSchema, DisclosureDescription } from "./components/Disclosure";
-import { Avatar, AvatarSchema, AvatarDescription } from "./components/Avatar";
-import { IconBadge, IconBadgeSchema, IconBadgeDescription } from "./components/IconBadge";
-import { PoweredFooter, PoweredFooterSchema, PoweredFooterDescription } from "./components/PoweredFooter";
+import { Screen } from "./components/Screen";
+import { Stack } from "./components/Stack";
+import { Group } from "./components/Group";
+import { Spacer } from "./components/Spacer";
+import { Divider } from "./components/Divider";
+import { Heading } from "./components/Heading";
+import { Body } from "./components/Body";
+import { Eyebrow } from "./components/Eyebrow";
+import { Caption } from "./components/Caption";
+import { ChoiceList } from "./components/ChoiceList";
+import { MultiChoice } from "./components/MultiChoice";
+import { ImageChoiceGrid } from "./components/ImageChoiceGrid";
+import { ScalePicker } from "./components/ScalePicker";
+import { ShortText } from "./components/ShortText";
+import { LongText } from "./components/LongText";
+import { EmailInput } from "./components/EmailInput";
+import { NumberInput } from "./components/NumberInput";
+import { ToggleRow } from "./components/ToggleRow";
+import { PrimaryCTA } from "./components/PrimaryCTA";
+import { SecondaryCTA } from "./components/SecondaryCTA";
+import { ProgressBar } from "./components/ProgressBar";
+import { BackButton } from "./components/BackButton";
+import { ResultBadge } from "./components/ResultBadge";
+import { ResultHero } from "./components/ResultHero";
+import { PriceCard } from "./components/PriceCard";
+import { EmailGate } from "./components/EmailGate";
+import { SocialProof } from "./components/SocialProof";
+import { Disclosure } from "./components/Disclosure";
+import { Avatar } from "./components/Avatar";
+import { IconBadge } from "./components/IconBadge";
+import { PoweredFooter } from "./components/PoweredFooter";
+
+import {
+  AvatarSchema,
+  AvatarDescription,
+  BackButtonSchema,
+  BackButtonDescription,
+  BodySchema,
+  BodyDescription,
+  CaptionSchema,
+  CaptionDescription,
+  ChoiceListSchema,
+  ChoiceListDescription,
+  DisclosureSchema,
+  DisclosureDescription,
+  DividerSchema,
+  DividerDescription,
+  EmailGateSchema,
+  EmailGateDescription,
+  EmailInputSchema,
+  EmailInputDescription,
+  EyebrowSchema,
+  EyebrowDescription,
+  GroupSchema,
+  GroupDescription,
+  HeadingSchema,
+  HeadingDescription,
+  IconBadgeSchema,
+  IconBadgeDescription,
+  ImageChoiceGridSchema,
+  ImageChoiceGridDescription,
+  LongTextSchema,
+  LongTextDescription,
+  MultiChoiceSchema,
+  MultiChoiceDescription,
+  NumberInputSchema,
+  NumberInputDescription,
+  PoweredFooterSchema,
+  PoweredFooterDescription,
+  PriceCardSchema,
+  PriceCardDescription,
+  PrimaryCTASchema,
+  PrimaryCTADescription,
+  ProgressBarSchema,
+  ProgressBarDescription,
+  ResultBadgeSchema,
+  ResultBadgeDescription,
+  ResultHeroSchema,
+  ResultHeroDescription,
+  ScalePickerSchema,
+  ScalePickerDescription,
+  ScreenSchema,
+  ScreenDescription,
+  SecondaryCTASchema,
+  SecondaryCTADescription,
+  ShortTextSchema,
+  ShortTextDescription,
+  SocialProofSchema,
+  SocialProofDescription,
+  SpacerSchema,
+  SpacerDescription,
+  StackSchema,
+  StackDescription,
+  ToggleRowSchema,
+  ToggleRowDescription,
+} from "./schemas";
 
 import { registerComponent } from "./render";
 
-/**
- * The catalog primitives, in a flat keyed map. Each entry carries the
- * Zod props schema, an LLM-facing description string, and an empty
- * `slots` array (json-render expects it). Exported separately from the
- * `defineCatalog` wrapper below so server-side code that needs to walk
- * schemas directly (e.g. lib/llm/catalog-prompt.ts) does not have to
- * reach into json-render internals.
- *
- * Adding a new primitive: register its component file, add its entry to
- * this map, and (optionally) add it to a group in lib/llm/catalog-prompt.ts.
- */
-export const catalogComponents = {
-  Screen: { props: ScreenSchema, slots: [] as const, description: ScreenDescription },
-  Stack: { props: StackSchema, slots: [] as const, description: StackDescription },
-  Group: { props: GroupSchema, slots: [] as const, description: GroupDescription },
-  Spacer: { props: SpacerSchema, slots: [] as const, description: SpacerDescription },
-  Divider: { props: DividerSchema, slots: [] as const, description: DividerDescription },
-  Heading: { props: HeadingSchema, slots: [] as const, description: HeadingDescription },
-  Body: { props: BodySchema, slots: [] as const, description: BodyDescription },
-  Eyebrow: { props: EyebrowSchema, slots: [] as const, description: EyebrowDescription },
-  Caption: { props: CaptionSchema, slots: [] as const, description: CaptionDescription },
-  ChoiceList: { props: ChoiceListSchema, slots: [] as const, description: ChoiceListDescription },
-  MultiChoice: { props: MultiChoiceSchema, slots: [] as const, description: MultiChoiceDescription },
-  ImageChoiceGrid: { props: ImageChoiceGridSchema, slots: [] as const, description: ImageChoiceGridDescription },
-  ScalePicker: { props: ScalePickerSchema, slots: [] as const, description: ScalePickerDescription },
-  ShortText: { props: ShortTextSchema, slots: [] as const, description: ShortTextDescription },
-  LongText: { props: LongTextSchema, slots: [] as const, description: LongTextDescription },
-  EmailInput: { props: EmailInputSchema, slots: [] as const, description: EmailInputDescription },
-  NumberInput: { props: NumberInputSchema, slots: [] as const, description: NumberInputDescription },
-  ToggleRow: { props: ToggleRowSchema, slots: [] as const, description: ToggleRowDescription },
-  PrimaryCTA: { props: PrimaryCTASchema, slots: [] as const, description: PrimaryCTADescription },
-  SecondaryCTA: { props: SecondaryCTASchema, slots: [] as const, description: SecondaryCTADescription },
-  ProgressBar: { props: ProgressBarSchema, slots: [] as const, description: ProgressBarDescription },
-  BackButton: { props: BackButtonSchema, slots: [] as const, description: BackButtonDescription },
-  ResultBadge: { props: ResultBadgeSchema, slots: [] as const, description: ResultBadgeDescription },
-  ResultHero: { props: ResultHeroSchema, slots: [] as const, description: ResultHeroDescription },
-  PriceCard: { props: PriceCardSchema, slots: [] as const, description: PriceCardDescription },
-  EmailGate: { props: EmailGateSchema, slots: [] as const, description: EmailGateDescription },
-  SocialProof: { props: SocialProofSchema, slots: [] as const, description: SocialProofDescription },
-  Disclosure: { props: DisclosureSchema, slots: [] as const, description: DisclosureDescription },
-  Avatar: { props: AvatarSchema, slots: [] as const, description: AvatarDescription },
-  IconBadge: { props: IconBadgeSchema, slots: [] as const, description: IconBadgeDescription },
-  PoweredFooter: { props: PoweredFooterSchema, slots: [] as const, description: PoweredFooterDescription },
-};
+// Re-export the server-safe data map so existing imports of
+// `lib/catalog` keep working. The actual definition lives in
+// `./registry-data` (no "use client" → safe for server contexts like the
+// LLM prompt builder).
+export { catalogComponents } from "./registry-data";
 
 /**
  * The catalog primitives, registered with @json-render/core's

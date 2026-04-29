@@ -29,6 +29,7 @@ import {
 } from "@supabase/supabase-js";
 
 import type { CatalogNode } from "../lib/catalog/types";
+import { resolveSupabaseEnv } from "./_seed-env";
 
 type ScreenInfo = {
   screen_id: string;
@@ -309,12 +310,8 @@ if (
     console.error("Usage: pnpm tsx scripts/seed-example-responses.ts <funnel_id> [count]");
     process.exit(1);
   }
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !serviceRoleKey) {
-    console.error("Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in .env.local");
-    process.exit(1);
-  }
+  const { url, serviceRoleKey, target } = resolveSupabaseEnv();
+  console.log(`→ Supabase target: ${target} (${url})`);
   const supa = createClient(url, serviceRoleKey, {
     auth: { persistSession: false, autoRefreshToken: false },
   });

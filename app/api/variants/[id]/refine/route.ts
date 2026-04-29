@@ -6,6 +6,9 @@ import type { CatalogNode } from "@/lib/catalog/types";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+// LLM-backed (non-streaming) — typical 5–15s but the long-form refine
+// case has hit ~25s. Match /api/generate's 60s ceiling for safety.
+export const maxDuration = 60;
 
 const RefineBody = z.object({
   instruction: z.string().min(1).max(2000),

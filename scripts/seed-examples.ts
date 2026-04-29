@@ -21,16 +21,12 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { CatalogNode } from "../lib/catalog/types";
 import { RoutingRulesSchema } from "../lib/api/routing";
 import { seedFakeResponses } from "./seed-example-responses";
+import { resolveSupabaseEnv } from "./_seed-env";
 
 loadEnvLocal();
 
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-if (!url || !serviceRoleKey) {
-  throw new Error(
-    "Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in .env.local",
-  );
-}
+const { url, serviceRoleKey, target } = resolveSupabaseEnv();
+console.log(`→ Supabase target: ${target} (${url})\n`);
 
 const supabase = createClient(url, serviceRoleKey, {
   auth: { persistSession: false, autoRefreshToken: false },

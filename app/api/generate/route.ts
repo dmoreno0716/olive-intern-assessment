@@ -7,6 +7,10 @@ import type { StreamEvent } from "@/lib/llm/types";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+// LLM streaming generation can take 20–35s on Opus for the long-form
+// prompt. Vercel Hobby default is 10s, which would truncate every Opus
+// request mid-stream — bump to the 60s ceiling.
+export const maxDuration = 60;
 
 const GenerateBody = z.object({
   prompt: z.string().min(1).max(4000),

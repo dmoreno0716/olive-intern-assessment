@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { badRequest, notFound, ok, serverError } from "@/lib/api/json";
 
@@ -28,8 +29,14 @@ export async function POST(
   if (error) return serverError(error.message);
   if (!data) return notFound("Funnel not found");
 
-  const baseUrl =
-    process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  // Derive the share URL from the request host instead of an env var so
+  // the same code works on localhost, Vercel preview URLs, and the
+  // production domain without per-environment configuration. Mirrors
+  // the pattern in `app/dashboard/[funnelId]/page.tsx`.
+  const h = await headers();
+  const proto = (h.get("x-forwarded-proto") ?? "http").split(",")[0]!.trim();
+  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000";
+  const baseUrl = `${proto}://${host}`;
   const funnelUrl = `${baseUrl}/f/${id}`;
   const sourceUrls = SOURCES.map((s) => ({
     source: s,

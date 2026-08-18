@@ -1,4 +1,4 @@
-A creator on Olive Quiz Funnel Studio just submitted this prompt:
+A creator on Quiz Funnel Studio just submitted this prompt:
 
 > {{prompt}}
 

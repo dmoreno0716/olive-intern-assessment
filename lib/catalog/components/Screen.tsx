@@ -25,11 +25,11 @@ export const ScreenDescription =
 type ScreenProps = z.infer<typeof ScreenSchema>;
 
 /**
- * Funnel-level toggle for the auto-rendered "Powered by Olive" mark
+ * Funnel-level toggle for the auto-rendered "Powered by Quiz Funnel Studio" mark
  * (per `design/DECISIONS.md` #9). Defaults to `true` for the assessment
  * — the platform-attribution chrome doesn't add anything here, and
  * suppressing it gives the result screen back the visual room. The
- * conditional render below stays in place so a real Olive deployment
+ * conditional render below stays in place so a real branded deployment
  * can flip this back to `false` (or read from a per-funnel config row)
  * without touching layout.
  */
@@ -131,7 +131,7 @@ export function Screen({ node }: { node: CatalogNode }) {
                 "conic-gradient(from 0deg, var(--olive-300), var(--olive-500), var(--olive-700), var(--olive-300))",
             }}
           />
-          <span>Powered by Olive</span>
+          <span>Powered by Quiz Funnel Studio</span>
         </div>
       )}
     </div>

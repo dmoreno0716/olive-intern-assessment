@@ -5,7 +5,7 @@ import { z } from "zod";
 export const PoweredFooterSchema = z.object({});
 
 export const PoweredFooterDescription =
-  "The 'Powered by Olive' mark. Auto-rendered as the last child of every Screen unless funnel-level config sets `hidePoweredFooter: true`. Do NOT include in spec — registered for catalog completeness only.";
+  "The 'Powered by Quiz Funnel Studio' mark. Auto-rendered as the last child of every Screen unless funnel-level config sets `hidePoweredFooter: true`. Do NOT include in spec — registered for catalog completeness only.";
 
 export function PoweredFooter() {
   return (
@@ -18,7 +18,7 @@ export function PoweredFooter() {
             "conic-gradient(from 0deg, var(--olive-300), var(--olive-500), var(--olive-700), var(--olive-300))",
         }}
       />
-      <span>Powered by Olive</span>
+      <span>Powered by Quiz Funnel Studio</span>
     </div>
   );
 }

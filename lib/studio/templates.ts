@@ -28,8 +28,8 @@ export const SCREEN_TEMPLATES: ScreenTemplate[] = [
           {
             kind: "Heading",
             props: {
-              text: "Welcome to Olive.",
-              emphasis: "Olive",
+              text: "Welcome in.",
+              emphasis: "Welcome",
               size: "2xl",
             },
           },
@@ -169,7 +169,7 @@ export const SCREEN_TEMPLATES: ScreenTemplate[] = [
             props: {
               variant: "stats",
               stats: [
-                { value: "12k", label: "Olive members" },
+                { value: "12k", label: "members" },
                 { value: "94%", label: "would recommend" },
               ],
             },

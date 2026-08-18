@@ -28,7 +28,7 @@ export default function NotFound() {
             href="/"
             className="inline-flex items-center justify-center gap-1.5 rounded-[14px] border-[1.5px] border-[var(--olive-500)] bg-transparent px-5 py-3 text-[15px] font-medium text-[var(--olive-700)]"
           >
-            Go to Olive →
+            Go home →
           </Link>
         </div>
       </div>

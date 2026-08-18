@@ -12,7 +12,7 @@ export const PrimaryCTASchema = z.object({
 });
 
 export const PrimaryCTADescription =
-  "The funnel-mode primary button. Lives in Screen.footer. Validates the screen's bound fields, persists the answer, and advances. Olive bg, cream fg, 18px radius (literal).";
+  "The funnel-mode primary button. Lives in Screen.footer. Validates the screen's bound fields, persists the answer, and advances. Olive-green bg, cream fg, 18px radius (literal).";
 
 type PrimaryCTAProps = z.infer<typeof PrimaryCTASchema>;
 

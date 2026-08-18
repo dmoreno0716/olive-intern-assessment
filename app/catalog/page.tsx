@@ -160,7 +160,7 @@ const thankYou: CatalogNode = {
       {
         kind: "Body",
         props: {
-          text: "We sent your first session to qa@olive.app. Check your inbox in the next few minutes.",
+          text: "We sent your first session to qa@example.com. Check your inbox in the next few minutes.",
         },
       },
     ],

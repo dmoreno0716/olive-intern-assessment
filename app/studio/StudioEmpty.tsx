@@ -11,9 +11,9 @@ import { GeneratingFilmstrip } from "./GeneratingFilmstrip";
 
 const EXAMPLE_CHIPS = [
   "5-question quiz: what kind of eater are you?",
-  "Lead-gen quiz that recommends an Olive plan",
-  "Standalone paywall for the Olive Pro upsell",
-  "Onboarding quiz for new Olive users",
+  "Lead-gen quiz that recommends a subscription plan",
+  "Standalone paywall for a Pro subscription upsell",
+  "Onboarding quiz for new users",
   "3-question feedback survey",
 ];
 
@@ -149,15 +149,14 @@ export function StudioEmpty() {
           style={{
             background:
               "linear-gradient(135deg, var(--olive-700), var(--olive-500))",
-            fontFamily: "var(--font-d)",
-            fontStyle: "italic",
-            fontSize: 18,
+            fontSize: 12,
             lineHeight: 1,
           }}
+          aria-hidden
         >
-          O
+          ◆
         </span>
-        Olive Quiz Funnel Studio
+        Quiz Funnel Studio
       </div>
 
       <h1 className="mb-3.5 max-w-[760px] text-center font-serif text-[54px] font-normal leading-[1.05] tracking-[-0.02em] text-[var(--text)]">

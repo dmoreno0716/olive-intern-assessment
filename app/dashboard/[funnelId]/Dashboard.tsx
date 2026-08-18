@@ -116,16 +116,15 @@ export function Dashboard({
             style={{
               background:
                 "linear-gradient(135deg, var(--olive-700), var(--olive-500))",
-              fontFamily: "var(--font-d)",
-              fontStyle: "italic",
-              fontSize: 14,
+              fontSize: 9,
               lineHeight: 1,
             }}
+            aria-hidden
           >
-            O
+            ◆
           </span>
           <em className="font-serif italic text-[15px] tracking-[-0.005em] text-[var(--olive-700)]">
-            Olive
+            Studio
           </em>
           <span className="text-[var(--text-faint)]">·</span>
           <span className="font-mono text-[12px] uppercase tracking-[0.06em] text-[var(--text-faint)]">

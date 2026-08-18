@@ -240,7 +240,7 @@ export const SpacerDescription =
 export const DividerDescription =
   "Horizontal hairline. Use to separate body sections.";
 export const HeadingDescription =
-  "Display-style headline. `emphasis` italicises a substring (Olive's signature treatment). Sizes step from sm (18px) to 3xl (44px).";
+  "Display-style headline. `emphasis` italicises a substring (the brand's signature treatment). Sizes step from sm (18px) to 3xl (44px).";
 export const BodyDescription =
   "Paragraph copy. Use after a Heading for sub-headers, or between sections for explanatory text.";
 export const EyebrowDescription =
@@ -266,7 +266,7 @@ export const NumberInputDescription =
 export const ToggleRowDescription =
   "Inline toggle row with label and optional description. Use for boolean questions or opt-ins.";
 export const PrimaryCTADescription =
-  "The funnel-mode primary button. Lives in Screen.footer. Validates the screen's bound fields, persists the answer, and advances. Olive bg, cream fg, 18px radius (literal).";
+  "The funnel-mode primary button. Lives in Screen.footer. Validates the screen's bound fields, persists the answer, and advances. Olive-green bg, cream fg, 18px radius (literal).";
 export const SecondaryCTADescription =
   "Subtle text-link beneath the PrimaryCTA. 'Maybe later', 'Skip for now', 'Back to choices'. Set `action: \"share\"` on a result screen to invite social sharing — provide `shareTitle` and `shareText` (e.g. shareText: \"I'm a Slow Burn Eater 🍃\"). The runtime invokes navigator.share() on mobile and falls back to clipboard copy on desktop; the action is implemented in the SecondaryCTA component, not by the spec.";
 export const ProgressBarDescription =
@@ -276,7 +276,7 @@ export const BackButtonDescription =
 export const ResultBadgeDescription =
   "Pill with status dot + label, shown at the top of a result Screen (e.g. 'Your match').";
 export const ResultHeroDescription =
-  "Big italic 'You are <name>' moment. `emphasis` is the substring of `resultName` that gets the Olive italic treatment.";
+  "Big italic 'You are <name>' moment. `emphasis` is the substring of `resultName` that gets the accent italic treatment.";
 export const PriceCardDescription =
   "Conversion offer card. `bullets` are short value-prop lines. `variant: emphasis` adds an olive ring.";
 export const EmailGateDescription =
@@ -290,4 +290,4 @@ export const AvatarDescription =
 export const IconBadgeDescription =
   "Tinted circular badge holding a single Lucide icon. Use for result-screen visual anchors.";
 export const PoweredFooterDescription =
-  "The 'Powered by Olive' mark. Auto-rendered as the last child of every Screen unless funnel-level config sets `hidePoweredFooter: true`. Do NOT include in spec — registered for catalog completeness only.";
+  "The 'Powered by Quiz Funnel Studio' mark. Auto-rendered as the last child of every Screen unless funnel-level config sets `hidePoweredFooter: true`. Do NOT include in spec — registered for catalog completeness only.";

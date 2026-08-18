@@ -119,7 +119,7 @@ export const HOST_TO_IFRAME_SAMPLE_PAYLOADS: Record<HostToIframeType, unknown> =
     "user:auth": {
       userId: "u_abc123",
       token: "stub-token",
-      email: "demo@olive.app",
+      email: "demo@example.com",
       tier: "free",
     },
     "user:info": { name: "Demo", locale: "en-US", segment: "tiktok" },

@@ -39,9 +39,9 @@ loadEnvLocal();
 const PROMPTS: { label: string; prompt: string }[] = [
   // Original 5 baseline prompts (the Studio empty-state suggestion chips).
   { label: "eater-quiz",    prompt: "5-question quiz: what kind of eater are you?" },
-  { label: "lead-gen",      prompt: "Lead-gen quiz that recommends an Olive plan" },
-  { label: "paywall",       prompt: "Standalone paywall for Olive Pro upsell" },
-  { label: "onboarding",    prompt: "Onboarding quiz for new Olive users" },
+  { label: "lead-gen",      prompt: "Lead-gen quiz that recommends a subscription plan" },
+  { label: "paywall",       prompt: "Standalone paywall for a Pro subscription upsell" },
+  { label: "onboarding",    prompt: "Onboarding quiz for new users" },
   { label: "feedback",      prompt: "3-question feedback survey" },
   // Round-7 edge cases.
   { label: "very-short",    prompt: "feedback quiz" },
@@ -60,13 +60,13 @@ const PROMPTS: { label: string; prompt: string }[] = [
   {
     label: "paywall-only-no-quiz",
     prompt:
-      "A standalone paywall for Olive Pro — no quiz at all, just the value " +
+      "A standalone paywall for a Pro subscription — no quiz at all, just the value " +
       "prop, three plan options, and a CTA. Do not add any quiz screens.",
   },
   {
     label: "quiz-no-paywall",
     prompt:
-      "A 4-question quiz that recommends an Olive eating archetype. Quiz " +
+      "A 4-question quiz that recommends an eating archetype. Quiz " +
       "only — absolutely no paywall, no checkout, no plan-selection screen. " +
       "End on the result.",
   },

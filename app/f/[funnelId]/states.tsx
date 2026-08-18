@@ -70,7 +70,7 @@ export function FunnelLoadError({
           <WifiOff className="h-7 w-7" strokeWidth={1.6} />
         </div>
         <h2 className="m-0 max-w-[320px] font-serif text-[30px] italic leading-[1.1] tracking-tight text-[var(--olive-900)]">
-          Couldn&apos;t reach Olive.
+          Couldn&apos;t reach the server.
         </h2>
         <p className="m-0 max-w-[320px] text-[14.5px] leading-[1.5] text-[var(--ftext-m)]">
           {message}. Check your connection and try again.

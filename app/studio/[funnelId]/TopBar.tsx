@@ -65,16 +65,15 @@ export function TopBar({
           style={{
             background:
               "linear-gradient(135deg, var(--olive-700), var(--olive-500))",
-            fontFamily: "var(--font-d)",
-            fontStyle: "italic",
-            fontSize: 14,
+            fontSize: 9,
             lineHeight: 1,
           }}
+          aria-hidden
         >
-          O
+          ◆
         </span>
         <em className="shrink-0 font-serif italic text-[15px] tracking-[-0.005em] text-[var(--olive-700)]">
-          Olive
+          Studio
         </em>
         <span className="shrink-0 text-[var(--text-faint)]">·</span>
         <EditableTitle value={funnelTitle} onCommit={onTitleChange} />

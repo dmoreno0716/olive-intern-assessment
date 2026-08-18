@@ -22,8 +22,14 @@ const fontMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Olive Quiz Funnel Studio",
-  description: "Generative quiz funnel builder",
+  title: "Quiz Funnel Studio",
+  description:
+    "Describe a quiz funnel in plain language; Claude drafts it, you edit and deploy it.",
+  openGraph: {
+    title: "Quiz Funnel Studio",
+    description:
+      "Describe a quiz funnel in plain language; Claude drafts it, you edit and deploy it.",
+  },
 };
 
 export default function RootLayout({
